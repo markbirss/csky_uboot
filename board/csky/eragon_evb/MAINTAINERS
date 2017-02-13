@@ -1,0 +1,6 @@
+ERAGON BOARD
+M:
+S:	Maintained
+F:	board/csky/eragon_evb/
+F:	include/configs/eragon.h
+F:	configs/eragon_defconfig

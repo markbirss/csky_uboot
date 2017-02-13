@@ -23,6 +23,9 @@ config AVR32
 config BLACKFIN
 	bool "Blackfin architecture"
 
+config CSKY
+    bool "CSKY architecture"
+
 config M68K
 	bool "M68000 architecture"
 	select HAVE_PRIVATE_LIBGCC
@@ -145,6 +148,7 @@ source "arch/arc/Kconfig"
 source "arch/arm/Kconfig"
 source "arch/avr32/Kconfig"
 source "arch/blackfin/Kconfig"
+source "arch/csky/Kconfig"
 source "arch/m68k/Kconfig"
 source "arch/microblaze/Kconfig"
 source "arch/mips/Kconfig"

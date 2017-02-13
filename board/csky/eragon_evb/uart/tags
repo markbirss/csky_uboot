@@ -1,0 +1,75 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CKStruct_UartInfo	uart_internal.h	/^} CKStruct_UartInfo, *PCKStruct_UartInfo;$/;"	t	typeref:struct:CK_UART_Info_t
+CK_LSR_BI	uart_internal.h	85;"	d
+CK_LSR_DR	uart_internal.h	89;"	d
+CK_LSR_FE	uart_internal.h	86;"	d
+CK_LSR_OE	uart_internal.h	88;"	d
+CK_LSR_PE	uart_internal.h	87;"	d
+CK_LSR_PFE	uart_internal.h	82;"	d
+CK_LSR_TEMT	uart_internal.h	83;"	d
+CK_LSR_THRE	uart_internal.h	84;"	d
+CK_LSR_TRANS_EMPTY	uart_internal.h	90;"	d
+CK_UART_DLH	uart_internal.h	47;"	d
+CK_UART_DLL	uart_internal.h	45;"	d
+CK_UART_FCR	uart_internal.h	49;"	d
+CK_UART_IER	uart_internal.h	46;"	d
+CK_UART_IIR	uart_internal.h	48;"	d
+CK_UART_Info_t	uart_internal.h	/^typedef struct CK_UART_Info_t {$/;"	s
+CK_UART_LCR	uart_internal.h	50;"	d
+CK_UART_LSR	uart_internal.h	52;"	d
+CK_UART_MCR	uart_internal.h	51;"	d
+CK_UART_MSR	uart_internal.h	53;"	d
+CK_UART_RBR	uart_internal.h	43;"	d
+CK_UART_REG	uart_internal.h	/^typedef struct CK_UART_REG {$/;"	s
+CK_UART_REG	uart_internal.h	/^}CK_UART_REG;$/;"	t	typeref:struct:CK_UART_REG
+CK_UART_THR	uart_internal.h	44;"	d
+CK_UART_USR	uart_internal.h	54;"	d
+IER_RDA_INT_ENABLE	uart_internal.h	67;"	d
+IER_THRE_INT_ENABLE	uart_internal.h	68;"	d
+IIR_NO_ISQ_PEND	uart_internal.h	69;"	d
+LCR_PARITY_ENABLE	uart_internal.h	72;"	d
+LCR_PARITY_EVEN	uart_internal.h	73;"	d
+LCR_PARITY_ODD	uart_internal.h	74;"	d
+LCR_SET_DLAB	uart_internal.h	71;"	d
+LCR_STOP_BIT1	uart_internal.h	79;"	d
+LCR_STOP_BIT2	uart_internal.h	80;"	d
+LCR_WORD_SIZE_5	uart_internal.h	75;"	d
+LCR_WORD_SIZE_6	uart_internal.h	76;"	d
+LCR_WORD_SIZE_7	uart_internal.h	77;"	d
+LCR_WORD_SIZE_8	uart_internal.h	78;"	d
+LSR_DATA_READY	uart_internal.h	65;"	d
+LSR_THR_EMPTY	uart_internal.h	66;"	d
+PCKStruct_UartInfo	uart_internal.h	/^} CKStruct_UartInfo, *PCKStruct_UartInfo;$/;"	t	typeref:struct:CK_UART_Info_t
+PCK_UART0_ADDRBASE	uart.c	40;"	d	file:
+PCK_UART1_ADDRBASE	uart.c	41;"	d	file:
+PCK_UART2_ADDRBASE	uart.c	42;"	d	file:
+PCK_UART3_ADDRBASE	uart.c	43;"	d	file:
+PCK_UART4_ADDRBASE	uart.c	44;"	d	file:
+UART_BUSY_TIMEOUT	uart_internal.h	57;"	d
+UART_RECEIVE_TIMEOUT	uart_internal.h	58;"	d
+UART_TRANSMIT_TIMEOUT	uart_internal.h	59;"	d
+USR_UART_BUSY	uart_internal.h	64;"	d
+__UART_INTERNAL_H__	uart_internal.h	35;"	d
+addr	uart_internal.h	/^  volatile uint32_t* addr;$/;"	m	struct:CK_UART_Info_t
+uart_DLH	uart_internal.h	/^        CK_REG	uart_DLH;$/;"	m	union:CK_UART_REG::__anon2
+uart_DLL	uart_internal.h	/^        CK_REG	uart_DLL;$/;"	m	union:CK_UART_REG::__anon1
+uart_FCR	uart_internal.h	/^        CK_REG	uart_FCR;$/;"	m	union:CK_UART_REG::__anon3
+uart_IER	uart_internal.h	/^        CK_REG	uart_IER;$/;"	m	union:CK_UART_REG::__anon2
+uart_IIR	uart_internal.h	/^        CK_REG	uart_IIR;$/;"	m	union:CK_UART_REG::__anon3
+uart_LCR	uart_internal.h	/^    CK_REG	uart_LCR;$/;"	m	struct:CK_UART_REG
+uart_LSR	uart_internal.h	/^    CK_REG	uart_LSR;$/;"	m	struct:CK_UART_REG
+uart_MCR	uart_internal.h	/^    CK_REG	uart_MCR;$/;"	m	struct:CK_UART_REG
+uart_MSR	uart_internal.h	/^    CK_REG	uart_MSR;$/;"	m	struct:CK_UART_REG
+uart_RBR	uart_internal.h	/^        CK_REG	uart_RBR;$/;"	m	union:CK_UART_REG::__anon1
+uart_RSV	uart_internal.h	/^    CK_REG	uart_RSV[24];$/;"	m	struct:CK_UART_REG
+uart_THR	uart_internal.h	/^        CK_REG	uart_THR;$/;"	m	union:CK_UART_REG::__anon1
+uart_USR	uart_internal.h	/^    CK_REG	uart_USR;$/;"	m	struct:CK_UART_REG
+uart_close	uart.c	/^ int32_t uart_close(uint32_t uart_addrbase)$/;"	f
+uart_get_char	uart.c	/^int32_t uart_get_char(uint32_t uart_addrbase, uint8_t *ch)$/;"	f
+uart_open	uart.c	/^int32_t uart_open( uint32_t uart_addrbase)$/;"	f
+uart_put_char	uart.c	/^int32_t uart_put_char(uint32_t uart_addrbase, uint8_t ch)$/;"	f

@@ -1,0 +1,30 @@
+menu "CSKY architecture"
+	depends on CSKY
+
+config SYS_ARCH
+	default "csky"
+
+config CPU_CK807
+        bool
+
+config SYS_CPU
+        default "ck807" if CPU_CK807
+
+config SYS_CSKY_ARCH
+	int
+	default 1 if CPU_CK807
+
+choice
+	prompt "Target select"
+	optional
+
+config TARGET_CK807
+    bool "Support ck807"
+    select CPU_CK807
+    select SUPPORT_SPL
+
+endchoice
+
+source "board/csky/eragon_evb/Kconfig"
+
+endmenu

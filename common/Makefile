@@ -7,12 +7,12 @@
 
 # core
 ifndef CONFIG_SPL_BUILD
-obj-y += init/
-obj-y += main.o
-obj-y += exports.o
-obj-y += hash.o
+#obj-y += init/
+#obj-y += main.o
+#obj-y += exports.o
+#obj-y += hash.o
 obj-$(CONFIG_HUSH_PARSER) += cli_hush.o
-obj-$(CONFIG_AUTOBOOT) += autoboot.o
+#obj-$(CONFIG_AUTOBOOT) += autoboot.o
 
 # This option is not just y/n - it can have a numeric value
 ifdef CONFIG_BOOT_RETRY_TIME
@@ -20,17 +20,17 @@ obj-y += bootretry.o
 endif
 
 # boards
-obj-y += board_f.o
-obj-y += board_r.o
+#obj-y += board_f.o
+#obj-y += board_r.o
 obj-$(CONFIG_DISPLAY_BOARDINFO) += board_info.o
 obj-$(CONFIG_DISPLAY_BOARDINFO_LATE) += board_info.o
 
 obj-$(CONFIG_CMD_BOOTM) += bootm.o bootm_os.o
 
 # environment
-obj-y += env_attr.o
-obj-y += env_callback.o
-obj-y += env_flags.o
+#obj-y += env_attr.o
+#obj-y += env_callback.o
+#obj-y += env_flags.o
 obj-$(CONFIG_ENV_IS_IN_DATAFLASH) += env_dataflash.o
 obj-$(CONFIG_ENV_IS_IN_EEPROM) += env_eeprom.o
 extra-$(CONFIG_ENV_IS_EMBEDDED) += env_embedded.o
@@ -114,16 +114,16 @@ obj-$(CONFIG_SCSI) += scsi.o
 endif
 endif
 #environment
-obj-y += env_common.o
+#obj-y += env_common.o
 #others
 obj-$(CONFIG_DDR_SPD) += ddr_spd.o
 obj-$(CONFIG_SPD_EEPROM) += ddr_spd.o
 obj-$(CONFIG_HWCONFIG) += hwconfig.o
 obj-$(CONFIG_BOUNCE_BUFFER) += bouncebuf.o
 ifdef CONFIG_SPL_BUILD
-obj-$(CONFIG_SPL_SERIAL_SUPPORT) += console.o
+#obj-$(CONFIG_SPL_SERIAL_SUPPORT) += console.o
 else
-obj-y += console.o
+#obj-y += console.o
 endif
 obj-$(CONFIG_CROS_EC) += cros_ec.o
 obj-y += dlmalloc.o
@@ -131,14 +131,14 @@ ifdef CONFIG_SYS_MALLOC_F_LEN
 obj-y += malloc_simple.o
 endif
 obj-$(CONFIG_CMD_IDE) += ide.o
-obj-y += image.o
+#obj-y += image.o
 obj-$(CONFIG_ANDROID_BOOT_IMAGE) += image-android.o
 obj-$(CONFIG_$(SPL_)OF_LIBFDT) += image-fdt.o
 obj-$(CONFIG_$(SPL_)FIT) += image-fit.o
 obj-$(CONFIG_$(SPL_)FIT_SIGNATURE) += image-sig.o
 obj-$(CONFIG_IO_TRACE) += iotrace.o
-obj-y += memsize.o
-obj-y += stdio.o
+#obj-y += memsize.o
+#obj-y += stdio.o
 
 # This option is not just y/n - it can have a numeric value
 ifdef CONFIG_FASTBOOT_FLASH
@@ -157,10 +157,10 @@ endif
 # We always have this since drivers/ddr/fs/interactive.c needs it
 obj-$(CONFIG_CMDLINE) += cli_simple.o
 
-obj-y += cli.o
+#obj-y += cli.o
 obj-$(CONFIG_CMDLINE) += cli_readline.o
-obj-y += command.o
-obj-y += s_record.o
-obj-y += xyzModem.o
+#obj-y += command.o
+#obj-y += s_record.o
+#obj-y += xyzModem.o
 
 CFLAGS_env_embedded.o := -Wa,--no-warn -DENV_CRC=$(shell tools/envcrc 2>/dev/null)

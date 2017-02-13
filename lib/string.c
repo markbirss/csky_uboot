@@ -279,6 +279,7 @@ size_t strnlen(const char * s, size_t count)
 #endif
 
 #ifndef __HAVE_ARCH_STRDUP
+#if 0
 char * strdup(const char *s)
 {
 	char *new;
@@ -291,6 +292,7 @@ char * strdup(const char *s)
 	strcpy (new, s);
 	return new;
 }
+#endif
 #endif
 
 #ifndef __HAVE_ARCH_STRSPN
