@@ -1350,8 +1350,8 @@ uint32_t emmc_host_init(card_info_t *emmc_card_info)
                 PDEBUG("MMC reset returned the error %x\n", retval);
                 break;
             }
-
-            memcpy(emmc_card_info, &card_info, sizeof(card_info_t));
+            emmc_select_area(0,EMMC_BOOT_PARTITION_1);
+//            memcpy(emmc_card_info, &card_info, sizeof(card_info_t));
             return 0;
         }
 
