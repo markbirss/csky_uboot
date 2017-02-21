@@ -65,7 +65,7 @@ int32_t spi_open(
     spi_set_phase(spiid, CK_SPI_CLOCK_PHASE_START);
     spi_set_datawidth(spiid, CK_SPI_DataSize_8);
     spi_set_transfer_threshold(spiid,0x8,0xa);
-    spi_set_baudrate(spiid, SPI_DEFAULT_FREQ / 1000000);
+    spi_set_baudrate(spiid, 50);
 
     return SUCCESS;
 }
@@ -375,7 +375,7 @@ uint32_t spi_send_query(
     else{
         for(i = 0; i < txlength; i++)   /* transmit datas in transmit-buffer */
         {
-//            while(reg->TXFLR >= 30);
+            while(reg->TXFLR >= 30);
             reg->DR = *ptxbuffer;
             ptxbuffer++;
         }
