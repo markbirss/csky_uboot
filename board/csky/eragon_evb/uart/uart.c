@@ -59,7 +59,7 @@ int32_t uart_open( uint32_t uart_addrbase)
     }
 
     /*baudrate=(seriak clock freq)/(16*divisor).*/
-    divisor = ((APB_DEFAULT_FREQ / 115200) >> 4);
+    divisor = ((TIMER_DEFAULT_FREQ / 115200) >> 4);
     info->uart_LCR |= LCR_SET_DLAB;
     /* DLL and DLH is lower 8-bits and higher 8-bits of divisor.*/
     info->uart_DLL = divisor & 0xff;

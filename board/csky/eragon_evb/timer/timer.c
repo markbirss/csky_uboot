@@ -38,7 +38,7 @@
 #include <configs/eragon.h>
 
 #define TIMER_LOAD_VALUE 0xff000000
-#define TIMER_OVERRUN_TIME (TIMER_LOAD_VALUE/APB_DEFAULT_FREQ)*1000000
+#define TIMER_OVERRUN_TIME (TIMER_LOAD_VALUE/TIMER_DEFAULT_FREQ)*1000000
 uint32_t timerover_count = 0;
 uint32_t lastvalue = 0xff000000;
 
@@ -51,7 +51,7 @@ int32_t timer_elapsed_time(enum_timer_device timerid, uint32_t *time)
     if(lastvalue < currentvalue){
         timerover_count++;
     }
-    *time = (TIMER_LOAD_VALUE - currentvalue)/(APB_DEFAULT_FREQ/1000000) + TIMER_OVERRUN_TIME * timerover_count;
+    *time = (TIMER_LOAD_VALUE - currentvalue)/(TIMER_DEFAULT_FREQ/1000000) + TIMER_OVERRUN_TIME * timerover_count;
     lastvalue = currentvalue;
     return SUCCESS;
 }

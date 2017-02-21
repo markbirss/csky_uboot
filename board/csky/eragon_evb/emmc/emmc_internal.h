@@ -35,7 +35,7 @@
 #define PDEBUG(fmt, ...)
 #endif
 
-#define MMC_FOD_DIVIDER_VALUE   0x3f
+#define MMC_FOD_DIVIDER_VALUE   (EMMC_DEFAULT_FREQ / 2000000)
 #define ONE_BIT_BUS_FREQ 0x8
 
 /* Retry counts */
