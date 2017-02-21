@@ -68,7 +68,7 @@ extern void emmc_emmc_write(uint8_t slot_id, uint32_t to, uint32_t len, const ui
 #define SPIFLASH_BASE_VALUE     0x00
 #define ERASE_ADDR              0x00
 #define ERASE_LENGTH            0x10000
-#define READ_ADDR               0x3400
+#define READ_ADDR               0x3000
 #define UBOOT_SIZE              0x3400
 #define WRITE_ADDR              0x00
 #define WRITE_NUM               256
