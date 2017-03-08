@@ -183,10 +183,10 @@ static inline void __raw_readsl(unsigned long addr, void *data, int longlen)
 #define in_le32(a)	in_arch(l,le32,a)
 #define in_le16(a)	in_arch(w,le16,a)
 
-#define out_be32(a,v)	out_arch(l,be32,a,v)
+#define out_be32(a,v)	writel(v,a)
 #define out_be16(a,v)	out_arch(w,be16,a,v)
 
-#define in_be32(a)	in_arch(l,be32,a)
+#define in_be32(a)	readl(a)
 #define in_be16(a)	in_arch(w,be16,a)
 
 #define out_8(a,v)	__raw_writeb(v,a)

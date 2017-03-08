@@ -7,7 +7,6 @@
 
 #include <common.h>
 #include <mmc.h>
-
 static struct list_head mmc_devices;
 static int cur_dev_num = -1;
 
@@ -89,7 +88,6 @@ void print_mmc_devices(char separator)
 		else
 			mmc_type = NULL;
 
-		printf("%s: %d", m->cfg->name, m->block_dev.devnum);
 		if (mmc_type)
 			printf(" (%s)", mmc_type);
 

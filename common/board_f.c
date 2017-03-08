@@ -929,7 +929,8 @@ static init_fnc_t init_sequence_f[] = {
 	announce_dram_init,
 	/* TODO: unify all these dram functions? */
 #if defined(CONFIG_ARM) || defined(CONFIG_X86) || defined(CONFIG_NDS32) || \
-		defined(CONFIG_MICROBLAZE) || defined(CONFIG_AVR32)
+		defined(CONFIG_MICROBLAZE) || defined(CONFIG_AVR32) || \
+		defined(CONFIG_CSKY)
 	dram_init,		/* configure available RAM banks */
 #endif
 #if defined(CONFIG_MIPS) || defined(CONFIG_PPC) || defined(CONFIG_M68K)
@@ -1060,7 +1061,7 @@ void board_init_f(ulong boot_flags)
 		hang();
 
 #if !defined(CONFIG_ARM) && !defined(CONFIG_SANDBOX) && \
-		!defined(CONFIG_EFI_APP)
+		!defined(CONFIG_EFI_APP) && !defined(CONFIG_CSKY)
 	/* NOTREACHED - jump_to_copy() does not return */
 	hang();
 #endif

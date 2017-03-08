@@ -246,6 +246,9 @@ ifeq ($(HOSTARCH),$(ARCH))
 CROSS_COMPILE ?=
 endif
 
+ARCH = csky
+CROSS_COMPILE = csky-abiv2-elf-
+
 KCONFIG_CONFIG	?= .config
 export KCONFIG_CONFIG
 
@@ -620,21 +623,21 @@ HAVE_VENDOR_COMMON_LIB = $(if $(wildcard $(srctree)/board/$(VENDOR)/common/Makef
 libs-y += lib/
 libs-$(HAVE_VENDOR_COMMON_LIB) += board/$(VENDOR)/common/
 libs-$(CONFIG_OF_EMBED) += dts/
-#libs-y += fs/
-#libs-y += net/
-#libs-y += disk/
+libs-y += fs/
+libs-y += net/
+libs-y += disk/
 libs-y += drivers/
 #libs-y += drivers/dma/
 #libs-y += drivers/gpio/
 #libs-y += drivers/i2c/
-#libs-y += drivers/mmc/
+libs-y += drivers/mmc/
 #libs-y += drivers/mtd/
 #libs-$(CONFIG_CMD_NAND) += drivers/mtd/nand/
 #libs-y += drivers/mtd/onenand/
 #libs-$(CONFIG_CMD_UBI) += drivers/mtd/ubi/
 #libs-y += drivers/mtd/spi/
-#libs-y += drivers/net/
-#libs-y += drivers/net/phy/
+libs-y += drivers/net/
+libs-y += drivers/net/phy/
 #libs-y += drivers/pci/
 #libs-y += drivers/power/ \
 	drivers/power/fuel_gauge/ \
@@ -658,11 +661,11 @@ libs-y += drivers/serial/
 #libs-y += drivers/usb/musb-new/
 #libs-y += drivers/usb/phy/
 #libs-y += drivers/usb/ulpi/
-#libs-y += cmd/
+libs-y += cmd/
 libs-y += common/
 libs-$(CONFIG_API) += api/
 libs-$(CONFIG_HAS_POST) += post/
-#libs-y += test/
+libs-y += test/
 #libs-y += test/dm/
 #libs-$(CONFIG_UT_ENV) += test/env/
 

@@ -24,10 +24,6 @@
 #include <asm-generic/u-boot.h>
 
 /* For image.h:image_check_target_arch() */
-#ifndef CONFIG_ARM64
-#define IH_ARCH_DEFAULT IH_ARCH_ARM
-#else
-#define IH_ARCH_DEFAULT IH_ARCH_ARM64
-#endif
+#define IH_ARCH_DEFAULT IH_ARCH_CSKY
 
 #endif	/* _U_BOOT_H_ */

@@ -2,8 +2,6 @@
  * SPDX-License-Identifier: GPL-2.0+
  */
 
-PROVIDE (__stack =  0x1fd04000 - 0x8);
-PROVIDE (__fstack =  0x1fd04000 - 0x900 - 0x8);
 OUTPUT_ARCH(csky)
 ENTRY(_start)
 SECTIONS
@@ -12,6 +10,7 @@ SECTIONS
     {
         __text_start = .;
         *(.text)
+        *(.text*)
         __text_end = .;
     }
 

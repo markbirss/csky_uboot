@@ -35,29 +35,6 @@ typedef struct {
 
 current_task_status_t current_task;
 
-
-uint32_t emmc_check_r5_resp(uint32_t the_resp)
-{
-    uint32_t retval = 0;
-
-    //PDEBUG("%s: response = 0x%x\n", __FUNCTION__, the_resp);
-    if (the_resp & R5_IO_ERR_BITS) {
-        if (the_resp & R5_IO_CRC_ERR) {
-            retval = ERRDCRC;
-        } else if (the_resp & R5_IO_BAD_CMD) {
-            retval = ERRILLEGALCOMMAND;
-        } else if (the_resp & R5_IO_GEN_ERR) {
-            retval = ERRUNKNOWN;
-        } else if (the_resp & R5_IO_FUNC_ERR) {
-            retval = ERRBADFUNC;
-        } else if (the_resp & R5_IO_OUT_RANGE) {
-            retval = ERRADDRESSRANGE;
-        }
-    }
-
-    return retval;
-}
-
 static void no_response_preproc(uint32_t card_num, uint32_t cmd_index,
                                 uint32_t *cmd_reg, uint32_t *arg_reg)
 {
@@ -156,11 +133,6 @@ static void short_response_block_data_preproc_noac(uint32_t card_num,
     UNSET_BITS(*cmd_reg, CMD_SENT_AUTO_STOP_BIT);
 }
 
-
-
-
-
-
 static void short_response_block_write_preproc(uint32_t card_num,
         uint32_t cmd_index,
         uint32_t *cmd_reg,
@@ -183,6 +155,8 @@ static void short_response_block_write_preproc(uint32_t card_num,
     SET_BITS(*cmd_reg, CMD_WAIT_PRV_DAT_BIT);
 
 }
+#ifdef CONFIG_SUPPORT_ALL_EMMC_CMD
+
 static void short_response_stream_write_preproc(uint32_t card_num,
         uint32_t cmd_index,
         uint32_t *cmd_reg,
@@ -191,7 +165,7 @@ static void short_response_stream_write_preproc(uint32_t card_num,
     short_response_block_write_preproc(card_num, cmd_index, cmd_reg, arg_reg);
     SET_BITS(*cmd_reg, CMD_TRANSMODE_BIT);
 }
-#ifdef CONFIG_SUPPORT_ALL_EMMC_CMD
+
 static void short_response_block_write_preproc_noac(uint32_t card_num,
         uint32_t cmd_index,
         uint32_t *cmd_reg,
@@ -355,8 +329,6 @@ static void r1b_response_write_data_postproc(void *the_data,
 
     r1b_response_postproc(the_data, interrupt_status);
 
-    PDEBUG("%s: The error status = %d\n", __FUNCTION__, the_task_status->error_status);
-
     if (ERRENDBITERR == the_task_status->error_status) {
         the_task_status->bus_corruption_occured = 1;
         the_task_status->error_status = 0;
@@ -384,24 +356,15 @@ static void r1_response_write_data_postproc(void *the_data, uint32_t *interrupt_
 {
     current_task_status_t *the_task_status = (current_task_status_t *) the_data;
     uint32_t cmd_status;
-//    uint32_t ret;
 
     //The following variables are required for IDMAC mode interrupt handling
 
     r1_response_postproc(the_data, interrupt_status);
-    PDEBUG("%s: The error status = %d\n", __FUNCTION__, the_task_status->error_status);
 
     if (ERRENDBITERR == the_task_status->error_status) {
         the_task_status->bus_corruption_occured = 1;
         the_task_status->error_status = 0;
     }
-
-    //if (the_task_status->error_status) {
-    //	if (CMD_STATE_WRITEDAT == the_task_status->cmd_status) {
-    //		emmc_enable_data_command_tasks();
-    //	}
-    //return;
-//	}
 
     cmd_status = the_task_status->cmd_status;
 
@@ -422,7 +385,7 @@ static void r1_response_write_data_postproc(void *the_data, uint32_t *interrupt_
 
     return;
 }
-
+#if 0
 static void r1_response_read_bstst_postproc(void *the_data,
         uint32_t *interrupt_status)
 {
@@ -467,7 +430,7 @@ static void r1_response_read_bstst_postproc(void *the_data,
 
     return;
 }
-
+#endif
 static void r1_response_read_data_postproc(void *the_data, uint32_t *interrupt_status)
 {
     current_task_status_t *the_task_status = (current_task_status_t *) the_data;
@@ -483,7 +446,7 @@ static void r1_response_read_data_postproc(void *the_data, uint32_t *interrupt_s
     the_task_status->cmd_status = CMD_STATE_READDAT;
 
     while (1) {
-        // PDEBUG("*interrupt_status =%x,error_status =%x\n",*interrupt_status,the_task_status->error_status);
+       //  printf("*interrupt_status =%x,error_status =%x\n",*interrupt_status,the_task_status->error_status);
         if ((*interrupt_status & INTMSK_RXDR)) {
             emmc_read_in_data(the_task_status, INTMSK_RXDR);
             emmc_set_register(RINTSTS, INTMSK_RXDR);
@@ -498,12 +461,16 @@ static void r1_response_read_data_postproc(void *the_data, uint32_t *interrupt_s
             the_task_status->cmd_status = CMD_COMMAND_DONE;
             break;
         }
-
+        if ((*interrupt_status & INTMSK_SBE)) {
+            emmc_set_register(RINTSTS, INTMSK_SBE);
+        }
         *interrupt_status = emmc_read_register(RINTSTS);
     }
 
     return;
 }
+
+#ifdef CONFIG_SUPPORT_ALL_EMMC_CMD
 
 static void short_response_sd_app_specific_data(uint32_t card_num,
         uint32_t cmd_index,
@@ -517,7 +484,7 @@ static void short_response_sd_app_specific_data(uint32_t card_num,
     return;
 }
 
-#ifdef CONFIG_SUPPORT_ALL_EMMC_CMD
+
 static void short_response_sd_data_app_specific_data(uint32_t card_num,
         uint32_t cmd_index,
         uint32_t *cmd_reg,
@@ -538,12 +505,11 @@ static void short_response_sd_data_app_specific_data(uint32_t card_num,
   * \todo Use this table for a minimal perfect hashing rather than a
   * binary search <i>(use gperf ?)</i>
   */
-static callback_search_table the_callback_table[] = {
+static const callback_search_table the_callback_table[] = {
     {CMD0       , {no_response_preproc_abrt, no_response_postproc}},
     {CMD1       , {short_response_preproc_with_init, short_response_postproc}},
     {CMD2       , {long_response_preproc, long_response_postproc}},
     {CMD3       , {short_response_preproc, r1_r6_response_postproc}},
-    {CMD5       , {short_response_preproc, short_response_postproc}},
     {CMD6       , {short_response_preproc, r1b_response_postproc}},
     {CMD7       , {short_response_rca_preproc, r1b_response_postproc}},
     {CMD8       , {short_response_block_data_preproc_noac, r1_response_read_data_postproc}},
@@ -552,17 +518,20 @@ static callback_search_table the_callback_table[] = {
     {CMD13      , {short_response_rca_preproc, r1_response_postproc}},
     {CMD16      , {short_response_preproc, r1_response_postproc}},
     {CMD17      , {short_response_block_data_preproc, r1_response_read_data_postproc}},
-    {CMD18      , {short_response_block_data_preproc, r1_response_read_data_postproc}},
-    {CMD20      , {short_response_stream_write_preproc, r1_response_write_data_postproc}},
     {CMD23      , {short_response_preproc, r1_response_postproc}},
     {CMD24      , {short_response_block_write_preproc, r1_response_write_data_postproc}},
-    {CMD25      , {short_response_block_write_preproc, r1_response_write_data_postproc}},
-    {ACMD41     , {short_response_preproc, short_response_postproc}},
     {CMD42      , {short_response_block_write_preproc, r1b_response_write_data_postproc}},
-    {CMD55      , {short_response_rca_preproc, short_response_postproc}},
-    {ACMD6      , {short_response_sd_app_specific_data, r1_response_postproc}},
     {UNADD_CMD7 , {no_response_preproc, no_response_postproc}},
+#ifdef CONDIF_SUPPORT_MULTI_BLOCK
+    {CMD18      , {short_response_block_data_preproc, r1_response_read_data_postproc}},
+    {CMD25      , {short_response_block_write_preproc, r1_response_write_data_postproc}},
+#endif
+#ifdef EMMC_SUPPORT_GET_CARD
+    {CMD55      , {short_response_rca_preproc, short_response_postproc}},
+    {ACMD41     , {short_response_preproc, short_response_postproc}},
+#endif
 #ifdef CONFIG_SUPPORT_ALL_EMMC_CMD
+    {CMD5       , {short_response_preproc, short_response_postproc}},
     {CMD14      , {short_response_block_data_preproc_noac, r1_response_read_bstst_postproc}},
     {CMD15      , {no_response_preproc, no_response_postproc}},
     {CMD19      , {short_response_block_write_preproc_noac, r1_response_write_bstst_postproc}},
@@ -572,6 +541,8 @@ static callback_search_table the_callback_table[] = {
     {CMD36      , {short_response_preproc, r1_response_postproc}},
     {CMD38      , {short_response_preproc, r1b_response_postproc}},
     {ACMD51     , {short_response_sd_data_app_specific_data, r1_response_read_data_postproc}},
+    {CMD20      , {short_response_stream_write_preproc, r1_response_write_data_postproc}},
+    {ACMD6      , {short_response_sd_app_specific_data, r1_response_postproc}},
 #endif
 };
 
@@ -584,7 +555,7 @@ static callback_search_table the_callback_table[] = {
   * \todo This function has to be converted to a minimal perfect hash table search.
   * \callgraph
   */
-static callback_t *emmc_lookup_callback_table(uint32_t cmd_index)
+static const callback_t *emmc_lookup_callback_table(uint32_t cmd_index)
 {
     uint32_t num_commands = (sizeof(the_callback_table) / sizeof(callback_search_table)) -  1;
     uint32_t left, right;
@@ -618,7 +589,7 @@ static callback_t *emmc_lookup_callback_table(uint32_t cmd_index)
 emmc_postproc_callback emmc_get_post_callback(uint32_t cmd_index)
 {
     emmc_postproc_callback retval = NULL;
-    callback_t *the_callbacks;
+    const callback_t *the_callbacks;
     the_callbacks = emmc_lookup_callback_table(cmd_index);
 
     if (!the_callbacks) {
@@ -638,7 +609,7 @@ emmc_postproc_callback emmc_get_post_callback(uint32_t cmd_index)
 emmc_preproc_callback emmc_get_pre_callback(uint32_t cmd_index)
 {
     emmc_preproc_callback retval = NULL;
-    callback_t *the_callbacks;
+    const callback_t *the_callbacks;
     the_callbacks = emmc_lookup_callback_table(cmd_index);
 
     if (!the_callbacks) {
@@ -682,11 +653,8 @@ void emmc_set_data_trans_params(uint32_t slot, CK_UINT8 *data_buffer,
 }
 
 void emmc_set_current_task_status_t(uint32_t slot, uint32_t *resp_buffer,
-                                    CK_UINT8 *data_buffer,
-                                    emmc_postproc_callback
-                                    the_completion_callback)
+                                    CK_UINT8 *data_buffer)
 {
-    current_task.postproc_callback = the_completion_callback;
     current_task.resp_buffer = resp_buffer;
     current_task.data_buffer = data_buffer;
     current_task.slot_num = slot;

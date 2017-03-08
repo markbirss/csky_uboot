@@ -1,36 +1,23 @@
 /*
  * (C) Copyright 2012
- * Texas Instruments, <www.ti.com>
- *
  * SPDX-License-Identifier:	GPL-2.0+
  */
-#ifndef	_ASM_SPL_H_
-#define	_ASM_SPL_H_
+#ifndef	_ARCH_SPL_H_
+#define	_ARCH_SPL_H_
 
-#if defined(CONFIG_OMAP) \
-	|| defined(CONFIG_EXYNOS4) || defined(CONFIG_EXYNOS5) \
-	|| defined(CONFIG_EXYNOS4210)
-/* Platform-specific defines */
-#include <asm/arch/spl.h>
+#define BOOT_DEVICE_NONE	0x00
+#define BOOT_DEVICE_XIP		0x01
+#define BOOT_DEVICE_XIPWAIT	0x02
+#define BOOT_DEVICE_NAND	0x03
+#define BOOT_DEVICE_ONENAND	0x04
+#define BOOT_DEVICE_MMC1	0x05
+#define BOOT_DEVICE_MMC2	0x06
+#define BOOT_DEVICE_MMC2_2	0x07
+#define BOOT_DEVICE_UART	0x43
+#define BOOT_DEVICE_USB		0x45
 
-#else
-enum {
-	BOOT_DEVICE_RAM,
-	BOOT_DEVICE_MMC1,
-	BOOT_DEVICE_MMC2,
-	BOOT_DEVICE_MMC2_2,
-	BOOT_DEVICE_NAND,
-	BOOT_DEVICE_ONENAND,
-	BOOT_DEVICE_NOR,
-	BOOT_DEVICE_UART,
-	BOOT_DEVICE_SPI,
-	BOOT_DEVICE_USB,
-	BOOT_DEVICE_SATA,
-	BOOT_DEVICE_I2C,
-	BOOT_DEVICE_BOARD,
-	BOOT_DEVICE_NONE
-};
-#endif
+#define MMC_BOOT_DEVICES_START	BOOT_DEVICE_MMC1
+#define MMC_BOOT_DEVICES_END	BOOT_DEVICE_MMC2_2
 
 /**
  * Board specific load method for boards that have a special way of loading
@@ -38,7 +25,6 @@ enum {
  *
  * @return 0 on success, negative errno value on failure.
  */
-
 int spl_board_load_image(void);
 
 /* Linker symbols. */

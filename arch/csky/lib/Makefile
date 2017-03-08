@@ -5,6 +5,6 @@
 # SPDX-License-Identifier:	GPL-2.0+
 #
 
-obj-y   += temporary.o
-obj-y   += board.o
-obj-y   += printf.o
+#obj-y   += board.o
+obj-y   += crt0.o
+#obj-y   += printf.o

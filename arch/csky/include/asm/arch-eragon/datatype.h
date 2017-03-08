@@ -63,7 +63,6 @@
 #ifndef FAILURE
 #define FAILURE  -1
 #endif
-#define TIMEOUT         0x1000
 
 #define	STATUS_ERR	1
 #define	STATUS_OK	0

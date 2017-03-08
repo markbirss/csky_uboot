@@ -34,10 +34,12 @@
 #include <asm/arch-eragon/uart.h>
 #include "uart_internal.h"
 #include <asm/arch-eragon/gpio.h>
-#include <asm/arch-eragon/timer.h>
+//#include <asm/arch-eragon/timer.h>
 #include <configs/eragon.h>
+#include <common.h>
+#include <serial.h>
 
-#define PCK_UART0_ADDRBASE	CK_UART0_ADDRBASE
+#define PCK_UART0_ADDRBASE  CK_UART0_ADDRBASE
 #define PCK_UART1_ADDRBASE  CK_UART1_ADDRBASE
 #define PCK_UART2_ADDRBASE  CK_UART2_ADDRBASE
 #define PCK_UART3_ADDRBASE  CK_UART3_ADDRBASE
@@ -99,6 +101,7 @@ int32_t uart_open( uint32_t uart_addrbase)
  *   interrupt mode
  * return: SUCCESS or FAILURE
  */
+#if 0
 int32_t uart_get_char(uint32_t uart_addrbase, uint8_t *ch)
 {
     volatile CK_UART_REG *info = (CK_UART_REG *) uart_addrbase;
@@ -115,7 +118,7 @@ int32_t uart_get_char(uint32_t uart_addrbase, uint8_t *ch)
     *ch = info->uart_RBR;
     return SUCCESS;
 }
-
+#endif
 /* This function is used to transmit character,in query mode or interrupt mode.
  * Parameters:
  * 	 uartid--a basepointer, could be one of UART0, UART1, UART2 or UART3.
@@ -131,4 +134,15 @@ int32_t uart_put_char(uint32_t uart_addrbase, uint8_t ch)
     info->uart_THR = ch;
     return SUCCESS;
 }
+#if 0
+void putc(const char ch)
+{
+     uart_put_char(CK_UART2_ADDRBASE, ch);
+}
 
+void puts(const char *str)
+{
+	while (*str)
+		putc(*str++);
+}
+#endif

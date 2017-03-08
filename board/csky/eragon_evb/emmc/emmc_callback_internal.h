@@ -41,9 +41,7 @@ void emmc_set_data_trans_params(uint32_t slot, uint8_t *data_buffer,
                                 uint32_t flag, uint32_t custom_blocksize);
 
 void emmc_set_current_task_status_t(uint32_t slot, uint32_t *resp_buffer,
-                                    CK_UINT8 *data_buffer,
-                                    emmc_postproc_callback
-                                    the_completion_callback);
+                                    CK_UINT8 *data_buffer);
 
 #endif /* end __EMMC_CALLBACK__INTERNAL_H */
 

@@ -23,8 +23,7 @@
 #include <linux/string.h>
 #include "emmc_interface_internal.h"
 #include "emmc_callback_internal.h"
-//#include "printf.h"
-
+#include <asm/arch-eragon/mini_printf.h>
 emmc_status_info_t emmc_status_info;
 card_info_t card_info;
 extern current_task_status_t current_task;
@@ -109,8 +108,7 @@ uint32_t emmc_poll_cmd_register(void)
 
     while (1) {
         if (num_of_retries > CMD_MAX_RETRIES) {
-            PDEBUG("CMD register Polling failed 0x%08x after %d attempts\n",
-                   emmc_read_register(CMD), num_of_retries);
+            mini_printf("CMD register Polling failed");
             return ERRCMDRETRIESOVER;
         }
 
@@ -141,7 +139,6 @@ void emmc_send_raw_command(uint32_t slot, uint32_t cmd, uint32_t arg)
     uint32_t buff_cmd;
     buff_cmd = cmd | CMD_DONE_BIT;
     SET_CARD_NUM(buff_cmd, slot);
-    PDEBUG("SENDING RAW Command 0x%x:0x%x\n", buff_cmd, arg);
     emmc_execute_command(buff_cmd, arg);
     return;
 }
@@ -175,19 +172,17 @@ uint32_t emmc_read_in_data(current_task_status_t *the_task_status, uint32_t the_
     fifo_level = (GET_FIFO_COUNT(emmc_read_register(STATUS)));
 
     while (fifo_level > 0) {
-        *((uint32_t *)(uint8_t_buffer + count * 4)) = emmc_read_register(FIFODAT);
-        PDEBUG("%x %d %d ", *((uint32_t *)(uint8_t_buffer + count * 4)), the_task_status->num_bytes_read, fifo_level);
+        *((uint32_t *)(uint8_t_buffer + (count << 2))) = emmc_read_register(FIFODAT);
         fifo_level--;
         count++;
     }
 
-    the_task_status->num_bytes_read += count * 4;
+    the_task_status->num_bytes_read += (count << 2);
 
     if (the_task_status->blksize * the_task_status->num_of_blocks == the_task_status->num_bytes_read)
 
-        //emmc_abort_trans_work(the_task_status->slot_num);
         if (the_interrupt_status & INTMSK_FRUN) {
-            PDEBUG("fifo overflow \n");
+            mini_printf("fifo overflow");
         }
 
     return 0;
@@ -220,7 +215,6 @@ uint32_t emmc_write_out_data(current_task_status_t *the_task_status, uint32_t th
         len--;
         buffer++;
         the_task_status->num_bytes_read = the_task_status->num_bytes_read + 4;
-        PDEBUG("%x,%d", *buffer, the_task_status->num_bytes_read);
     }
 
     return 0;
@@ -237,8 +231,9 @@ uint32_t emmc_check_r1_resp(uint32_t the_response)
 {
     uint32_t retval = 0;
 
-    //PDEBUG("%s: response = 0x%x\n", __FUNCTION__, the_response);
     if (the_response & R1CS_ERROR_OCCURED_MAP) {
+#if (DEBUG == 1)
+
         if (the_response & R1CS_ADDRESS_OUT_OF_RANGE) {
             retval = ERRADDRESSRANGE;
         } else if (the_response & R1CS_ADDRESS_MISALIGN) {
@@ -278,17 +273,15 @@ uint32_t emmc_check_r1_resp(uint32_t the_response)
         } else if (the_response & R1CS_SWITCH_ERROR) {
             retval = ERRFSMSTATE;
         }
-    }
-
-#ifdef DEBUG
-
-    if (retval) {
-        PDEBUG("0x%x:%d\n", the_response, retval);
-    }
 
 #endif
-    return retval;
+    }
 
+    if (retval) {
+	mini_printf("ERROR\n");
+    }
+
+    return retval;
 }
 
 /**
@@ -324,8 +317,6 @@ uint32_t emmc_wait_cmd(emmc_postproc_callback the_callback)
         return ERRCMDRETRIESOVER;
     }
 
-    PDEBUG("int_status: %x ,status = %x\n", int_status, status);
-
     the_callback(&current_task, &int_status);
     emmc_set_register(RINTSTS, 0xFFFFFFFF);
     emmc_reset_fifo();
@@ -346,13 +337,13 @@ uint32_t emmc_cmd_to_host(uint32_t slot, uint32_t cmd_register, uint32_t arg_reg
     /* update the task status with call back, response buffer,
        data buffer,error_status,cmd_status,bus_corruption_occured,...
     */
-    emmc_set_current_task_status_t(slot, resp_buffer, data_buffer, the_callback);
+    emmc_set_current_task_status_t(slot, resp_buffer, data_buffer);
 
     /*Set the CMD_DONE_BIT to initiate the command sending, CIU clears this bit */
     SET_BITS(cmd_register, CMD_DONE_BIT);
 
-    PDEBUG(" debug Sending Command : 0x%x:0x%x\n", cmd_register, arg_register);
     /* Execute the command and wait for the scommand to execute */
+    //printf("arg_register = %x cmd_register = %x\n",arg_register,cmd_register);
     emmc_set_register(CMDARG, arg_register);
     emmc_set_register(CMD, cmd_register);
     return emmc_wait_cmd(the_callback);
@@ -385,7 +376,7 @@ uint32_t emmc_send_serial_command(uint32_t card_num, uint32_t cmd_index, uint32_
     post_callback = emmc_get_post_callback(cmd_index);
 
     if (!post_callback) {
-        PDEBUG("CMD%d Command is not supported!\n", cmd_index);
+        mini_printf("CMD Command not supported CMD = %d\n", cmd_index);
         return ERRNOTSUPPORTED;
     }
 
@@ -424,8 +415,6 @@ uint32_t emmc_get_status_of_card(uint32_t slot, card_state_e *status)
         return retval;
     }
 
-    // PDEBUG("%s: Got response as 0x%x\n", __FUNCTION__, resp_buffer);
-
     /* We have R1 in the resp buffer , we now check the
        status of the card. If it is not in a a standby
        state we exit.
@@ -453,7 +442,6 @@ uint32_t emmc_put_in_trans_state(uint32_t slot)
     }
 
     if ((retval = emmc_get_status_of_card(slot, &the_state))) {
-        PDEBUG("Getting status of card borked out !\n");
         return retval;
     }
 
@@ -467,7 +455,6 @@ uint32_t emmc_put_in_trans_state(uint32_t slot)
     }
 
     if (CARD_STATE_STBY != the_state) {
-        PDEBUG("The card state = %d, erroring out\n", the_state);
         return ERRFSMSTATE;
     }
 
@@ -550,11 +537,6 @@ uint32_t emmc_set_mmc_voltage_range(uint32_t slot)
     uint32_t retval = 0, resp_buffer, new_ocr = 0;
     int count = CMD1_RETRY_COUNT;
 
-    /* Is the card connected ? */
-    if (!(CARD_PRESENT(slot))) {
-        return ERRCARDNOTCONN;
-    }
-
     /* Check if it is in the correct state */
     if (card_info.card_state != CARD_STATE_IDLE) {
         return ERRFSMSTATE;
@@ -583,17 +565,13 @@ uint32_t emmc_set_mmc_voltage_range(uint32_t slot)
     }
 
     if (0 == count) {
-        PDEBUG("Giving up on trying to set voltage after %d retries\n", CMD1_RETRY_COUNT);
         card_info.card_state = CARD_STATE_INA;
         return ERRHARDWARE;
     } else {
         if ((new_ocr & OCR_27TO36) != OCR_27TO36) {
-            PDEBUG("Set voltage differs from OCR. Aborting");
             card_info.card_state = CARD_STATE_INA;
             return ERRHARDWARE;
         }
-
-        PDEBUG("SENT OCR = 0x%x GOT OCR = 0x%x\n", new_ocr, resp_buffer);
     }
 
     card_info.card_state = CARD_STATE_READY;
@@ -612,9 +590,9 @@ uint32_t emmc_get_cid(uint32_t slot)
 {
     uint32_t buffer_reg, retval = 0;
     int count;
-    char product_name[7];
-    int product_revision[2];
-    int month, year;
+    //char product_name[7];
+    //int product_revision[2];
+    //int month, year;
     /* Check if the card is connected */
     buffer_reg = emmc_read_register(CDETECT);
 
@@ -642,22 +620,22 @@ uint32_t emmc_get_cid(uint32_t slot)
     }
 
     if (0 == count) {
-        PDEBUG("FAILED TO GET CID OF THE CARD !!\n");
         return ERRHARDWARE;
     }
 
     else {
-        PDEBUG
-        ("CID = 0x%x  0x%x  0x%x  0x%x\n",
-         card_info.the_cid[0],
-         card_info.the_cid[1],
-         card_info.the_cid[2],
-         card_info.the_cid[3]);
+        mini_printf("%x,%x,%x,%x\n",
+            card_info.the_cid[0],
+            card_info.the_cid[1],
+            card_info.the_cid[2],
+            card_info.the_cid[3]);
     }
 
     /* Print out some  informational message about the card
        always makes for good eye candy
      */
+#if 0
+
     for (count = 5; count > -1; count--) {
         product_name[5 - count] =
             card_info.the_cid_bytes[count + 7];
@@ -669,6 +647,7 @@ uint32_t emmc_get_cid(uint32_t slot)
     month = (card_info.the_cid_bytes[1] & 0xf0) >> 4;
     year = (card_info.the_cid_bytes[1] & 0x0f) + 1997;
     //PDEBUG("Found Card %s Rev %d.%d (%d/%d)\n",product_name, product_revision[1], product_revision[0], month, year);
+#endif
     card_info.card_state = CARD_STATE_IDENT;
     return 0;
 }
@@ -734,7 +713,7 @@ uint32_t emmc_process_MMC_csd(uint32_t slot)
     if ((retval = emmc_send_serial_command(slot, CMD9, 0x00010000, card_info.the_csd, NULL, 0))) {
         return retval;
     }
-
+mini_printf("%x,%x,%x,%x\n",card_info.the_csd[0],card_info.the_csd[1],card_info.the_csd[2],card_info.the_csd[3]);
     /* The CSD is in the bag */
 
     read_block_size  = 1 << (CSD_READ_BL_LEN((card_info.the_csd)));
@@ -863,8 +842,6 @@ uint32_t emmc_read_write_bytes(uint32_t slot, uint32_t *resp_buffer,
     uint32_t num_of_blocks, command_to_send, num_of_primary_dwords = 0, the_block_size;
     uint32_t arg_to_send;
 
-    PDEBUG("custom_command = 0x%x\n", custom_command);
-
     /* Check if the card is inserted */
     if (emmc_read_register(CDETECT) & (1 << slot)) {
         return ERRCARDNOTCONN;
@@ -872,40 +849,26 @@ uint32_t emmc_read_write_bytes(uint32_t slot, uint32_t *resp_buffer,
 
     /* Set the block size pertinent to the type of operation
      */
-    if (CUSTOM_BLKSIZE(custom_command)) {
-        the_block_size =
-            1 << ((CUSTOM_BLKSIZE(custom_command) - 1));
-    } else if (read_or_write) {
+    if (read_or_write) {
         the_block_size = card_info.card_write_blksize;
     } else {
         the_block_size = card_info.card_read_blksize;
-    }
-
-    if (!the_block_size) {
-        retval = ERRADDRESSRANGE;
-        goto HOUSEKEEP;
-    }
-
-    if ((end / (read_or_write ? card_info.card_write_blksize : card_info.card_read_blksize)) > card_info.card_size) {
-        return ERRADDRESSRANGE;
     }
 
     if (start > end) {
         return ERRADDRESSRANGE;
     }
 
-    PDEBUG
-    ("start = %x, end = %x, size = %x, block size = %x\n",
-     start, end, card_info.card_size, the_block_size);
+#if CONDIF_SUPPORT_MULTI_BLOCK
 
     num_of_blocks = (end - start) / the_block_size;
-
-    PDEBUG("NUM OF BLOCKS = %x\n", num_of_blocks);
 
     if ((num_of_blocks & 0x0000ffff) != num_of_blocks) {
         return ERRADDRESSRANGE;
     }
-
+#else
+    num_of_blocks = 1;
+#endif
     /* One cannot have an open ended transfer with
        no term function specified.
      */
@@ -915,7 +878,6 @@ uint32_t emmc_read_write_bytes(uint32_t slot, uint32_t *resp_buffer,
            state.
          */
         if ((retval = emmc_put_in_trans_state(slot))) {
-            PDEBUG("%d TRANS STATE FAILED\n", retval);
             goto HOUSEKEEP;
         }
     }
@@ -947,7 +909,7 @@ uint32_t emmc_read_write_bytes(uint32_t slot, uint32_t *resp_buffer,
      * Also, the FIFO will be filled to its brim for the card to
      * read as soon as it receives the CMD25
      */
-    PDEBUG("READ OR WRITE = %x\n", read_or_write);
+#if CONDIF_SUPPORT_MULTI_BLOCK
 
     if (read_or_write) {
         command_to_send = CMD25;
@@ -964,6 +926,17 @@ uint32_t emmc_read_write_bytes(uint32_t slot, uint32_t *resp_buffer,
             command_to_send = CMD17;
         }
     }
+
+#else
+
+    if (read_or_write) {
+        command_to_send = CMD24;
+    } else {
+        command_to_send = CMD17;
+
+    }
+
+#endif
 
     if (custom_command & CUSTCOM_COMMAND_MSK) {
         command_to_send = custom_command & CUSTCOM_COMMAND_MSK;
@@ -996,7 +969,6 @@ uint32_t emmc_read_write_bytes(uint32_t slot, uint32_t *resp_buffer,
      */
     if (read_or_write) {
         if ((retval = emmc_is_card_ready_for_data(slot))) {
-            PDEBUG("the card is not ready retval = %d\n", retval);
             goto HOUSEKEEP;
         }
     }
@@ -1026,9 +998,13 @@ uint32_t emmc_read_write_bytes(uint32_t slot, uint32_t *resp_buffer,
       So Auto_stop_bit is disabled and the CMD12 (Stop CMD is sent by Host/driver) as a work around for multiblock
       read and write operation.
     */
+#if CONDIF_SUPPORT_MULTI_BLOCK
+
     if ((command_to_send == CMD25) || (command_to_send == CMD18)) {
         retval = emmc_send_serial_command(slot, CMD12, 0x00010000, resp_buffer, NULL, 0);
     }
+
+#endif
 
 HOUSEKEEP:
     card_info.card_state = CARD_STATE_TRAN;
@@ -1056,10 +1032,12 @@ uint32_t emmc_process_extcsd(uint32_t slot)
                                    CMD8 | 10 << CUSTOM_BLKSIZE_SHIFT | CUSTCOM_DONT_CMD16);
 
     for (i = 0; i < 512 / 4 ; i = i + 4)
-        PDEBUG("Ext_csd[%d . . .] = %x  %x  %x  %x\n", i * 4, card_info.the_extcsd[i + 0], card_info.the_extcsd[i + 1],
-               card_info.the_extcsd[i + 2], card_info.the_extcsd[i + 3]);
+      mini_printf("Ext_csd[%d . . .] = %x  %x  %x  %x\n", i * 4, card_info.the_extcsd[i + 0], card_info.the_extcsd[i + 1],
+            card_info.the_extcsd[i + 2], card_info.the_extcsd[i + 3]);
 
-    return retval;
+    {
+        return retval;
+    }
 }
 #endif
 /**
@@ -1181,18 +1159,13 @@ uint32_t emmc_read_write_block(uint32_t slot, uint32_t start_sect, uint8_t *buff
     uint32_t retval = 0;
     uint32_t resp_buff[4];
 
-    if (start_sect > card_info.card_size) {
-        retval = ERRADDRESSRANGE;
-        goto HOUSEKEEP;
-    }
-
     retval = emmc_read_write_bytes(slot, resp_buff, buffer,
                                    start_sect * sect_size,
                                    start_sect * sect_size + sect_size * num_of_sects, 0,
                                    read_or_write, 0);
-HOUSEKEEP:
     return retval;
 }
+#ifdef EMMC_SUPPORT_GET_CARD
 
 /**
   * Determine the card type in the slot.
@@ -1219,7 +1192,8 @@ card_type_e emmc_get_card_type(uint32_t slot)
     /*
         Clear the CTYPE register bit for of IP. This bit indicates whether the card connected is 8/4/1 bit card
     */
-    emmc_clear_bits(CTYPE, (1 << slot));
+     //   emmc_clear_bits(CTYPE, (1 << slot));
+      //  emmc_set_bits(CTYPE, (1 << slot));
 
     /* Lets Issue ACMD41 to see whether it is SDMEM. CMD55 should preced and ACMD command
        If nonzero response to CMD55 => the card is not an SD type so move to detect whether it is MMC?
@@ -1243,7 +1217,6 @@ card_type_e emmc_get_card_type(uint32_t slot)
     if (retval != ERRRESPTIMEOUT) {
         return ERRTYPE;
     } else {
-        PDEBUG("ACMD41 has timed out...\n");
     }
 
     /* Not an SD .. May be MMC type? */
@@ -1260,6 +1233,30 @@ CONT_MMC:
     }
 
     return MMC_TYPE;
+}
+#endif
+
+uint32_t emmc_set_bus_width(uint32_t slot)
+{
+    uint32_t arg_value = 0;
+    uint32_t resp_buff;
+    uint32_t retval = 0;
+
+    arg_value = 2 << 8   | ARG_BUSWIDTH_ACCESS_WRITE | ARG_BUSWIDTH_INDEX ;
+
+    if ((retval = emmc_put_in_trans_state(slot))) {
+        return retval;
+    }
+
+    if ((retval = emmc_send_serial_command(slot, CMD6, arg_value, &resp_buff, NULL, 0))) {
+        return retval;
+    }
+
+    emmc_set_bits(CTYPE, 1 << (slot + 16));
+
+    emmc_send_serial_command(slot, UNADD_CMD7, 0x00010000, &resp_buff, NULL, 0);
+
+    return 0;
 }
 
 uint32_t emmc_host_init(card_info_t *emmc_card_info)
@@ -1286,7 +1283,7 @@ uint32_t emmc_host_init(card_info_t *emmc_card_info)
     plat_loop(10);
 
     /* Now make CTYPE to default i.e, all the cards connected will work in 1 bit mode initially*/
-    buffer_reg = 0xffffffff;
+    buffer_reg = 0x0;
     emmc_clear_bits(CTYPE, buffer_reg);
 
     /* No. of cards supported by the IP */
@@ -1323,9 +1320,6 @@ uint32_t emmc_host_init(card_info_t *emmc_card_info)
     /* Set the card Debounce to allow the CDETECT fluctuations to settle down */
     emmc_set_register(DEBNCE, DEFAULT_DEBNCE_VAL);
 
-    /* update the global structure of the ip with the no of cards present at this point of time */
-    emmc_status_info.present_cdetect = emmc_read_register(CDETECT);
-
     /* Update the watermark levels to half the fifo depth
        - while reset bitsp[27..16] contains FIFO Depth
        - Setup Tx Watermark
@@ -1336,27 +1330,34 @@ uint32_t emmc_host_init(card_info_t *emmc_card_info)
     slot_num = num_of_cards - 1;
 
     emmc_clear_bits(CTYPE, ((1 << slot_num) | (1 << (slot_num + 16))));
+    //emmc_set_bits(CTYPE, 1 << slot_num);
+#ifdef EMMC_SUPPORT_GET_CARD
     card_type = emmc_get_card_type(slot_num);
+#else
+    card_type = MMC_TYPE;
+#endif
 
     switch (card_type) {
+#ifdef EMMC_SUPPORT_GET_CARD
+
         case SD_TYPE:
-            PDEBUG(" not suuport SD %d\n", slot_num);
             break;
+#endif
 
         case MMC_TYPE: {
             retval = emmc_reset_mmc_card(slot_num);
 
             if (retval) {
-                PDEBUG("MMC reset returned the error %x\n", retval);
                 break;
             }
-            emmc_select_area(0,EMMC_BOOT_PARTITION_1);
-//            memcpy(emmc_card_info, &card_info, sizeof(card_info_t));
+            emmc_set_bus_width(slot_num);
+	    emmc_select_area(slot_num, EMMC_BOOT_PARTITION_1);
+            memcpy(emmc_card_info, &card_info, sizeof(card_info_t));
             return 0;
         }
 
         default:
-            PDEBUG("BAD CARD FOUND AT SLOT %d\n", slot_num);
+		mini_printf("ERROR");
     }
 
     return ERRCARDNOTFOUND;
@@ -1364,12 +1365,12 @@ uint32_t emmc_host_init(card_info_t *emmc_card_info)
 
 void emmc_emmc_read(uint8_t slot_id, uint32_t from, uint32_t len, uint8_t *buf)
 {
-    emmc_read_write_block(slot_id, from, buf, len / 512, 0, 512);
+    emmc_read_write_block(slot_id, from, buf, 1, 0, 512);
 }
 
 void emmc_emmc_write(uint8_t slot_id, uint32_t to, uint32_t len, const uint8_t *buf)
 {
-    emmc_read_write_block(slot_id, to, (uint8_t *)buf, len / 512, 1, 512);
+    emmc_read_write_block(slot_id, to, (uint8_t *)buf, 1, 1, 512);
 }
 
 #define EMMC_FLASH_PAGE_SIZE   512       // 512B

@@ -22,6 +22,7 @@
 #ifndef __EMMC_INTERFACE_INTERNAL_H
 #define __EMMC_INTERFACE_INTERNAL_H
 #include <asm/arch-eragon/datatype.h>
+
 /**
   * Controller Register definitions
   * This is the enumeration of the registers on the host controller. The
@@ -61,7 +62,7 @@ typedef enum {
     UHSREG   = 0x74,    /** Reserved */
 
     FIFODAT  = 0x200,   /** FIFO data read write */
-} controller_reg_e;
+} controller_reg_e ;
 
 /* Misc Defines */
 #define HCON_NUM_CARDS(x)       ((((x&0x3E)>>1))+1)
@@ -232,7 +233,6 @@ typedef enum {
 #define SD_CMD8		    208  /*This is added to support SD 2.0 (SDHC) cards*/
 #define SD_CMD11     	211  /*This is added to support SDXC Voltage Switching*/
 
-#define uint32_t unsigned int
 uint32_t emmc_set_bits(controller_reg_e reg, uint32_t val);
 uint32_t emmc_clear_bits(controller_reg_e reg, uint32_t val);
 uint32_t emmc_set_register(controller_reg_e reg, uint32_t val);

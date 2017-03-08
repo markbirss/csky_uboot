@@ -3,8 +3,7 @@ MEMORY
 {
     MEM0   : ORIGIN = 0x0        , LENGTH = 0x17FFFFFF    /* DDR 384MB */
     MEM1   : ORIGIN = 0x1fc00000 , LENGTH = 0x3FFF        /* ROM 16KB */
-    MEM2   : ORIGIN = 0x1fd00000 , LENGTH = 0x2FFF        /* SRAM 12KB */
-    MEM3   : ORIGIN = 0x1fd03000 , LENGTH = 0xFFF        /* SRAM 4KB */
+    MEM2   : ORIGIN = 0x1fd00000 , LENGTH = 0x7FFF        /* SRAM 16KB */
 }
 
 REGION_ALIAS("REGION_TEXT",   MEM2);
@@ -12,8 +11,6 @@ REGION_ALIAS("REGION_RODATA", MEM2);
 REGION_ALIAS("REGION_DATA",   MEM2);
 REGION_ALIAS("REGION_BSS",    MEM2);
 
-PROVIDE (__stack =  0x1fd04000 - 0x8);
-PROVIDE (__fstack =  0x1fd04000 - 0x900 - 0x8);
 OUTPUT_ARCH(csky)
 ENTRY(_start)
 
@@ -45,7 +42,7 @@ SECTIONS
     . = ALIGN(4);
     .u_boot_list : {
         KEEP(*(SORT(.u_boot_list*)));
-    }
+    } > REGION_DATA
 
     __init_end = . ;
 

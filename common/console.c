@@ -804,9 +804,11 @@ done:
 
 #ifdef CONFIG_SYS_CONSOLE_ENV_OVERWRITE
 	/* set the environment variables (will overwrite previous env settings) */
+#if 0
 	for (i = 0; i < 3; i++) {
 		setenv(stdio_names[i], stdio_devices[i]->name);
 	}
+#endif
 #endif /* CONFIG_SYS_CONSOLE_ENV_OVERWRITE */
 
 	gd->flags |= GD_FLG_DEVINIT;	/* device initialization completed */
@@ -881,10 +883,11 @@ int console_init_r(void)
 #endif /* CONFIG_SYS_CONSOLE_INFO_QUIET */
 
 	/* Setting environment variables */
+#if 0
 	for (i = 0; i < 3; i++) {
 		setenv(stdio_names[i], stdio_devices[i]->name);
 	}
-
+#endif
 	gd->flags |= GD_FLG_DEVINIT;	/* device initialization completed */
 
 #if 0

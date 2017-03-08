@@ -28,18 +28,12 @@
 #include <asm/arch-eragon/mtd_tiny.h>
 
 #define DEBUG  0
-//#define CONDIF_SUPPORT_EMMC_EXTCSD 0
-#if (DEBUG == 1)
-#define PDEBUG(fmt, ...) printf(fmt, ##__VA_ARGS__)
-#else
 #define PDEBUG(fmt, ...)
-#endif
-
-#define MMC_FOD_DIVIDER_VALUE   0xc
+#define MMC_FOD_DIVIDER_VALUE  0xC
 #define ONE_BIT_BUS_FREQ 0x8
 
 /* Retry counts */
-#define CMD1_RETRY_COUNT   1000 /*changed from 50 Just to be cautious--Manju */
+#define CMD1_RETRY_COUNT   10   /*changed from 50 Just to be cautious--Manju */
 #define ACMD41_RETRY_COUNT 1000 /*changed from 50 Just to be cautious--Manju */
 #define CMD2_RETRY_COUNT   1000 /*changed from 50 Just to be cautious--Manju */
 #define CMD5_RETRY_COUNT   1000 /*changed from 50 Just to be cautious--Manju */
@@ -173,6 +167,9 @@ static inline uint32_t CSD_C_SIZE_INLINE(uint32_t *csd_array)
 
 #define ECSD_SECTOR_COUNT(x)		(  ((x)[215]<<24) | ((x)[214]<<16) | ((x)[213]<<8) | ((x)[212]) )
 
+#define ARG_BUSWIDTH_INDEX            0x00B70000  //183 is coded in 23:16 of CMD6 argument
+#define ARG_BUSWIDTH_ACCESS_WRITE     0x03000000  //Write is coded in 25:24 of CMD6 argumnet
+
 /**********************End CSD Structure ****************************/
 /*
 One has to maintain proper state information of the card in order to have proper
@@ -213,16 +210,11 @@ typedef enum {
   * values for the IP which will need to be referred at a later time.
   */
 typedef struct {
-    uint32_t operating_mode;   	       /* 1=MMC only,2=SD/MMC. Read only. Not settable */
-
     uint32_t total_cards;	           /* The total cards on the system                */
     uint32_t fifo_depth;		           /* The fifo depth of the IP                      */
-    uint32_t fifo_threshold;	           /* the fifo threshold which is being used        */
 
     uint32_t num_of_cards;	           /* Total number of cards the IP has been
 				                        * configured for                                */
-    uint32_t present_cdetect;	       /* CDETECT register after the last enumeration   */
-
 } emmc_status_info_t;
 
 /**
@@ -237,10 +229,6 @@ typedef struct {
       * 0 means that there is no error.
       */
     uint32_t error_status;
-
-    /** The callback for the function when command is completed.
-     */
-    emmc_postproc_callback postproc_callback;
 
     /** The array of dwords which stores the response for the  command.
      *  If set to NULL, the response is discarded,

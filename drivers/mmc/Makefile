@@ -19,6 +19,7 @@ obj-$(CONFIG_BCM2835_SDHCI) += bcm2835_sdhci.o
 obj-$(CONFIG_BFIN_SDH) += bfin_sdh.o
 obj-$(CONFIG_DAVINCI_MMC) += davinci_mmc.o
 obj-$(CONFIG_DWMMC) += dw_mmc.o
+obj-$(CONFIG_ERAGON_DWMMC) += eragon_dw_mmc.o
 obj-$(CONFIG_EXYNOS_DWMMC) += exynos_dw_mmc.o
 obj-$(CONFIG_HIKEY_DWMMC) += hi6220_dw_mmc.o
 obj-$(CONFIG_FSL_ESDHC) += fsl_esdhc.o

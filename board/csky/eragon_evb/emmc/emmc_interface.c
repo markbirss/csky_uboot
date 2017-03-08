@@ -23,7 +23,7 @@
 #include <configs/eragon.h>
 
 #define CEATA_MAP	0xffffffff
-static uint32_t base_adr = CK_EMMC_ADDRBASE;
+static uint32_t base_adr = SOC_EMMC_ADDRBASE;
 
 /*
  * Set the particular bits of the specified register.

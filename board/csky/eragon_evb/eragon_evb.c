@@ -1,16 +1,71 @@
 /*
- * (C) Copyright 2002
- * Sysgo Real-Time Solutions, GmbH <www.elinos.com>
- * Marius Groeger <mgroeger@sysgo.de>
- *
- * (C) Copyright 2002, 2010
- * David Mueller, ELSOFT AG, <d.mueller@elsoft.ch>
- *
+ * Copyright (c) 2017 CSKY, Inc
  * SPDX-License-Identifier:	GPL-2.0+
  */
+#include <configs/eragon.h>
+#include <asm/arch-eragon/gpio.h>
+#include <asm/arch-eragon/mini_printf.h>
+#include <common.h>
+#include <mmc.h>
 
+DECLARE_GLOBAL_DATA_PTR;
+
+#ifdef CONFIG_SPL_BUILD
+extern int init_ddr();
+
+void sdram_init(void)
+{
+	init_ddr();
+}
+#endif
+#ifdef CONFIG_GENERIC_MMC
+static int init_dwmmc(void)
+{
+	int ret;
+#ifdef CONFIG_DWMMC
+	ret |= eragon_dwmci_add_port(0, ERAGON_MMC0_BASE, 4);
+	if (ret)
+#ifdef CONFIG_SPL_BUILD
+		mini_printf("Error adding eMMC port (%d)\n", ret);
+#else
+		printf("Error adding eMMC port (%d)\n", ret);
+#endif
+#endif
+	return ret;
+}
+
+struct mmc eragon_mmc;
+int board_mmc_init(bd_t *bis)
+{
+	int ret;
+	/* add the eMMC and sd ports */
+	ret = init_dwmmc();
+	if (ret)
+#ifdef CONFIG_SPL_BUILD
+		mini_printf("init_dwmmc failed\n");
+#else
+		printf("init_dwmmc failed\n");
+#endif
+	return ret;
+}
+#endif
 int dram_init(void)
 {
+	gd->ram_size = PHYS_SDRAM_1_SIZE;
+	return 0;
 }
 void show_boot_progress(int val) {}
 
+int board_early_init_f(void)
+{
+	/* Use the UART 2 */
+	gpio_set_reuse(GPIOB, 0x3, CK_GPIO_BEHARDWARE);
+	return 0;
+}
+#if 0
+void dram_init_banksize(void)
+{
+	gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
+	gd->bd->bi_dram[0].size = PHYS_SDRAM_1_SIZE;
+}
+#endif
