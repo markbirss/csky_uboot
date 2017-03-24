@@ -73,6 +73,7 @@
 #define CK_UART2_ADDRBASE (uint32_t)(0x1fba4000)
 #define CK_UART3_ADDRBASE (uint32_t)(0x1fba5000)
 #define CK_UART4_ADDRBASE (uint32_t)(0x1fba6000)
+#define CK_GMAC_ADDRBASE  (uint32_t)(0x1FB10000)
 
 #define CPU_DEFAULT_FREQ  50000000
 #define LSP_DEFAULT_FREQ  50000000

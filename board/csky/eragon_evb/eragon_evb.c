@@ -7,6 +7,8 @@
 #include <asm/arch-eragon/mini_printf.h>
 #include <common.h>
 #include <mmc.h>
+#include <miiphy.h>
+#include <netdev.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -68,4 +70,18 @@ void dram_init_banksize(void)
 	gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
 	gd->bd->bi_dram[0].size = PHYS_SDRAM_1_SIZE;
 }
+#endif
+
+#ifndef CONFIG_SPL_BUILD
+#ifdef CONFIG_CMD_NET
+int board_eth_init(bd_t *bis)
+{
+	int ret = 0;
+
+#if defined(CONFIG_ETH_DESIGNWARE)
+	ret = designware_initialize(CK_GMAC_ADDRBASE, PHY_INTERFACE_MODE_MII);
+#endif
+	return ret;
+}
+#endif
 #endif
