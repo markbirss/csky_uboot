@@ -52,7 +52,9 @@
  *
  * For more information see 'Board Initialisation Flow in README.
  */
+#include <asm/arch-eragon/mmu.h>
 .import start_cskyboot
+.import __text_start
 .global _main
 _main:
 
@@ -75,8 +77,15 @@ _main:
     mov     r9, r0
     jbsr    board_init_f_init_reserve
 
-    movi    r0, 0x00800     /* To skip the relocate code */
-    jbsr    board_init_f
+
+#ifndef CONFIG_SPL_BUILD
+    /* Setup the initial page tables */
+    create_page_table  __text_start
+
+    /* enable MMU */
+    csky_mmu_enable
+#endif
+
 
 __clear_bss:
     lrw     r3, __bss_start /* Get start of bss from linking script file */
@@ -94,6 +103,9 @@ __clear_bss:
     bt      1b              /* Repeat for all bss */
 
 __goto_init_f:
+    movi    r0, 0x00800     /* To skip the relocate code */
+    jbsr    board_init_f
+
     lrw     r3, GD_START_ADDR_SP
     add     r3, r9
     ldw     sp, (r3)

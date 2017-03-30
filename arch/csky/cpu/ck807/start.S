@@ -4,13 +4,13 @@
 #include <config.h>
 #include <asm-offsets.h>
 #include <linux/linkage.h>
+#include <asm/arch-eragon/mmu.h>
 .export hw_vsr_autovec
 .export csky_vsr_table      /* Vector table base address. */
 .globl  _start
 .import start_cskyboot
 .import __stack
 .import __fstack
-
 .data
 /* Vector table space. */
 .align 10
@@ -40,8 +40,7 @@ _start:
     mtcr    r2, vbr
 
     /* Initial CKCPU MMU & Cache */
-    movi    r3, 0x0
-    mtcr    r3, cr18
+    csky_mmu_disable
 
     /* Invalid Instruction and data cache content */
     mfcr    r4, cr17
@@ -60,3 +59,4 @@ __default_exception_handler:
 	bkpt
 	br	__default_exception_handler
 	rte
+

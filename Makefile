@@ -247,7 +247,7 @@ CROSS_COMPILE ?=
 endif
 
 ARCH = csky
-CROSS_COMPILE = csky-abiv2-elf-
+CROSS_COMPILE = csky-abiv2-linux-
 
 KCONFIG_CONFIG	?= .config
 export KCONFIG_CONFIG

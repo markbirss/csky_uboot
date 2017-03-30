@@ -64,11 +64,11 @@ int board_early_init_f(void)
 	gpio_set_reuse(GPIOB, 0x3, CK_GPIO_BEHARDWARE);
 	return 0;
 }
-#if 0
+#if 1
 void dram_init_banksize(void)
 {
-	gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
-	gd->bd->bi_dram[0].size = PHYS_SDRAM_1_SIZE;
+	gd->bd->bi_dram[0].start = PHYS_SDRAM_1 + 0x14000000;
+	gd->bd->bi_dram[0].size = 0x4000000;
 }
 #endif
 
@@ -79,9 +79,16 @@ int board_eth_init(bd_t *bis)
 	int ret = 0;
 
 #if defined(CONFIG_ETH_DESIGNWARE)
-	ret = designware_initialize(CK_GMAC_ADDRBASE, PHY_INTERFACE_MODE_MII);
+	ret = designware_initialize(ERAGON_GMAC_ADDRBASE, PHY_INTERFACE_MODE_MII);
 #endif
 	return ret;
 }
 #endif
 #endif
+
+int board_early_init_r(void)
+{
+	timer_init();
+	return 0;
+}
+

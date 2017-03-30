@@ -34,18 +34,24 @@
 #ifndef __GPIO_H__
 #define __GPIO_H__
 #include "datatype.h"
-#include "config.h"
+#include <configs/eragon.h>
 #include <linux/types.h>
 
 /* 
  * Define IRQBurst type, GPIO Port, and Port's direction. They are all enum 
  * type.
- */ 
-
-#define CK_GPIOA_ADDRBASE (uint32_t)(0x1fbac000)
-#define CK_GPIOB_ADDRBASE (uint32_t)(0x1fbad000)
-#define CK_GPIOC_ADDRBASE (uint32_t)(0x1fbae000)
-#define CK_GPIOD_ADDRBASE (uint32_t)(0x1fbaf000)
+ */
+#ifdef CONFIG_SPL_BUILD
+#define CK_GPIOA_ADDRBASE (uint32_t)(ERAGON_GPIOA_BASE - 0xa0000000)
+#define CK_GPIOB_ADDRBASE (uint32_t)(ERAGON_GPIOB_BASE - 0xa0000000)
+#define CK_GPIOC_ADDRBASE (uint32_t)(ERAGON_GPIOC_BASE - 0xa0000000)
+#define CK_GPIOD_ADDRBASE (uint32_t)(ERAGON_GPIOD_BASE - 0xa0000000)
+#else
+#define CK_GPIOA_ADDRBASE (uint32_t)(ERAGON_GPIOA_BASE)
+#define CK_GPIOB_ADDRBASE (uint32_t)(ERAGON_GPIOB_BASE)
+#define CK_GPIOC_ADDRBASE (uint32_t)(ERAGON_GPIOC_BASE)
+#define CK_GPIOD_ADDRBASE (uint32_t)(ERAGON_GPIOD_BASE)
+#endif
 typedef enum{
     GPIOA = CK_GPIOA_ADDRBASE,
     GPIOB = CK_GPIOB_ADDRBASE,

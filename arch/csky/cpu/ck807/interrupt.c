@@ -6,9 +6,15 @@
  */
 
 #include <common.h>
-#include <asm/arch-eragon/ck_interrupt.h>
+#include <asm/arch-eragon/interrupt.h>
 
 #define CONFIG_SYS_NUM_IRQS		32
+
+#ifdef CONFIG_SPL_BUILD
+#define PCK_INTC ((PCKStruct_INTC)(ERAGON_INTC_BASE - 0xa0000000))
+#else
+#define PCK_INTC ((PCKStruct_INTC)ERAGON_INTC_BASE)
+#endif
 
 void mask_irq(int irq);
 void unmask_irq(int irq);

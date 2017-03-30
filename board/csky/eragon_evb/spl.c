@@ -29,7 +29,7 @@ void board_init_f(ulong dummy)
 
 void board_init_r(gd_t *gd, ulong dest_addr)
 {
-	int       i;
+	int       i, j;
 	int8_t    om_judge;
 	uint32_t  retlen;
 	uint8_t   buff_r[512] = {0x0};
@@ -44,38 +44,43 @@ void board_init_r(gd_t *gd, ulong dest_addr)
 	gpio_set_reuse(GPIOD, 0xff, CK_GPIO_BEHARDWARE);
 	om_judge = get_boot_select();
 
-	switch(om_judge) {
-		case 0x0:
-			mini_printf("This is 0x0\n");
-		case 0x1:
+//	switch(om_judge) {
+//		case 0x0:
+//			mini_printf("This is 0x0\n");
+//		case 0x1:
 	/* The mode of spiflash */
-		mini_printf("This is 0x1\n");
+//		mini_printf("This is 0x1\n");
 //		break;
-		case 0x2:
+//		case 0x2:
 	/* The mode of emmc */
 		mini_printf("This is eMMC mode.\n");
 		ret = emmc_host_init(NULL);
 		if (ret != 0) {
 			mini_printf("The eMMC is not exist.\n");
-			break;
+//			break;
 		}
 		mini_printf("eMMC init ready.\n");
 		for (i = 0; i < (CONFIG_UBOOT_SIZE + 511) / 512; i++) {
 //            		emmc_emmc_read(0, (READ_ADDR + (i * 512))/0x200, 512, CONFIG_DDR_LOAD_ADDR + (i * 512));
-			emmc_emmc_read(0, (READ_ADDR + (i * 512))/0x200, 512, sram_baseaddr + (i * 512));
+//			emmc_emmc_read(0, (READ_ADDR + (i * 512))/0x200, 512, sram_baseaddr + (i * 512));
 //            		emmc_emmc_read(0, 0x3000/0x200, 512, buff_r);
+            		emmc_emmc_read(0, (0x200 + (i * 512))/0x200, 512, buff_r);
+                        for(j=0;j<512;j++)
+                        {
+				mini_printf("%x ", buff_r[j]);
+			}
 		}
-		fp = (void (*)(void ))(*((uint32_t *)(sram_baseaddr)));
+//		fp = (void (*)(void ))(*((uint32_t *)(sram_baseaddr)));
 //        	fp = (void (*)(void ))(*((uint32_t *)(CONFIG_JUMP_DDR)));
-		(*fp)();
-		for(i=0;i<512;i++) {
-			mini_printf("The %d is %x\n",i,buff_r[i]);
-		}
-		break;
-		defalut:
-		mini_printf("OM mode is %x, please check the OM.\n", om_judge);
-		break;
-	}
+//		(*fp)();
+//		for(i=0;i<512;i++) {
+//			mini_printf("The %d is %x\n",i,buff_r[i]);
+//		}
+//		break;
+//		defalut:
+//		mini_printf("OM mode is %x, please check the OM.\n", om_judge);
+//		break;
+//	}
 	while(1);
 }
 

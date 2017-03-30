@@ -5,9 +5,22 @@
 #include <common.h>
 #include <fdtdec.h>
 #include <asm/io.h>
-#include <asm/arch-eragon/ck_timer.h>
+#include <asm/arch-eragon/timer.h>
 
 DECLARE_GLOBAL_DATA_PTR;
+
+#ifdef CONFIG_SPL_BUILD
+#define CK_TIMER0_BASSADDR (ERAGON_TIMER0_BASE - 0xa0000000)
+#define CK_TIMER1_BASSADDR (ERAGON_TIMER1_BASE - 0xa0000000)
+#define CK_TIMER2_BASSADDR (ERAGON_TIMER2_BASE - 0xa0000000)
+#else
+#define CK_TIMER0_BASSADDR ERAGON_TIMER0_BASE
+#define CK_TIMER1_BASSADDR ERAGON_TIMER1_BASE
+#define CK_TIMER2_BASSADDR ERAGON_TIMER2_BASE
+#endif
+
+#define CKTIMER_ADDR ((PCKPStruct_TIMER)ERAGON_TIMER0_BASE)
+#define PCK_TIMER_CONTROL ((PCKStruct_TIMER_CON)(ERAGON_TIMER0_BASE + 0x8))
 
 #define  SYS_TIMER  ((PCKPStruct_TIMER)timer[TIMER_ID])
 
@@ -111,9 +124,9 @@ unsigned long long get_ticks(void)
 	return timestamp;
 }
 #else
-#define TIMER_CLOCK		(50 * 1000 * 1000)
-#define COUNT_TO_USEC(x)	((x) / 50)
-#define USEC_TO_COUNT(x)	((x) * 50)
+#define TIMER_CLOCK		(SYSTEM_CLOCK * 1000 * 1000)
+#define COUNT_TO_USEC(x)	((x) / SYSTEM_CLOCK)
+#define USEC_TO_COUNT(x)	((x) * SYSTEM_CLOCK)
 #define TICKS_PER_HZ		(TIMER_CLOCK / CONFIG_SYS_HZ)
 #define TICKS_TO_HZ(x)		((x) / TICKS_PER_HZ)
 

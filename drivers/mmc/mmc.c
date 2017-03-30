@@ -1436,7 +1436,6 @@ static int mmc_startup(struct mmc *mmc)
 
 			if (err)
 				continue;
-
 			mmc->ddr_mode = (caps & MMC_MODE_DDR_52MHz) ? 1 : 0;
 			mmc_set_bus_width(mmc, widths[idx]);
 

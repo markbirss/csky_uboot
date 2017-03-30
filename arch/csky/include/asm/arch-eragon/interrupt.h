@@ -1,17 +1,11 @@
 /*
- * ck_interrupt.h
- *
- *  Created on: 2010-4-13
- *      Author: bin
  */
 
-#ifndef CK_INTERRUPT_H_
-#define CK_INTERRUPT_H_
+#ifndef __INTERRUPT_H_
+#define __INTERRUPT_H_
 
 #include <configs/eragon.h>
-
-typedef unsigned int	CK_REG;
-typedef unsigned short	CK_SREG;
+#include "datatype.h"
 
 /*
  * define the registers structure of the interrupt controller
@@ -33,8 +27,6 @@ typedef struct CKS_INTC
 	CK_REG    Rev[8];
 	CK_REG    PR[8];
 }CKStruct_INTC, *PCKStruct_INTC;
-#define PCK_INTC    ((PCKStruct_INTC)0x1fba3000)
-
 
 /*
  *  Bit Definition for the PIC Interrupt control register

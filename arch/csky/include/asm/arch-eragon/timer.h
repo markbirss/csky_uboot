@@ -5,13 +5,11 @@
  *      Author: bin
  */
 
-#ifndef CK_TIMER_H_
-#define CK_TIMER_H_
+#ifndef _E_TIMER_H_
+#define _E_TIMER_H_
 
 #include <configs/eragon.h>
-#include <asm/arch-eragon/mini_printf.h>
-volatile typedef unsigned int		CK_REG;
-
+#include "datatype.h"
 
 typedef struct CKS_TIMER
 {
@@ -45,12 +43,5 @@ typedef struct CKS_TIMER_CON
 	                             */
 
 } CKStruct_TIMER_CON,* PCKStruct_TIMER_CON;
+#endif /* _E_TIMER_H_ */
 
-#define  CKTIMER_ADDR       ((PCKPStruct_TIMER)0x1FBA2000)
-#define  PCK_TIMER_CONTROL  ((PCKStruct_TIMER_CON)0x1FBA2008)
-
-#define  CK_TIMER0_BASSADDR  		0x1FBA2000
-#define  CK_TIMER1_BASSADDR  		0x1FBA2014
-#define  CK_TIMER2_BASSADDR  		0x1FBA2028
-
-#endif /* CK_TIMER_H_ */
