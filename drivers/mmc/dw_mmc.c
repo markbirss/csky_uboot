@@ -99,7 +99,7 @@ static int dwmci_data_transfer(struct dwmci_host *host, struct mmc_data *data)
 	int ret = 0;
 	u32 timeout = 240000;
 	u32 mask, size, i, len = 0;
-	volatile  u32 *buf = NULL;
+	u32 *buf = NULL;
 	ulong start = get_timer(0);
 	u32 fifo_depth = (((host->fifoth_val & RX_WMARK_MASK) >>
 			    RX_WMARK_SHIFT) + 1) * 2;
@@ -108,17 +108,17 @@ static int dwmci_data_transfer(struct dwmci_host *host, struct mmc_data *data)
 	if (data->flags == MMC_DATA_READ)
 		buf = (unsigned int *)data->dest;
 	else
-	        buf = (unsigned int *)data->src;
-	printf("size = %d\n",size);
+		buf = (unsigned int *)data->src;
+
 	for (;;) {
 		mask = dwmci_readl(host, DWMCI_RINTSTS);
 		/* Error during data transfer. */
 		if (mask & (DWMCI_DATA_ERR | DWMCI_DATA_TOUT)) {
-			debug("%s: DATA ERROR!mask =%x\n", __func__, mask);
+			debug("%s: DATA ERROR!\n", __func__);
 			ret = -EINVAL;
 			break;
 		}
-		udelay(1);
+
 		if (host->fifo_mode && size) {
 			if (data->flags == MMC_DATA_READ) {
 				if ((dwmci_readl(host, DWMCI_RINTSTS) &
@@ -126,12 +126,11 @@ static int dwmci_data_transfer(struct dwmci_host *host, struct mmc_data *data)
 					len = dwmci_readl(host, DWMCI_STATUS);
 					len = (len >> DWMCI_FIFO_SHIFT) &
 						    DWMCI_FIFO_MASK;
-					for (i = 0; i < len; i++){
-						*buf = dwmci_readl(host, DWMCI_DATA);
-						printf("%x ", *buf);
-						buf++;
-					}
-					dwmci_writel(host, DWMCI_RINTSTS, DWMCI_INTMSK_RXDR);
+					for (i = 0; i < len; i++)
+						*buf++ =
+						dwmci_readl(host, DWMCI_DATA);
+					dwmci_writel(host, DWMCI_RINTSTS,
+						     DWMCI_INTMSK_RXDR);
 				}
 			} else {
 				if ((dwmci_readl(host, DWMCI_RINTSTS) &
@@ -140,16 +139,9 @@ static int dwmci_data_transfer(struct dwmci_host *host, struct mmc_data *data)
 					len = fifo_depth - ((len >>
 						   DWMCI_FIFO_SHIFT) &
 						   DWMCI_FIFO_MASK);
-					for (i = 0; i < len; i++){
+					for (i = 0; i < len; i++)
 						dwmci_writel(host, DWMCI_DATA,
-							     *buf);
-
-//	udelay(100);
-	printf("%x ",*buf);
-	buf++;
-}
-
-	//printf("1 ");
+							     *buf++);
 					dwmci_writel(host, DWMCI_RINTSTS,
 						     DWMCI_INTMSK_TXDR);
 				}
@@ -210,6 +202,7 @@ static int dwmci_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd,
 	}
 
 	dwmci_writel(host, DWMCI_RINTSTS, DWMCI_INTMSK_ALL);
+
 	if (data) {
 		if (host->fifo_mode) {
 			dwmci_writel(host, DWMCI_BLKSIZ, data->blocksize);
@@ -255,7 +248,7 @@ static int dwmci_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd,
 
 	flags |= (cmd->cmdidx | DWMCI_CMD_START | DWMCI_CMD_USE_HOLD_REG);
 
-	debug("Sending CMD%d flags = %x\n",cmd->cmdidx, flags);
+	debug("Sending CMD%d\n",cmd->cmdidx);
 
 	dwmci_writel(host, DWMCI_CMD, flags);
 
@@ -386,7 +379,7 @@ static void dwmci_set_ios(struct mmc *mmc)
 	u32 ctype, regs;
 
 	debug("Buswidth = %d, clock: %d\n", mmc->bus_width, mmc->clock);
-	mmc->clock = 1000000;
+
 	dwmci_setup_bus(host, mmc->clock);
 	switch (mmc->bus_width) {
 	case 8:
@@ -417,7 +410,7 @@ static void dwmci_set_ios(struct mmc *mmc)
 static int dwmci_init(struct mmc *mmc)
 {
 	struct dwmci_host *host = mmc->priv;
-	host->fifo_mode = true;
+
 	if (host->board_init)
 		host->board_init(host);
 

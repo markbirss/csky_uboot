@@ -21,9 +21,6 @@
 #include <div64.h>
 #include "mmc_private.h"
 
-#ifdef CONFIG_SPL_BUILD
-extern struct mmc eragon_mmc;
-#endif
 __weak int board_mmc_getwp(struct mmc *mmc)
 {
 	return -1;
@@ -1436,6 +1433,7 @@ static int mmc_startup(struct mmc *mmc)
 
 			if (err)
 				continue;
+
 			mmc->ddr_mode = (caps & MMC_MODE_DDR_52MHz) ? 1 : 0;
 			mmc_set_bus_width(mmc, widths[idx]);
 
@@ -1582,7 +1580,6 @@ int mmc_unbind(struct udevice *dev)
 #else
 struct mmc *mmc_create(const struct mmc_config *cfg, void *priv)
 {
-#ifndef CONFIG_SPL_BUILD
 	struct blk_desc *bdesc;
 	struct mmc *mmc;
 
@@ -1617,32 +1614,6 @@ struct mmc *mmc_create(const struct mmc_config *cfg, void *priv)
 	mmc_list_add(mmc);
 
 	return mmc;
-#else
-	struct blk_desc *bdesc;
-        /* quick validation */
-        if (cfg == NULL || cfg->ops == NULL || cfg->ops->send_cmd == NULL ||
-                        cfg->f_min == 0 || cfg->f_max == 0 || cfg->b_max == 0)
-                return NULL;
-	eragon_mmc.cfg = cfg;
-	eragon_mmc.priv = priv;
-
-	/* the following chunk was mmc_register() */
-	/* Setup dsr related values */
-	eragon_mmc.dsr_imp = 0;
-	eragon_mmc.dsr = 0xffffffff;
-	/* Setup the universal parts of the block interface just once */
-	bdesc = mmc_get_blk_desc(&eragon_mmc);
-	bdesc->if_type = IF_TYPE_MMC;
-	bdesc->removable = 1;
-	bdesc->devnum = mmc_get_next_devnum();
-	bdesc->block_read = mmc_bread;
-	bdesc->block_write = mmc_bwrite;
-	bdesc->block_erase = mmc_berase;
-	/* setup initial part type */
-	bdesc->part_type = eragon_mmc.cfg->part_type;
-	mmc_list_add(&eragon_mmc);
-	return &eragon_mmc;
-#endif
 }
 
 void mmc_destroy(struct mmc *mmc)

@@ -25,7 +25,7 @@ static int init_dwmmc(void)
 {
 	int ret;
 #ifdef CONFIG_DWMMC
-	ret |= eragon_dwmci_add_port(0, ERAGON_MMC0_BASE, 4);
+	ret |= eragon_dwmci_add_port(0, ERAGON_MMC0_BASE, 8);
 	if (ret)
 #ifdef CONFIG_SPL_BUILD
 		mini_printf("Error adding eMMC port (%d)\n", ret);
