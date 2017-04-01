@@ -50,8 +50,8 @@
         mfcr    a3, cr18
         bseti   a3, 0        // bit 0~1, mmu enable
         bclri   a3, 1        //
-//        bseti   a3, 2        // enable IE
-//        bseti   a3, 3        // enable DE
+        bseti   a3, 2        // enable IE
+        bseti   a3, 3        // enable DE
         bseti   a3, 4        // write back
         bseti   a3, 5        // return stack
         bseti   a3, 6        // jumping predict

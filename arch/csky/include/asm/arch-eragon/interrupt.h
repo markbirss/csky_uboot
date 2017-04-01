@@ -39,6 +39,6 @@ typedef struct CKS_INTC
 
 void enable_normalirq(int irq);
 void disable_normalirq(int irq);
-
+int disable_inerrupts(void);
 
 #endif /* CK_INTERRUPT_H_ */

@@ -27,11 +27,13 @@
 #define ERAGON_GMAC_ADDRBASE     0xbfb10000
 
 
+
+#define CONFIG_SYS_BOOTM_LEN 0x1000000
 #define SYSTEM_CLOCK 60     /* It means SYSTEM_CLOCK (M) */
 #define CONFIG_NR_DRAM_BANKS 1
 #define CONFIG_BOARD_EARLY_INIT_R
 #define CONFIG_SYS_HZ 1000
-#define CONFIG_IDENT_STRING "ERAGON 0.5"
+#define CONFIG_IDENT_STRING "ERAGON 0.4"
 #define DEBUG
 /* #define CONFIG_SYS_GENERIC_GLOBAL_DATA */
 #define CONFIG_DDR_LOAD_ADDR (uint8_t *)(0x19000)
@@ -114,8 +116,8 @@
  */
 #define CONFIG_ERAGON_SERIAL
 
-#define CONFIG_ERAGON       /* This is a SAMSUNG S3C24x0-type SoC */
-#define CONFIG_ERAGON_EVB   /* on a SAMSUNG SMDK2410 Board */
+#define CONFIG_ERAGON       /* This is a CSKY ERAGON SoC */
+#define CONFIG_ERAGON_EVB   /* on a CSKY ERAGON Evalute Board */
 
 /* #define CONFIG_SYS_TEXT_BASE	0x1fd00000 */
 /* #define CONFIG_SYS_TEXT_BASE	0x0000     */
@@ -178,7 +180,7 @@
  * Miscellaneous configurable options
  */
 /* #define CONFIG_SYS_LONGHELP	*/	/* undef to save memory */
-#define CONFIG_SYS_CBSIZE	256
+#define CONFIG_SYS_CBSIZE	256   /* This is Console Buffer size */
 /* Print Buffer Size */
 /* #define CONFIG_SYS_PBSIZE	(CONFIG_SYS_CBSIZE + \
 				sizeof(CONFIG_SYS_PROMPT)+16)
@@ -191,7 +193,7 @@
 #define CONFIG_SYS_MEMTEST_START	0x30000000	/* memtest works on */
 #define CONFIG_SYS_MEMTEST_END		0x33F00000	/* 63 MB in DRAM */
 
-#define CONFIG_SYS_LOAD_ADDR		0x30800000
+#define CONFIG_SYS_LOAD_ADDR		0x80000000
 
 /* support additional compression methods */
 /* #define CONFIG_BZIP2 */

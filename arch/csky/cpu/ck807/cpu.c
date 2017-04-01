@@ -20,6 +20,3 @@ void relocate_code(ulong start_addr_sp, gd_t *new_gd, ulong relocaaddr)
 	while (1);
 }
 
-void flush_cache (unsigned long addr, unsigned long size)
-{
-}
