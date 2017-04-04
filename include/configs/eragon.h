@@ -227,7 +227,7 @@
 
 #define CONFIG_ENV_ADDR			(CONFIG_SYS_FLASH_BASE + 0x070000)
 /* #define CONFIG_ENV_IS_IN_FLASH */
-#define CONFIG_ENV_SIZE			0x400
+#define CONFIG_ENV_SIZE			0x2000
 /* allow to overwrite serial and ethaddr */
 /* #define CONFIG_ENV_OVERWRITE */
 
@@ -258,6 +258,38 @@
 #define CONFIG_SYS_SRAM_BASE        PHYS_SRAM_1
 #define CONFIG_SYS_INIT_SP_ADDR     (CONFIG_SYS_TEXT_BASE  + 0x80000 - 0x8)
 #define CONFIG_BOARD_EARLY_INIT_F
+
+#define CONFIG_EXTRA_ENV_SETTINGS \
+	"dtb_start_sector=0x1000\0"   /* dtb start sector */ \
+	"dtb_size_sectors=0x1000\0"   /* dtb size in sectors */ \
+	"linux_start_sector=0x2000\0" /* linux start sector */  \
+	"linux_size_sectors=0x5000\0" /* linux size in sectors */ \
+	"dtb_load_addr_virt=0x8f000000\0" \
+	"dtb_load_addr_phys=0x0f000000\0"  \
+	"linux_load_addr_virt=0x90000000\0"  \
+	"linux_load_addr_phys=0x10000000\0" \
+	"update_dtb=" \
+		"tftpboot ${dtb_load_addr_virt} eragon.dtb ; " \
+		"setexpr fw_sz ${filesize} / 0x200 ; " \
+		"setexpr fw_sz ${fw_sz} + 1 ; " \
+		"mmc write ${dtb_load_addr_phys} ${dtb_start_sector} ${fw_sz} ; " \
+		"setenv dtb_size_sectors ${fw_sz} ; " \
+		"saveenv ; " \
+		"\0" \
+	"update_linux=" \
+		"tftpboot ${linux_load_addr_virt} uImage ; " \
+		"setexpr fw_sz ${filesize} / 0x200 ; " \
+		"setexpr fw_sz ${fw_sz} + 1 ; " \
+		"mmc write ${linux_load_addr_phys} ${linux_start_sector} ${fw_sz} ; " \
+		"setenv linux_size_sectors ${fw_sz} ; " \
+		"saveenv ; " \
+		"\0" \
+
+#define CONFIG_BOOTCOMMAND \
+		"mmc read ${dtb_load_addr_phys} ${dtb_start_sector} ${dtb_size_sectors} ; " \
+		"mmc read ${linux_load_addr_phys} ${linux_start_sector} ${linux_size_sectors} ; " \
+		"bootm ${linux_load_addr_virt} "
+
 
 /* #define CONFIG_SYS_LDSCRIPT "arch/csky/cpu/ck807/u-boot.lds" */
 /* #define CONFIG_SPL_LDSCRIPT "arch/csky/cpu/ck807/u-boot-spl.lds" */

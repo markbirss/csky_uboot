@@ -27,13 +27,24 @@ DECLARE_GLOBAL_DATA_PTR;
 int do_bootm_linux(int flag, int argc, char * const argv[],
 		   bootm_headers_t *images)
 {
-	void   (*theKernel)(int magic, void * params);
+	void (*theKernel)(int magic, void * params);
+	char *tmp;
+	unsigned long dtb_load_addr;
+
+	if ((tmp = getenv("dtb_load_addr_virt")) != NULL) {
+		dtb_load_addr = simple_strtoul(tmp, NULL, 16);
+		printf("dtb_load_addr: 0x%X\n", dtb_load_addr);
+	} else {
+		printf("\nError! No dtb address found! Stop here...\n");
+		while (1);
+	}
+
 	theKernel = (void (*)(int, void *))images->ep;
 	printf("\nStarting kernel ... \n\n");
 
 	disable_interrupts();
-//	csky_cache_enable();
+	// csky_cache_enable();
 	flush_cache(0,0);
-	theKernel (0x20150401, 0x8f000000);
+	theKernel (0x20150401, dtb_load_addr);
 	return 1;
 }
