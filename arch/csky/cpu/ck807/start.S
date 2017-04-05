@@ -13,8 +13,10 @@
 .import __fstack
 .data
 /* Vector table space. */
+.section .exptable
 .align 10
 csky_vsr_table:
+.long _start
 .rept 32
 .long __default_exception_handler
 .endr
@@ -29,7 +31,7 @@ _start:
     /* Init psr value */
     mfcr    r3, psr
     bseti   r3, 8
-    bseti   r3, 6
+    bseti   r3, 5
     bseti   r3, 31
     mtcr    r3, psr
 

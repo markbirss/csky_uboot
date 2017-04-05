@@ -9,6 +9,7 @@ SECTIONS
     .text ALIGN(0x4):
     {
         __text_start = .;
+        *start.o(*.exptable)
         *(.text)
         *(.text*)
         __text_end = .;

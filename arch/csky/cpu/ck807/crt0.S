@@ -103,6 +103,7 @@ __clear_bss:
     bt      1b              /* Repeat for all bss */
 
 __goto_init_f:
+#ifndef CONFIG_SPL_BUILD
     movi    r0, 0x00800     /* To skip the relocate code */
     jbsr    board_init_f
 
@@ -117,3 +118,8 @@ __goto_init_f:
 
     jbsr    board_init_r
     rts
+#else
+    jbsr    board_init_f
+    jbsr    board_init_r
+#endif
+

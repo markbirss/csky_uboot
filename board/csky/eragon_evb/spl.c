@@ -22,22 +22,23 @@ void board_init_f(ulong dummy)
 	/* Clear global data */
 	uart_open(CK_UART2_ADDRBASE);
 
-	interrupt_init();
+//	interrupt_init();
 	sdram_init();
 	mini_printf("Wellcome to SPL!\n");
 }
 
 void board_init_r(gd_t *gd, ulong dest_addr)
 {
-	int       i, j;
+//	int       i, j;
+	int       i;
 	int8_t    om_judge;
-	uint32_t  retlen;
-	uint8_t   buff_r[512] = {0x0};
-	uint8_t   *ddr_base = (uint8_t *)0x0;
-	uint32_t  sram_baseaddr = 0x0;
+//	uint32_t  retlen;
+//	uint8_t   buff_r[512] = {0x0};
+//	uint8_t   *ddr_base = (uint8_t *)0x0;
+	uint32_t  sram_baseaddr = 0x17a00000;
 	void      (*fp)(void);
 	uint32_t  ret;
-	uint8_t   id[2] = {0x0};
+//	uint8_t   id[2] = {0x0};
 
 	mini_printf("The U-Boot-spl start.\n");
 	mini_printf("U-Boot version is 2016.07, internal version is 0.4\n");
@@ -62,17 +63,17 @@ void board_init_r(gd_t *gd, ulong dest_addr)
 		mini_printf("eMMC init ready.\n");
 		for (i = 0; i < (CONFIG_UBOOT_SIZE + 511) / 512; i++) {
 //            		emmc_emmc_read(0, (READ_ADDR + (i * 512))/0x200, 512, CONFIG_DDR_LOAD_ADDR + (i * 512));
-//			emmc_emmc_read(0, (READ_ADDR + (i * 512))/0x200, 512, sram_baseaddr + (i * 512));
+			emmc_emmc_read(0, (READ_ADDR + (i * 512))/0x200, 512, sram_baseaddr + (i * 512));
 //            		emmc_emmc_read(0, 0x3000/0x200, 512, buff_r);
-            		emmc_emmc_read(0, (0x200 + (i * 512))/0x200, 512, buff_r);
-                        for(j=0;j<512;j++)
-                        {
-				mini_printf("%x ", buff_r[j]);
-			}
+//            		emmc_emmc_read(0, (0x200 + (i * 512))/0x200, 512, buff_r);
+//                        for(j=0;j<512;j++)
+//                        {
+//				mini_printf("%x ", buff_r[j]);
+//			}
 		}
-//		fp = (void (*)(void ))(*((uint32_t *)(sram_baseaddr)));
+		fp = (void (*)(void ))(*((uint32_t *)(sram_baseaddr)));
 //        	fp = (void (*)(void ))(*((uint32_t *)(CONFIG_JUMP_DDR)));
-//		(*fp)();
+		(*fp)();
 //		for(i=0;i<512;i++) {
 //			mini_printf("The %d is %x\n",i,buff_r[i]);
 //		}

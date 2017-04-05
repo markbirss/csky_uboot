@@ -62,15 +62,15 @@ int board_early_init_f(void)
 {
 	/* Use the UART 2 */
 	gpio_set_reuse(GPIOB, 0x3, CK_GPIO_BEHARDWARE);
+	gpio_set_reuse(GPIOB, 0x30, CK_GPIO_BEHARDWARE);
 	return 0;
 }
-#if 1
+
 void dram_init_banksize(void)
 {
 	gd->bd->bi_dram[0].start = PHYS_SDRAM_1 + 0x14000000;
 	gd->bd->bi_dram[0].size = 0x4000000;
 }
-#endif
 
 #ifndef CONFIG_SPL_BUILD
 #ifdef CONFIG_CMD_NET

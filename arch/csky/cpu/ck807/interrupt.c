@@ -62,7 +62,7 @@ void irq_install_handler(int irq, interrupt_handler_t *handler, void *arg)
 	int status;
 
 	if (irq < 0 || irq >= CONFIG_SYS_NUM_IRQS){
-//		printf("irq_install_handler: bad irq number %d\n", irq);
+		printf("irq_install_handler: bad irq number %d\n", irq);
 		return;
 	}
 
@@ -88,7 +88,7 @@ void irq_free_handler(int irq)
 	int status;
 
 	if (irq < 0 || irq >= CONFIG_SYS_NUM_IRQS) {
-//		printf("irq_free_handler: bad irq number %d\n", irq);
+		printf("irq_free_handler: bad irq number %d\n", irq);
 		return;
 	}
 
@@ -200,7 +200,7 @@ void unmask_irq(int irq)
 void ck_irq_service(int irq)
 {
 	if (irq < 0 || irq >= CONFIG_SYS_NUM_IRQS) {
-//		printf("ck_irq_service: bad irq number %d\n", irq);
+		printf("ck_irq_service: bad irq number %d\n", irq);
 		return;
 	}
 
