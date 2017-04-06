@@ -74,7 +74,7 @@ _main:
 	
     mov     sp, r0
     /* set up gd here, outside any C code */
-    mov     r9, r0
+    mov     r28, r0
     jbsr    board_init_f_init_reserve
 
 
@@ -108,12 +108,12 @@ __goto_init_f:
     jbsr    board_init_f
 
     lrw     r3, GD_START_ADDR_SP
-    add     r3, r9
+    add     r3, r28
     ldw     sp, (r3)
 
-    mov     r0, r9
+    mov     r0, r28
     lrw     r3, GD_RELOCADDR
-    add     r3, r9
+    add     r3, r28
     ldw     r1, (r3)
 
     jbsr    board_init_r

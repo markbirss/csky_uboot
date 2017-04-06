@@ -27,7 +27,7 @@
 #include <configs/eragon.h>
 #include <asm/arch-eragon/mtd_tiny.h>
 
-#define DEBUG  0
+#define MMC_DEBUG 0
 #define PDEBUG(fmt, ...)
 #define MMC_FOD_DIVIDER_VALUE  0xC
 #define ONE_BIT_BUS_FREQ 0x8

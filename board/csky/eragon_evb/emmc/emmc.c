@@ -232,7 +232,7 @@ uint32_t emmc_check_r1_resp(uint32_t the_response)
     uint32_t retval = 0;
 
     if (the_response & R1CS_ERROR_OCCURED_MAP) {
-#if (DEBUG == 1)
+#if (MMC_DEBUG == 1)
 
         if (the_response & R1CS_ADDRESS_OUT_OF_RANGE) {
             retval = ERRADDRESSRANGE;

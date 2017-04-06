@@ -45,6 +45,6 @@ int do_bootm_linux(int flag, int argc, char * const argv[],
 	disable_interrupts();
 	// csky_cache_enable();
 	flush_cache(0,0);
-	theKernel (0x20150401, dtb_load_addr);
+	theKernel ((int)0x20150401, dtb_load_addr);
 	return 1;
 }

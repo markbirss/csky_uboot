@@ -27,7 +27,6 @@ static int eragon_dwmci_core_init(struct dwmci_host *host, int index)
 
 	/* Add the mmc channel to be registered with mmc core */
 	if (add_dwmci(host, DWMMC_MAX_FREQ, DWMMC_MIN_FREQ)) {
-//		mini_printf("DWMMC%d registration failed\n", index);
 		printf("DWMMC%d registration failed\n", index);
 		return -1;
 	}

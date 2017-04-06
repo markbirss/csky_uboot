@@ -12,6 +12,10 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
+#ifdef CONFIG_DWMMC
+extern int eragon_dwmci_add_port(int index, u32 regbase, int bus_width);
+#endif
+
 #ifdef CONFIG_SPL_BUILD
 extern int init_ddr();
 
@@ -23,7 +27,7 @@ void sdram_init(void)
 #ifdef CONFIG_GENERIC_MMC
 static int init_dwmmc(void)
 {
-	int ret;
+	int ret = 1;
 #ifdef CONFIG_DWMMC
 	ret |= eragon_dwmci_add_port(0, ERAGON_MMC0_BASE, 8);
 	if (ret)
