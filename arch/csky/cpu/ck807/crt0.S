@@ -84,6 +84,11 @@ _main:
 
     /* enable MMU */
     csky_mmu_enable
+
+    /* open prefetch */
+    mfcr    a3, cr31
+    bseti   a3, 4
+    mtcr    a3, cr31
 #endif
 
 
