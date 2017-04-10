@@ -1,5 +1,5 @@
-#ifndef _ASM_ARM_UNALIGNED_H
-#define _ASM_ARM_UNALIGNED_H
+#ifndef __ASM_UNALIGNED_H
+#define __ASM_UNALIGNED_H
 
 #include <linux/unaligned/le_byteshift.h>
 #include <linux/unaligned/be_byteshift.h>
@@ -16,4 +16,4 @@
 #define put_unaligned	__put_unaligned_be
 #endif
 
-#endif /* _ASM_ARM_UNALIGNED_H */
+#endif /* __ASM_UNALIGNED_H */

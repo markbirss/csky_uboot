@@ -1,5 +1,5 @@
-#ifndef __ASM_ARM_TYPES_H
-#define __ASM_ARM_TYPES_H
+#ifndef __ASM_TYPES_H
+#define __ASM_TYPES_H
 
 typedef unsigned short umode_t;
 
@@ -39,20 +39,11 @@ typedef unsigned int u32;
 typedef signed long long s64;
 typedef unsigned long long u64;
 
-#ifdef	CONFIG_ARM64
-#define BITS_PER_LONG 64
-#else	/* CONFIG_ARM64 */
 #define BITS_PER_LONG 32
-#endif	/* CONFIG_ARM64 */
 
-#ifdef CONFIG_PHYS_64BIT
-typedef unsigned long long phys_addr_t;
-typedef unsigned long long phys_size_t;
-#else
 /* DMA addresses are 32-bits wide */
 typedef unsigned long phys_addr_t;
 typedef unsigned long phys_size_t;
-#endif
 
 /*
  * A dma_addr_t can hold any valid DMA address, i.e., any address returned
@@ -63,13 +54,9 @@ typedef unsigned long phys_size_t;
  * but drivers do memory-mapped I/O to ioremapped kernel virtual addresses,
  * so they don't care about the size of the actual bus addresses.
  */
-#ifdef CONFIG_DMA_ADDR_T_64BIT
-typedef unsigned long long dma_addr_t;
-#else
 typedef u32 dma_addr_t;
-#endif
 
 #endif /* __KERNEL__ */
 
 typedef unsigned long resource_size_t;
-#endif
+#endif /* __ASM_TYPES_H */

@@ -13,7 +13,6 @@ void invalidate_dcache_range(unsigned long addr, unsigned long stop)
 
 void flush_cache(unsigned long addr, unsigned long size)
 {
-//      register long __b;
         int value = 0x33;
 
         __asm__ __volatile__("mtcr %0,cr17\n\t": :"r" (value));

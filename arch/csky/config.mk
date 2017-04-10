@@ -14,4 +14,4 @@ PLATFORM_RELFLAGS += -frename-registers
 LDFLAGS_FINAL     += --gc-sections
 OBJCOPYFLAGS      += -j .text -j .rodata -j .data -j .u_boot_list
 OBJCOPYFLAGS      += -j .dtb.init.rodata
-PLATFORM_CPPFLAGS += -mcpu=ck807
+PLATFORM_CPPFLAGS += -EL

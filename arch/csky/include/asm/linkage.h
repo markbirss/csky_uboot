@@ -4,4 +4,4 @@
 #define __ALIGN .align 0
 #define __ALIGN_STR ".align 0"
 
-#endif
+#endif /* __ASM_LINKAGE_H */

@@ -1,5 +1,5 @@
-#ifndef __ASM_ARM_PTRACE_H
-#define __ASM_ARM_PTRACE_H
+#ifndef __ASM_PTRACE_H
+#define __ASM_PTRACE_H
 
 #define PTRACE_GETREGS		12
 #define PTRACE_SETREGS		13
@@ -30,4 +30,4 @@ extern void show_regs(struct pt_regs *);
 
 #endif /* __ASSEMBLY__ */
 
-#endif
+#endif /* __ASM_PTRACE_H */

@@ -12,8 +12,8 @@
  * that they are atomic.
  */
 
-#ifndef __ASM_ARM_BITOPS_H
-#define __ASM_ARM_BITOPS_H
+#ifndef __ASM_BITOPS_H
+#define __ASM_BITOPS_H
 
 #ifdef __KERNEL__
 
@@ -195,4 +195,4 @@ found_middle:
 #include <asm-generic/bitops/fls.h>
 #include <asm-generic/bitops/fls64.h>
 
-#endif /* _ARM_BITOPS_H */
+#endif /* __ASM_BITOPS_H */

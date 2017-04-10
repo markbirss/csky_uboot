@@ -6,8 +6,8 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#ifndef _ASM_CACHE_H
-#define _ASM_CACHE_H
+#ifndef __ASM_CACHE_H
+#define __ASM_CACHE_H
 
 #include <asm/system.h>
 
@@ -51,4 +51,4 @@ void dram_bank_mmu_setup(int bank);
 #define ARCH_DMA_MINALIGN	64
 #endif
 
-#endif /* _ASM_CACHE_H */
+#endif /* __ASM_CACHE_H */

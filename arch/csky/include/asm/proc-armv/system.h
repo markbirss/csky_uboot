@@ -1,11 +1,5 @@
 /*
- *  linux/include/asm-arm/proc-armv/system.h
- *
- *  Copyright (C) 1996 Russell King
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
+ * SPDX-License-Identifier:     GPL-2.0+
  */
 #ifndef __ASM_PROC_SYSTEM_H
 #define __ASM_PROC_SYSTEM_H
@@ -13,60 +7,6 @@
 /*
  * Save the current interrupt enable state & disable IRQs
  */
-#ifdef CONFIG_ARM64
-
-/*
- * Save the current interrupt enable state
- * and disable IRQs/FIQs
- */
-#define local_irq_save(flags)					\
-	({							\
-	asm volatile(						\
-	"mrs	%0, daif\n"					\
-	"msr	daifset, #3"					\
-	: "=r" (flags)						\
-	:							\
-	: "memory");						\
-	})
-
-/*
- * restore saved IRQ & FIQ state
- */
-#define local_irq_restore(flags)				\
-	({							\
-	asm volatile(						\
-	"msr	daif, %0"					\
-	:							\
-	: "r" (flags)						\
-	: "memory");						\
-	})
-
-/*
- * Enable IRQs/FIQs
- */
-#define local_irq_enable()					\
-	({							\
-	asm volatile(						\
-	"msr	daifclr, #3"					\
-	:							\
-	:							\
-	: "memory");						\
-	})
-
-/*
- * Disable IRQs/FIQs
- */
-#define local_irq_disable()					\
-	({							\
-	asm volatile(						\
-	"msr	daifset, #3"					\
-	:							\
-	:							\
-	: "memory");						\
-	})
-
-#else	/* CONFIG_ARM64 */
-
 #define local_irq_save(x)					\
 	({							\
 		unsigned long temp;				\
@@ -161,13 +101,9 @@
 	: "r" (x)						\
 	: "memory")
 
-#endif	/* CONFIG_ARM64 */
-
-#if defined(CONFIG_CPU_SA1100) || defined(CONFIG_CPU_SA110) || \
-	defined(CONFIG_ARM64)
+#if defined(CONFIG_CPU_SA1100) || defined(CONFIG_CPU_SA110)
 /*
- * On the StrongARM, "swp" is terminally broken since it bypasses the
- * cache totally.  This means that the cache becomes inconsistent, and,
+ * This means that the cache becomes inconsistent, and,
  * since we use normal loads/stores as well, this is really bad.
  * Typically, this causes oopsen in filp_close, but could have other,
  * more disasterous effects.  There are two work-arounds:
@@ -220,5 +156,4 @@ static inline unsigned long __xchg(unsigned long x, volatile void *ptr, int size
 
 	return ret;
 }
-
 #endif

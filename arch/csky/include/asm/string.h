@@ -1,5 +1,5 @@
-#ifndef __ASM_ARM_STRING_H
-#define __ASM_ARM_STRING_H
+#ifndef __ASM_STRING_H
+#define __ASM_STRING_H
 
 #include <config.h>
 
@@ -31,23 +31,6 @@ extern void * memchr(const void *, int, __kernel_size_t);
 #endif
 extern void * memset(void *, int, __kernel_size_t);
 
-#if 0
-extern void __memzero(void *ptr, __kernel_size_t n);
-
-#define memset(p,v,n)							\
-	({								\
-		if ((n) != 0) {						\
-			if (__builtin_constant_p((v)) && (v) == 0)	\
-				__memzero((p),(n));			\
-			else						\
-				memset((p),(v),(n));			\
-		}							\
-		(p);							\
-	})
-
-#define memzero(p,n) ({ if ((n) != 0) __memzero((p),(n)); (p); })
-#else
 extern void memzero(void *ptr, __kernel_size_t n);
-#endif
 
-#endif
+#endif /* __ASM_STRING_H */

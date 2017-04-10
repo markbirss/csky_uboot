@@ -19,7 +19,6 @@ extern void hw_vsr_fastautovec(void);
 extern void hw_vsr_reset(void);
 extern void hw_vsr_tlbmiss(void);
 
-#if 0
 static char *exception_names[] =
 {
     "RESET PC", "BUS ERROR", "ADDRESS ERROR", "ZERO DIVIDE",
@@ -34,7 +33,6 @@ static char *exception_names[] =
     "UNASSIGNED RESERVED 28", "UNASSIGNED RESERVED 29",
     "UNASSIGNED RESERVED 30",  "SYSTEM DESCRIPTION POINT",
 };
-#endif
 
 /*
  * CKCORE_SAVED_CONTEXT -- Saved by a normal interrput or exception
@@ -91,7 +89,7 @@ RETURN VALUE: None
 
 void csky_default_exception_handler(int vector, Ckcore_SavedRegisters *regs)
 {
-//	printf("Exception: %s\n", exception_names[vector]);
+	printf("Exception: %s\n", exception_names[vector]);
 }
 
 /*********************************************************

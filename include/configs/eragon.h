@@ -1,17 +1,9 @@
 /*
- * (C) Copyright 2002
- * Sysgo Real-Time Solutions, GmbH <www.elinos.com>
- * Marius Groeger <mgroeger@sysgo.de>
- * Gary Jennejohn <garyj@denx.de>
- * David Mueller <d.mueller@elsoft.ch>
- *
- * Configuation settings for the SAMSUNG SMDK2410 board.
- *
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#ifndef __CONFIG_H
-#define __CONFIG_H
+#ifndef __ERAGON_H
+#define __ERAGON_H
 
 /*
  * For the first version
@@ -290,9 +282,6 @@
 		"mmc read ${linux_load_addr_phys} ${linux_start_sector} ${linux_size_sectors} ; " \
 		"bootm ${linux_load_addr_virt} "
 
+#define CONFIG_SPL_LDSCRIPT "arch/csky/cpu/ck807/u-boot-spl.lds"
 
-/* #define CONFIG_SYS_LDSCRIPT "arch/csky/cpu/ck807/u-boot.lds" */
-/* #define CONFIG_SPL_LDSCRIPT "arch/csky/cpu/ck807/u-boot-spl.lds" */
-#define CONFIG_SPL_START_S_PATH "arch/csky/cpu/ck807"
-
-#endif /* __CONFIG_H */
+#endif /* __ERAGON_H */
