@@ -5,18 +5,6 @@
 #include <linux/compiler.h>
 
 #ifdef __KERNEL__
-
-#define CPU_ARCH_UNKNOWN	0
-#define CPU_ARCH_ARMv3		1
-#define CPU_ARCH_ARMv4		2
-#define CPU_ARCH_ARMv4T		3
-#define CPU_ARCH_ARMv5		4
-#define CPU_ARCH_ARMv5T		5
-#define CPU_ARCH_ARMv5TE	6
-#define CPU_ARCH_ARMv5TEJ	7
-#define CPU_ARCH_ARMv6		8
-#define CPU_ARCH_ARMv7		9
-
 /*
  * CR1 bits (CP#15 CR1)
  */
@@ -48,11 +36,7 @@
 #define CR_AFE	(1 << 29)	/* Access flag enable			*/
 #define CR_TE	(1 << 30)	/* Thumb exception enable		*/
 
-#if defined(CONFIG_ARMV7_LPAE) && !defined(PGTABLE_SIZE)
-#define PGTABLE_SIZE		(4096 * 5)
-#elif !defined(PGTABLE_SIZE)
 #define PGTABLE_SIZE		(4096 * 4)
-#endif
 
 /*
  * This is used to ensure the compiler did actually allocate the register we
@@ -101,29 +85,19 @@ void save_boot_params_ret(void);
 
 #define nop() __asm__ __volatile__("mov\tr0,r0\t@ nop\n\t");
 
-#ifdef __ARM_ARCH_7A__
-#define wfi() __asm__ __volatile__ ("wfi" : : : "memory")
-#else
 #define wfi()
-#endif
 
 static inline unsigned long get_cpsr(void)
 {
 	unsigned long cpsr;
-
 	asm volatile("mrs %0, cpsr" : "=r"(cpsr): );
 	return cpsr;
 }
 
 static inline int is_hyp(void)
 {
-#ifdef CONFIG_ARMV7_LPAE
-	/* HYP mode requires LPAE ... */
-	return ((get_cpsr() & 0x1f) == 0x1a);
-#else
 	/* ... so without LPAE support we can optimize all hyp code away */
 	return 0;
-#endif
 }
 
 static inline unsigned int get_cr(void)
@@ -168,74 +142,6 @@ static inline void set_dacr(unsigned int val)
 	isb();
 }
 
-#ifdef CONFIG_ARMV7_LPAE
-/* Long-Descriptor Translation Table Level 1/2 Bits */
-#define TTB_SECT_XN_MASK	(1ULL << 54)
-#define TTB_SECT_NG_MASK	(1 << 11)
-#define TTB_SECT_AF		(1 << 10)
-#define TTB_SECT_SH_MASK	(3 << 8)
-#define TTB_SECT_NS_MASK	(1 << 5)
-#define TTB_SECT_AP		(1 << 6)
-/* Note: TTB AP bits are set elsewhere */
-#define TTB_SECT_MAIR(x)	((x & 0x7) << 2) /* Index into MAIR */
-#define TTB_SECT		(1 << 0)
-#define TTB_PAGETABLE		(3 << 0)
-
-/* TTBCR flags */
-#define TTBCR_EAE		(1 << 31)
-#define TTBCR_T0SZ(x)		((x) << 0)
-#define TTBCR_T1SZ(x)		((x) << 16)
-#define TTBCR_USING_TTBR0	(TTBCR_T0SZ(0) | TTBCR_T1SZ(0))
-#define TTBCR_IRGN0_NC		(0 << 8)
-#define TTBCR_IRGN0_WBWA	(1 << 8)
-#define TTBCR_IRGN0_WT		(2 << 8)
-#define TTBCR_IRGN0_WBNWA	(3 << 8)
-#define TTBCR_IRGN0_MASK	(3 << 8)
-#define TTBCR_ORGN0_NC		(0 << 10)
-#define TTBCR_ORGN0_WBWA	(1 << 10)
-#define TTBCR_ORGN0_WT		(2 << 10)
-#define TTBCR_ORGN0_WBNWA	(3 << 10)
-#define TTBCR_ORGN0_MASK	(3 << 10)
-#define TTBCR_SHARED_NON	(0 << 12)
-#define TTBCR_SHARED_OUTER	(2 << 12)
-#define TTBCR_SHARED_INNER	(3 << 12)
-#define TTBCR_EPD0		(0 << 7)
-
-/*
- * Memory types
- */
-#define MEMORY_ATTRIBUTES	((0x00 << (0 * 8)) | (0x88 << (1 * 8)) | \
-				 (0xcc << (2 * 8)) | (0xff << (3 * 8)))
-
-/* options available for data cache on each page */
-enum dcache_option {
-	DCACHE_OFF = TTB_SECT | TTB_SECT_MAIR(0),
-	DCACHE_WRITETHROUGH = TTB_SECT | TTB_SECT_MAIR(1),
-	DCACHE_WRITEBACK = TTB_SECT | TTB_SECT_MAIR(2),
-	DCACHE_WRITEALLOC = TTB_SECT | TTB_SECT_MAIR(3),
-};
-#elif defined(CONFIG_CPU_V7)
-/* Short-Descriptor Translation Table Level 1 Bits */
-#define TTB_SECT_NS_MASK	(1 << 19)
-#define TTB_SECT_NG_MASK	(1 << 17)
-#define TTB_SECT_S_MASK		(1 << 16)
-/* Note: TTB AP bits are set elsewhere */
-#define TTB_SECT_AP		(3 << 10)
-#define TTB_SECT_TEX(x)		((x & 0x7) << 12)
-#define TTB_SECT_DOMAIN(x)	((x & 0xf) << 5)
-#define TTB_SECT_XN_MASK	(1 << 4)
-#define TTB_SECT_C_MASK		(1 << 3)
-#define TTB_SECT_B_MASK		(1 << 2)
-#define TTB_SECT			(2 << 0)
-
-/* options available for data cache on each page */
-enum dcache_option {
-	DCACHE_OFF = TTB_SECT_DOMAIN(0) | TTB_SECT_XN_MASK | TTB_SECT,
-	DCACHE_WRITETHROUGH = DCACHE_OFF | TTB_SECT_C_MASK,
-	DCACHE_WRITEBACK = DCACHE_WRITETHROUGH | TTB_SECT_B_MASK,
-	DCACHE_WRITEALLOC = DCACHE_WRITEBACK | TTB_SECT_TEX(1),
-};
-#else
 #define TTB_SECT_AP		(3 << 10)
 /* options available for data cache on each page */
 enum dcache_option {
@@ -244,31 +150,12 @@ enum dcache_option {
 	DCACHE_WRITEBACK = 0x1e,
 	DCACHE_WRITEALLOC = 0x16,
 };
-#endif
 
 /* Size of an MMU section */
 enum {
-#ifdef CONFIG_ARMV7_LPAE
-	MMU_SECTION_SHIFT	= 21, /* 2MB */
-#else
 	MMU_SECTION_SHIFT	= 20, /* 1MB */
-#endif
 	MMU_SECTION_SIZE	= 1 << MMU_SECTION_SHIFT,
 };
-
-#ifdef CONFIG_CPU_V7
-/* TTBR0 bits */
-#define TTBR0_BASE_ADDR_MASK	0xFFFFC000
-#define TTBR0_RGN_NC			(0 << 3)
-#define TTBR0_RGN_WBWA			(1 << 3)
-#define TTBR0_RGN_WT			(2 << 3)
-#define TTBR0_RGN_WB			(3 << 3)
-/* TTBR0[6] is IRGN[0] and TTBR[0] is IRGN[1] */
-#define TTBR0_IRGN_NC			(0 << 0 | 0 << 6)
-#define TTBR0_IRGN_WBWA			(0 << 0 | 1 << 6)
-#define TTBR0_IRGN_WT			(1 << 0 | 0 << 6)
-#define TTBR0_IRGN_WB			(1 << 0 | 1 << 6)
-#endif
 
 /**
  * Register an update to the page tables, and flush the TLB

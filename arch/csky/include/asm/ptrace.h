@@ -11,15 +11,11 @@
 /* options set using PTRACE_SETOPTIONS */
 #define PTRACE_O_TRACESYSGOOD	0x00000001
 
-#include <asm/proc-armv/ptrace.h>
+#include <asm/proc-csky/ptrace.h>
 
 #ifndef __ASSEMBLY__
 #define pc_pointer(v) \
 	((v) & ~PCMASK)
-
-#define instruction_pointer(regs) \
-	(pc_pointer((regs)->ARM_pc))
-
 #ifdef __KERNEL__
 extern void show_regs(struct pt_regs *);
 
