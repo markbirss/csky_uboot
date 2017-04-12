@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2017 C-SKY Microsystems
+ *
+ * SPDX-License-Identifier:	GPL-2.0+
+ */
+
 #ifndef __ASM_SYSTEM_H
 #define __ASM_SYSTEM_H
 

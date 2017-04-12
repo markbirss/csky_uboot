@@ -1,6 +1,9 @@
 /*
- * SPDX-License-Identifier:     GPL-2.0+
+ * Copyright (C) 2017 C-SKY Microsystems
+ *
+ * SPDX-License-Identifier:	GPL-2.0+
  */
+
 #ifndef __ASM_IO_H
 #define __ASM_IO_H
 
@@ -8,9 +11,6 @@
 
 #include <linux/types.h>
 #include <asm/byteorder.h>
-#if 0	/* XXX###XXX */
-#include <asm/arch/hardware.h>
-#endif	/* XXX###XXX */
 
 static inline void sync(void)
 {
@@ -207,9 +207,6 @@ static inline void __raw_readsl(unsigned long addr, void *data, int longlen)
 /*
  * Now, pick up the machine-defined IO definitions
  */
-#if 0	/* XXX###XXX */
-#include <asm/arch/io.h>
-#endif	/* XXX###XXX */
 
 /*
  *  IO port access primitives

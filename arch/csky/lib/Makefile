@@ -1,12 +1,7 @@
 #
-# (C) Copyright 2002-2006
-# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
+# Copyright (C) 2017 C-SKY Microsystems
 #
 # SPDX-License-Identifier:	GPL-2.0+
 #
 
-#obj-y   += board.o
-#obj-y   += crt0.o
-#obj-y   += printf.o
-#obj-y   += cache.o
 obj-y   += bootm.o

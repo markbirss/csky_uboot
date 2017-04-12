@@ -1,20 +1,7 @@
 /*
- * (C) Copyright 2002
- * Sysgo Real-Time Solutions, GmbH <www.elinos.com>
- * Marius Groeger <mgroeger@sysgo.de>
- *
- * (C) Copyright 2002
- * Sysgo Real-Time Solutions, GmbH <www.elinos.com>
- * Alex Zuepke <azu@sysgo.de>
+ * Copyright (C) 2017 C-SKY Microsystems
  *
  * SPDX-License-Identifier:	GPL-2.0+
- *
- ********************************************************************
- * NOTE: This header file defines an interface to U-Boot. Including
- * this (unmodified) header file in another file is considered normal
- * use of U-Boot, and does *not* fall under the heading of "derived
- * work".
- ********************************************************************
  */
 
 #ifndef _U_BOOT_H_

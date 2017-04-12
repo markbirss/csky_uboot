@@ -1,8 +1,7 @@
 /*
- * ck_interrupt.c
+ * Copyright (C) 2017 C-SKY Microsystems
  *
- *  Created on: 2010-4-13
- *      Author: bin
+ * SPDX-License-Identifier:	GPL-2.0+
  */
 
 #include <common.h>

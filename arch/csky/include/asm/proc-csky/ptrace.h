@@ -1,6 +1,9 @@
 /*
- * SPDX-License-Identifier:     GPL-2.0+
+ * Copyright (C) 2017 C-SKY Microsystems
+ *
+ * SPDX-License-Identifier:	GPL-2.0+
  */
+
 #ifndef __ASM_PROC_PTRACE_H
 #define __ASM_PROC_PTRACE_H
 

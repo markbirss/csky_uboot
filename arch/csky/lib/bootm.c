@@ -1,4 +1,6 @@
 /*
+ * Copyright (C) 2017 C-SKY Microsystems
+ *
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
@@ -10,7 +12,6 @@
 #include <libfdt.h>
 #include <mapmem.h>
 #include <fdt_support.h>
-/* #include <asm/bootm.h> */
 #include <linux/compiler.h>
 #include <bootm.h>
 #include <vxworks.h>

@@ -1,7 +1,9 @@
 /*
- * (C) Copyright 2012
+ * Copyright (C) 2017 C-SKY Microsystems
+ *
  * SPDX-License-Identifier:	GPL-2.0+
  */
+
 #ifndef	_ARCH_SPL_H_
 #define	_ARCH_SPL_H_
 

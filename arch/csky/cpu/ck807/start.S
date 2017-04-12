@@ -1,6 +1,9 @@
 /*
- * SPDX-License-Identifier: GPL-2.0+
+ * Copyright (C) 2017 C-SKY Microsystems
+ *
+ * SPDX-License-Identifier:	GPL-2.0+
  */
+
 #include <config.h>
 #include <asm-offsets.h>
 #include <linux/linkage.h>

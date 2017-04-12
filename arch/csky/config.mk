@@ -1,10 +1,8 @@
 #
-# (C) Copyright 2000-2002
-# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
+# Copyright (C) 2017 C-SKY Microsystems
 #
 # SPDX-License-Identifier:	GPL-2.0+
 #
-
 ENDIANNESS = -EL
 PLATFORM_RELFLAGS += -mlittle-endian
 

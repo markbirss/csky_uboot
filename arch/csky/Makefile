@@ -1,9 +1,8 @@
 #
+# Copyright (C) 2017 C-SKY Microsystems
+#
 # SPDX-License-Identifier:	GPL-2.0+
 #
-
-# Machine directory name.  This list is sorted alphanumerically
-# by CONFIG_* macro name.
 
 head-y := arch/csky/cpu/$(CPU)/start.o
 

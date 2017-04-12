@@ -1,7 +1,9 @@
 /*
- * Copyright (c) 2017 CSKY, Inc
+ * Copyright (C) 2017 C-SKY Microsystems
+ *
  * SPDX-License-Identifier:	GPL-2.0+
  */
+
 #include <configs/eragon.h>
 #include <asm/arch-eragon/gpio.h>
 #include <asm/arch-eragon/mini_printf.h>

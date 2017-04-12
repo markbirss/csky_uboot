@@ -1,6 +1,5 @@
 #
-# (C) Copyright 2000-2006
-# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
+# Copyright (C) 2017 C-SKY Microsystems
 #
 # SPDX-License-Identifier:	GPL-2.0+
 #
@@ -17,6 +16,3 @@ obj-y += emmc/emmc_callback.o
 obj-y += emmc/emmc_interface.o
 obj-y += om/om.o
 endif
-#obj-y   += spi/spi.o
-#obj-y   += spiflash/spiflash.o
-#obj-y   += string/string.o
