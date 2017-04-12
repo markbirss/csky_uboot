@@ -14,9 +14,10 @@
 #include <asm/arch-eragon/datatype.h>
 #include <asm/arch-eragon/mini_printf.h>
 #include <asm/arch-eragon/gpio.h>
+#include <asm/arch-eragon/emmc.h>
+#include <asm/arch-eragon/om.h>
+
 extern int32_t uart_open( uint32_t uart_addrbase);
-//extern uint32_t emmc_host_init(card_info_t *emmc_card_info);
-extern void emmc_emmc_read(uint8_t slot_id, uint32_t from, uint32_t len, uint8_t *buf);
 extern void sdram_init(void);
 #define READ_ADDR 0x3000
 void board_init_f(ulong dummy)
@@ -52,12 +53,12 @@ void board_init_r(gd_t *gd, ulong dest_addr)
 		}
 		mini_printf("eMMC init ready.\n");
 		for (i = 0; i < (CONFIG_UBOOT_SIZE + 511) / 512; i++) {
-			emmc_emmc_read(0, (READ_ADDR + (i * 512))/0x200, 512, sram_baseaddr + (i * 512));
+			emmc_emmc_read(0, (READ_ADDR + (i * 512))/0x200, 512, (uint8_t *)(sram_baseaddr + (i * 512)));
 		}
 		fp = (void (*)(void ))(*((uint32_t *)(sram_baseaddr)));
 		(*fp)();
 		break;
-		defalut:
+		default:
 		mini_printf("OM mode is %x, please check the OM.\n", om_judge);
 		break;
 	}

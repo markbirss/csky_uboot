@@ -16,7 +16,6 @@
 #include <bootm.h>
 #include <vxworks.h>
 #include <asm/arch-eragon/interrupt.h>
-//extern csky_cache_enbale();
 DECLARE_GLOBAL_DATA_PTR;
 
 /* Main Entry point for arm bootm implementation
@@ -30,7 +29,7 @@ int do_bootm_linux(int flag, int argc, char * const argv[],
 {
 	void (*theKernel)(int magic, void * params);
 	char *tmp;
-	unsigned long dtb_load_addr;
+	unsigned int dtb_load_addr;
 
 	if ((tmp = getenv("dtb_load_addr_virt")) != NULL) {
 		dtb_load_addr = simple_strtoul(tmp, NULL, 16);
@@ -44,8 +43,7 @@ int do_bootm_linux(int flag, int argc, char * const argv[],
 	printf("\nStarting kernel ... \n\n");
 
 	disable_interrupts();
-	// csky_cache_enable();
 	flush_cache(0,0);
-	theKernel ((int)0x20150401, dtb_load_addr);
+	theKernel (0x20150401, (void *)dtb_load_addr);
 	return 1;
 }

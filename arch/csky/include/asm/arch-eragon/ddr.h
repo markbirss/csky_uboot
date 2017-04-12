@@ -1,5 +1,7 @@
-#ifndef __DDR_INTERNAL_H__
-#define __DDR_INTERNAL_H__
+#ifndef __ASM_ARCH_DDR_H__
+#define __ASM_ARCH_DDR_H__
+
+int init_ddr(void);
 
 #define MSTR        0x0
 #define STAT        0x4
@@ -582,4 +584,4 @@
 
 #define LITTLE_ENDIAN_WORD(word)              (word)
 
-#endif
+#endif /* __ASM_ARCH_DDR_H__ */

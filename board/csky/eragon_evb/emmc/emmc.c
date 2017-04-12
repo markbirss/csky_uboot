@@ -21,8 +21,8 @@
  * --------------------------------------------------------------------------*/
 
 #include <linux/string.h>
-#include "emmc_interface_internal.h"
-#include "emmc_callback_internal.h"
+#include <asm/arch-eragon/emmc_interface.h>
+#include <asm/arch-eragon/emmc_callback.h>
 #include <asm/arch-eragon/mini_printf.h>
 emmc_status_info_t emmc_status_info;
 card_info_t card_info;

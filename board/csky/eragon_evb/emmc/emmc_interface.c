@@ -19,7 +19,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------*/
-#include "emmc_interface_internal.h"
+#include <asm/arch-eragon/emmc_interface.h>
 #include <configs/eragon.h>
 
 #define CEATA_MAP	0xffffffff

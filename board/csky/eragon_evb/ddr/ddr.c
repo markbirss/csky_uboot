@@ -130,7 +130,7 @@
 //version       :1.16
 //note          :
 //1.if ddr has already initialize,do not initialize,return immediately
-#include "ddr_internal.h"
+#include <asm/arch-eragon/ddr.h>
 
 //FPGA mode
 #define FPGA
@@ -153,7 +153,8 @@
 //#define TRAIN_ON
 
 
-int init_ddr(){
+int init_ddr(void)
+{
 #ifdef FPGA
 *(volatile int *)_FLAG_DDR_INIT=0x0;//do not distinguish for FPGA
 if(PUB_REG(PUB_PGSR0)==0x9000005f){return 0;}//if DDR is initialized,return

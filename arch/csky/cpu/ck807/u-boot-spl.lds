@@ -8,7 +8,7 @@ MEMORY
 {
     MEM0   : ORIGIN = 0x0        , LENGTH = 0x17FFFFFF    /* DDR 384MB */
     MEM1   : ORIGIN = 0x1fc00000 , LENGTH = 0x3FFF        /* ROM 16KB */
-    MEM2   : ORIGIN = 0x1fd00000 , LENGTH = 0x7FFF        /* SRAM 16KB */
+    MEM2   : ORIGIN = 0x1fd00000 , LENGTH = 0x3FFF        /* SRAM 16KB */
 }
 
 REGION_ALIAS("REGION_TEXT",   MEM2);

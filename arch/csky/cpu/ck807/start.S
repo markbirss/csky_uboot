@@ -12,6 +12,7 @@
 .export csky_vsr_table      /* Vector table base address. */
 .globl  _start
 .import start_cskyboot
+.import hw_vsr_default_exception
 .import __stack
 .import __fstack
 .data
@@ -20,8 +21,8 @@
 .align 10
 csky_vsr_table:
 .long _start
-.rept 32
-.long __default_exception_handler
+.rept 31
+.long hw_vsr_default_exception
 .endr
 .rept 64
 .long hw_vsr_autovec
@@ -59,9 +60,4 @@ _start:
 __exit:
     bkpt
     br      __exit
-
-__default_exception_handler:
-	bkpt
-	br	__default_exception_handler
-	rte
 

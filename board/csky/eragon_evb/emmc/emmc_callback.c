@@ -20,8 +20,8 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  * --------------------------------------------------------------------------*/
 
-#include "emmc_callback_internal.h"
-#include "emmc_interface_internal.h"
+#include <asm/arch-eragon/emmc_callback.h>
+#include <asm/arch-eragon/emmc_interface.h>
 
 typedef struct {
     emmc_preproc_callback preproc;

@@ -1,31 +1,15 @@
-/* ---------------------------------------------------------------------------
+/*
+ * Copyright (C) 2017 C-SKY Microsystems
  *
- * C-Sky Microsystems Confidential
- * -------------------------------
- * This file and all its contents are properties of C-Sky Microsystems. The
- * information contained herein is confidential and proprietary and is not
- * to be disclosed outside of C-Sky Microsystems except under a
- * Non-Disclosured Agreement (NDA).
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
- * THE POSSIBILITY OF SUCH DAMAGE.
- * --------------------------------------------------------------------------*/
+ * SPDX-License-Identifier:     GPL-2.0+
+ */
 
-#ifndef __EMMC_INTERNAL_H
-#define __EMMC_INTERNAL_H
+#ifndef __ASM_ARCH_EMMC_H
+#define __ASM_ARCH_EMMC_H
 
-#include <asm/arch-eragon/datatype.h>
+#include "datatype.h"
 #include <configs/eragon.h>
-#include <asm/arch-eragon/mtd_tiny.h>
+#include "mtd_tiny.h"
 
 #define MMC_DEBUG 0
 #define PDEBUG(fmt, ...)
@@ -448,6 +432,7 @@ typedef struct {
 #define R5_IO_FUNC_ERR	0x00000200
 #define R5_IO_OUT_RANGE	0x00000100
 
+uint32_t emmc_host_init(card_info_t *emmc_card_info);
 uint32_t emmc_send_clock_only_cmd(void);
 uint32_t emmc_execute_command(uint32_t cmd_register, uint32_t arg_register);
 int32_t emmc_init(void);
@@ -459,5 +444,5 @@ void emmc_emmc_write(uint8_t slot_id, uint32_t to, uint32_t len, const uint8_t *
 uint32_t emmc_write_out_data(current_task_status_t *the_task_status, uint32_t the_interrupt_status);
 uint32_t emmc_read_in_data(current_task_status_t *the_task_status, uint32_t the_interrupt_status);
 
-#endif /* end __EMMC_INTERNAL_H */
+#endif /* __ASM_ARCH_EMMC_H  */
 

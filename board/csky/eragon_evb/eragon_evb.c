@@ -7,6 +7,7 @@
 #include <configs/eragon.h>
 #include <asm/arch-eragon/gpio.h>
 #include <asm/arch-eragon/mini_printf.h>
+#include <asm/arch-eragon/ddr.h>
 #include <common.h>
 #include <mmc.h>
 #include <miiphy.h>
@@ -19,8 +20,6 @@ extern int eragon_dwmci_add_port(int index, u32 regbase, int bus_width);
 #endif
 
 #ifdef CONFIG_SPL_BUILD
-extern int init_ddr();
-
 void sdram_init(void)
 {
 	init_ddr();

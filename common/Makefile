@@ -10,7 +10,7 @@ ifndef CONFIG_SPL_BUILD
 obj-y += init/
 obj-y += main.o
 obj-y += exports.o
-#obj-y += hash.o
+obj-y += hash.o
 obj-$(CONFIG_HUSH_PARSER) += cli_hush.o
 obj-$(CONFIG_AUTOBOOT) += autoboot.o
 
@@ -65,7 +65,7 @@ endif
 # others
 obj-$(CONFIG_BOOTSTAGE) += bootstage.o
 obj-$(CONFIG_CONSOLE_MUX) += iomux.o
-#obj-y += flash.o
+obj-y += flash.o
 obj-$(CONFIG_CMD_KGDB) += kgdb.o kgdb_stubs.o
 obj-$(CONFIG_I2C_EDID) += edid.o
 obj-$(CONFIG_KALLSYMS) += kallsyms.o
@@ -160,6 +160,6 @@ obj-$(CONFIG_CMDLINE) += cli_simple.o
 obj-y += cli.o
 obj-$(CONFIG_CMDLINE) += cli_readline.o
 obj-y += command.o
-#obj-y += s_record.o
-#obj-y += xyzModem.o
+obj-y += s_record.o
+obj-y += xyzModem.o
 CFLAGS_env_embedded.o := -Wa,--no-warn -DENV_CRC=$(shell tools/envcrc 2>/dev/null)

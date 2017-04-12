@@ -5,6 +5,7 @@
  */
 
 #include <configs/eragon.h>
+#include <asm/arch-eragon/mini_printf.h>
 #include <serial.h>
 #include <common.h>
 
@@ -91,7 +92,11 @@ RETURN VALUE: None
 
 void csky_default_exception_handler(int vector, Ckcore_SavedRegisters *regs)
 {
+#ifndef CONFIG_SPL_BUILD
 	printf("Exception: %s\n", exception_names[vector]);
+#else
+	mini_printf("Exception: %s\n", exception_names[vector]);
+#endif
 }
 
 /*********************************************************
