@@ -1,39 +1,12 @@
-/******************************************************************************
- * @file     spi.c
- * @brief    The File for the spi driver
- * @version  V1.0
- * @date     23. Dec 2016
- ******************************************************************************/
-/* ---------------------------------------------------------------------------
- * Copyright (C) 2016 CSKY Limited. All rights reserved.
+/*
+ * Copyright (C) 2017 C-SKY Microsystems
  *
- * Redistribution and use of this software in source and binary forms,
- * with or without modification, are permitted provided that the following
- * conditions are met:
- *   * Redistributions of source code must retain the above copyright notice,
- *     this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above copyright notice,
- *     this list of conditions and the following disclaimer in the documentation
- *     and/or other materials provided with the distribution.
- *   * Neither the name of CSKY Ltd. nor the names of CSKY's contributors may
- *     be used to endorse or promote products derived from this software without
- *     specific prior written permission of CSKY Ltd.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
- * THE POSSIBILITY OF SUCH DAMAGE.
- * -------------------------------------------------------------------------- */
-#include <asm/arch-eragon/spi.h>
+ * SPDX-License-Identifier:	GPL-2.0+
+ */
+
+#include <asm/arch/spi.h>
 #include "spi_internal.h"
-#include <configs/eragon.h>
+#include <asm/arch/hardware.h>
 
 /*
  * Enable spi, and config the spi by default:
@@ -49,7 +22,7 @@
  *   bfast -
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_open(
+s32 spi_open(
     enum_spi_device_t spiid
     )
 {
@@ -76,7 +49,7 @@ int32_t spi_open(
  *   id - SPI ID
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_close(enum_spi_device_t spiid)
+s32 spi_close(enum_spi_device_t spiid)
 {
     volatile pckstruct_spi_reg_t reg;
 
@@ -92,7 +65,7 @@ int32_t spi_close(enum_spi_device_t spiid)
  *   mode - has three modes: transmit&receive, transmit only, and receive only.
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_set_mode(
+s32 spi_set_mode(
     enum_spi_device_t spiid,
     enum_spi_mode_t mode
     )
@@ -141,7 +114,7 @@ int32_t spi_set_mode(
  *   polarity - serial clock polarity.
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_set_polarity(
+s32 spi_set_polarity(
     enum_spi_device_t spiid,
     enum_spi_polarity_t polarity
     )
@@ -179,7 +152,7 @@ int32_t spi_set_polarity(
  *   phase - serial clock phase
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_set_phase(
+s32 spi_set_phase(
     enum_spi_device_t spiid,
     enum_spi_phase_t phase
     )
@@ -217,13 +190,13 @@ int32_t spi_set_phase(
  *   datawidth - data frame size
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_set_datawidth(
+s32 spi_set_datawidth(
     enum_spi_device_t spiid,
     enum_spi_datawidth_t datawidth
     )
 {
   volatile pckstruct_spi_reg_t reg;
-  uint16_t temp;
+  u16 temp;
 
     reg = (pckstruct_spi_reg_t)(spiid);
     temp = reg->CTRLR0;
@@ -242,9 +215,9 @@ int32_t spi_set_datawidth(
  *   baudrate - transfer speed to be set
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_set_baudrate(
+s32 spi_set_baudrate(
     enum_spi_device_t spiid,
-    uint32_t baudrate
+    u32 baudrate
     )
 {
   volatile pckstruct_spi_reg_t reg;
@@ -253,16 +226,16 @@ int32_t spi_set_baudrate(
     return SUCCESS;
 }
 
-uint8_t spi_transfer_query(
+u8 spi_transfer_query(
     enum_spi_device_t spiid,
     enum_spi_slave_t slave,
-    uint8_t *ptx_buffer,
-    uint8_t tx_length,
-    uint8_t *prx_buffer,
-    uint32_t rx_length
+    u8 *ptx_buffer,
+    u8 tx_length,
+    u8 *prx_buffer,
+    u32 rx_length
     )
 {
-    volatile uint32_t i;
+    volatile u32 i;
     volatile pckstruct_spi_reg_t reg;
 
     reg = (pckstruct_spi_reg_t)(spiid);
@@ -291,7 +264,7 @@ uint8_t spi_transfer_query(
  *   id - SPI ID
  * return:
  */
-int32_t spi_disable(enum_spi_device_t spiid)
+s32 spi_disable(enum_spi_device_t spiid)
 {
   volatile pckstruct_spi_reg_t reg;
 
@@ -301,7 +274,7 @@ int32_t spi_disable(enum_spi_device_t spiid)
   return SUCCESS;
 }
 
-int32_t spi_enable(enum_spi_device_t spiid)
+s32 spi_enable(enum_spi_device_t spiid)
 {
   volatile pckstruct_spi_reg_t reg;
 
@@ -312,7 +285,7 @@ int32_t spi_enable(enum_spi_device_t spiid)
 }
 
 
-int32_t spi_set_ndf(enum_spi_device_t spiid, uint32_t num)
+s32 spi_set_ndf(enum_spi_device_t spiid, u32 num)
 {
     volatile pckstruct_spi_reg_t reg;
     reg = (pckstruct_spi_reg_t)(spiid);
@@ -324,7 +297,7 @@ int32_t spi_set_ndf(enum_spi_device_t spiid, uint32_t num)
 
 
 
-uint8_t spi_enable_slave(enum_spi_device_t spiid, enum_spi_slave_t slave)
+u8 spi_enable_slave(enum_spi_device_t spiid, enum_spi_slave_t slave)
 {
     volatile pckstruct_spi_reg_t reg;
     reg = (pckstruct_spi_reg_t)(spiid);
@@ -334,7 +307,7 @@ uint8_t spi_enable_slave(enum_spi_device_t spiid, enum_spi_slave_t slave)
     return SUCCESS;
 }
 
-uint8_t spi_disable_slave(enum_spi_device_t spiid,enum_spi_slave_t slave)
+u8 spi_disable_slave(enum_spi_device_t spiid,enum_spi_slave_t slave)
 {
     volatile pckstruct_spi_reg_t reg;
     reg = (pckstruct_spi_reg_t)(spiid);
@@ -345,13 +318,13 @@ uint8_t spi_disable_slave(enum_spi_device_t spiid,enum_spi_slave_t slave)
 }
 
 
-uint32_t spi_send_query(
+u32 spi_send_query(
         enum_spi_device_t spiid,
         enum_spi_slave_t slave,
-        uint8_t *ptxbuffer,
-        uint16_t txlength)
+        u8 *ptxbuffer,
+        u16 txlength)
 {
-    uint32_t i;
+    u32 i;
     volatile pckstruct_spi_reg_t reg;
     reg = (pckstruct_spi_reg_t)(spiid);
     reg->SPIENR = CK_SPI_ENABLE; /* enable SPI */
@@ -389,7 +362,7 @@ uint32_t spi_send_query(
 }
 
 
-uint8_t spi_set_transfer_threshold(enum_spi_device_t spiid, uint8_t txftlr, uint8_t rxftlr)
+u8 spi_set_transfer_threshold(enum_spi_device_t spiid, u8 txftlr, u8 rxftlr)
 {
     volatile pckstruct_spi_reg_t reg;
     reg = (pckstruct_spi_reg_t)(spiid);

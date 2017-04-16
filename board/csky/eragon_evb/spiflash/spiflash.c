@@ -1,35 +1,13 @@
-/******************************************************************************
- * @file     spiflash.c
- * @brief    The File for the spiflash driver
- * @version  V1.0
- * @date     23. Dec 2016
- ******************************************************************************/
-/* ---------------------------------------------------------------------------
+/*
+ * Copyright (C) 2017 C-SKY Microsystems
  *
- * C-Sky Microsystems Confidential
- * -------------------------------
- * This file and all its contents are properties of C-Sky Microsystems. The
- * information contained herein is confidential and proprietary and is not
- * to be disclosed outside of C-Sky Microsystems except under a
- * Non-Disclosured Agreement (NDA).
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
- * THE POSSIBILITY OF SUCH DAMAGE.
- * --------------------------------------------------------------------------*/
+ * SPDX-License-Identifier:	GPL-2.0+
+ */
 
-#include <asm/arch-eragon/datatype.h>
-#include <asm/arch-eragon/spi.h>
-#include <asm/arch-eragon/spiflash.h>
-#include <configs/eragon.h>
+#include <asm/datatype.h>
+#include <asm/arch/spi.h>
+#include <asm/arch/spiflash.h>
+#include <asm/arch/hardware.h>
 
 #define THIS_MODULE MODULE_DEV_SPIFLASH
 
@@ -40,9 +18,9 @@
 #define IS_SPIFLASH_ADDR(addr) \
             ((addr >= 0x0) && (addr < 0x800000))
 
-int32_t spi_norflash_read_status_register(uint8_t *status)
+s32 spi_norflash_read_status_register(u8 *status)
 {
-    uint8_t command = 0x05;
+    u8 command = 0x05;
 
     /* read status register*/
     spi_open(CK_SPI);
@@ -58,11 +36,11 @@ int32_t spi_norflash_read_status_register(uint8_t *status)
     return SUCCESS;
 }
 
-int32_t spi_norflash_write_status_register(uint8_t *status)
+s32 spi_norflash_write_status_register(u8 *status)
 {
-    uint8_t reg1[2]={0xff, 0xff};
-    uint8_t command_enable_write = 0x06;
-    uint8_t command[3] = {0x01, 0x0, 0x0};
+    u8 reg1[2]={0xff, 0xff};
+    u8 command_enable_write = 0x06;
+    u8 command[3] = {0x01, 0x0, 0x0};
 
     spi_open(CK_SPI);
     spi_set_mode(CK_SPI,CK_SPI_TX);
@@ -80,12 +58,12 @@ int32_t spi_norflash_write_status_register(uint8_t *status)
     return SUCCESS;
 }
 
-int32_t spi_norflash_erase_chip(uint8_t id)
+s32 spi_norflash_erase_chip(u8 id)
 {
-    uint8_t reg1[2]={0xff, 0xff};
-    uint8_t reg[2]={0x00, 0x00};
-    uint8_t command_enable_write = 0x06;
-    uint8_t command_erase_chip = 0x60;
+    u8 reg1[2]={0xff, 0xff};
+    u8 reg[2]={0x00, 0x00};
+    u8 command_enable_write = 0x06;
+    u8 command_erase_chip = 0x60;
 
     spi_open(CK_SPI);
     spi_set_mode(CK_SPI, CK_SPI_TX);
@@ -103,12 +81,12 @@ int32_t spi_norflash_erase_chip(uint8_t id)
     return SUCCESS;
 }
 
-int32_t spi_norflash_erase_block(uint8_t id, uint32_t offset, uint32_t length)
+s32 spi_norflash_erase_block(u8 id, u32 offset, u32 length)
 {
-    uint8_t reg1[2]={0xff, 0xff};
-    uint8_t reg[2]={0x00, 0x00};
-    uint8_t command_enable_write = 0x06;
-    uint8_t command_erase_block[4] = {0xd8, 0x0, 0x0, 0x0};
+    u8 reg1[2]={0xff, 0xff};
+    u8 reg[2]={0x00, 0x00};
+    u8 command_enable_write = 0x06;
+    u8 command_erase_block[4] = {0xd8, 0x0, 0x0, 0x0};
 
     if(length & (SPI_FLASH_BLOCK_SIZE - 1)){
 //        LOG_D_S("erase length is not aligned by block size");
@@ -140,12 +118,12 @@ int32_t spi_norflash_erase_block(uint8_t id, uint32_t offset, uint32_t length)
     return SUCCESS;
 }
 
-int32_t spi_norflash_erase_sector(uint8_t id, uint32_t offset, uint32_t length)
+s32 spi_norflash_erase_sector(u8 id, u32 offset, u32 length)
 {
-    uint8_t reg1[2]={0xff, 0xff};
-    uint8_t reg[2]={0x00, 0x00};
-    uint8_t command_enable_write = 0x06;
-    uint8_t command_erase_sector[5] = {0x20, 0x0, 0x0, 0x0};
+    u8 reg1[2]={0xff, 0xff};
+    u8 reg[2]={0x00, 0x00};
+    u8 command_enable_write = 0x06;
+    u8 command_erase_sector[5] = {0x20, 0x0, 0x0, 0x0};
 
     if(length & (SPI_FLASH_SECTOR_SIZE - 1)){
         return -1;
@@ -175,7 +153,7 @@ int32_t spi_norflash_erase_sector(uint8_t id, uint32_t offset, uint32_t length)
 
 }
 
-int32_t spiflash_erase(uint8_t id, ERASE_TYPE_t type, uint32_t offset, uint32_t length)
+s32 spiflash_erase(u8 id, ERASE_TYPE_t type, u32 offset, u32 length)
 {
     switch(type){
     case ERASE_BY_SECTOR:
@@ -194,12 +172,12 @@ int32_t spiflash_erase(uint8_t id, ERASE_TYPE_t type, uint32_t offset, uint32_t 
     return SUCCESS;
 }
 
-int32_t spi_norflash_write_page(uint8_t id, uint32_t dst_addr, uint8_t *src_buf, uint32_t len)
+s32 spi_norflash_write_page(u8 id, u32 dst_addr, u8 *src_buf, u32 len)
 {
-    uint8_t reg1[2]={0xff, 0xff};
-    uint8_t reg[2]={0x00, 0x00};
-    uint8_t command_enable_write = 0x06;
-    uint8_t command_page_write[260] = {0x02, 0x0, 0x0, 0x0};
+    u8 reg1[2]={0xff, 0xff};
+    u8 reg[2]={0x00, 0x00};
+    u8 command_enable_write = 0x06;
+    u8 command_page_write[260] = {0x02, 0x0, 0x0, 0x0};
     if(len == 0){
         return FAILURE;
     }
@@ -226,12 +204,12 @@ int32_t spi_norflash_write_page(uint8_t id, uint32_t dst_addr, uint8_t *src_buf,
     return SUCCESS;
 }
 
-int32_t spiflash_write(uint8_t id, uint32_t offset, const uint8_t *buf, uint32_t length, uint32_t *retlen)
+s32 spiflash_write(u8 id, u32 offset, const u8 *buf, u32 length, u32 *retlen)
 {
-    uint32_t first_page_space;
-    uint8_t *p = (uint8_t *)buf;
-    uint32_t page_num;
-    uint8_t i;
+    u32 first_page_space;
+    u8 *p = (u8 *)buf;
+    u32 page_num;
+    u8 i;
 
     offset += SPI_FLASH_BASEADDR;
     first_page_space = SPI_FLASH_PAGE_SIZE - (offset & (SPI_FLASH_PAGE_SIZE - 1));
@@ -255,9 +233,9 @@ int32_t spiflash_write(uint8_t id, uint32_t offset, const uint8_t *buf, uint32_t
     return SUCCESS;
 }
 
-int32_t spiflash_read_id(uint8_t *id)
+s32 spiflash_read_id(u8 *id)
 {
-    uint8_t command[4]={0x90, 0x0, 0x0, 0x0};
+    u8 command[4]={0x90, 0x0, 0x0, 0x0};
     /* read the ID*/
     spi_open(CK_SPI);
     spi_set_ndf(CK_SPI, 1);
@@ -266,9 +244,9 @@ int32_t spiflash_read_id(uint8_t *id)
     return SUCCESS;
 }
 
-int32_t spiflash_read(uint8_t id, uint32_t offset, uint8_t *buf, uint32_t length, uint32_t * retlen)
+s32 spiflash_read(u8 id, u32 offset, u8 *buf, u32 length, u32 * retlen)
 {
-    uint8_t command[4]={0x3, 0x0, 0x0, 0x00};
+    u8 command[4]={0x3, 0x0, 0x0, 0x00};
 
     offset += SPI_FLASH_BASEADDR;
     spi_open(CK_SPI);
@@ -282,15 +260,15 @@ int32_t spiflash_read(uint8_t id, uint32_t offset, uint8_t *buf, uint32_t length
     return SUCCESS;
 }
 #if 0
-int spi_norflash_program(uint32_t dst_addr, uint8_t *src_buf, uint32_t len)
+int spi_norflash_program(u32 dst_addr, u8 *src_buf, u32 len)
 {
-    uint32_t i;
-    uint32_t block_addr;
-    uint32_t sector_addr;
-    uint32_t page_num;
-    uint32_t first_page_space;
-    uint8_t *p = src_buf;
-    uint32_t length;
+    u32 i;
+    u32 block_addr;
+    u32 sector_addr;
+    u32 page_num;
+    u32 first_page_space;
+    u8 *p = src_buf;
+    u32 length;
 
     if(!IS_SPIFLASH_ADDR(dst_addr) || !IS_SPIFLASH_ADDR(dst_addr+len) || src_buf== NULL){
         return -1;

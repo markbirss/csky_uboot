@@ -7,9 +7,8 @@
 #ifndef __ASM_ARCH_EMMC_H
 #define __ASM_ARCH_EMMC_H
 
-#include "datatype.h"
-#include <configs/eragon.h>
-#include "mtd_tiny.h"
+#include <asm/datatype.h>
+#include <asm/arch/hardware.h>
 
 #define MMC_DEBUG 0
 #define PDEBUG(fmt, ...)
@@ -96,9 +95,9 @@
 
 #define CSD_C_SIZE(x)           CSD_C_SIZE_INLINE(x)
 
-static inline uint32_t CSD_C_SIZE_INLINE(uint32_t *csd_array)
+static inline u32 CSD_C_SIZE_INLINE(u32 *csd_array)
 {
-    uint32_t bits_62_to_63, bits_64_to_73;
+    u32 bits_62_to_63, bits_64_to_73;
     bits_62_to_63 = GET_BITS_BETWEEN(62, 63, csd_array);
     bits_64_to_73 = GET_BITS_BETWEEN(64, 73, csd_array);
     return (bits_62_to_63 | (bits_64_to_73 << 2));
@@ -161,8 +160,8 @@ functionality. Please refer MMC specs for the state information. Note irq is not
 considered as the state. btst(Bus test state) of mmc spec is not considered in the driver
 */
 
-typedef void (*emmc_postproc_callback)(void *, uint32_t *);
-typedef void (*emmc_preproc_callback)(uint32_t, uint32_t, uint32_t *, uint32_t *);
+typedef void (*emmc_postproc_callback)(void *, u32 *);
+typedef void (*emmc_preproc_callback)(u32, u32, u32 *, u32 *);
 
 typedef enum {
     EMMC_BOOT_PARTITION_1    = 0,
@@ -194,10 +193,10 @@ typedef enum {
   * values for the IP which will need to be referred at a later time.
   */
 typedef struct {
-    uint32_t total_cards;	           /* The total cards on the system                */
-    uint32_t fifo_depth;		           /* The fifo depth of the IP                      */
+    u32 total_cards;	           /* The total cards on the system                */
+    u32 fifo_depth;		           /* The fifo depth of the IP                      */
 
-    uint32_t num_of_cards;	           /* Total number of cards the IP has been
+    u32 num_of_cards;	           /* Total number of cards the IP has been
 				                        * configured for                                */
 } emmc_status_info_t;
 
@@ -212,39 +211,39 @@ typedef struct {
     /** The error status of the command.
       * 0 means that there is no error.
       */
-    uint32_t error_status;
+    u32 error_status;
 
     /** The array of dwords which stores the response for the  command.
      *  If set to NULL, the response is discarded,
      */
-    uint32_t *resp_buffer;
+    u32 *resp_buffer;
 
     /** The data buffer for a data command. It is ignored for
      *  non data commands. used in Slave mode of operation
      */
-    uint8_t *data_buffer;
+    u8 *data_buffer;
 
     /** The state of the command in progress. */
-    uint32_t cmd_status;
+    u32 cmd_status;
 
     /** The number of blocks of to be read/written. */
-    uint32_t num_of_blocks;
+    u32 num_of_blocks;
 
     /** The number of bytes already read/written. */
-    uint32_t num_bytes_read;
+    u32 num_bytes_read;
 
     /** The slot in which the target card is inserted in. */
-    uint32_t slot_num;
+    u32 slot_num;
 
     /** This flag is set if a data command got aborted. */
 
     /** A bus corruption had occured during the data transfer. */
-    uint32_t bus_corruption_occured;
+    u32 bus_corruption_occured;
 
     /** The block size for the current data exchange */
-    uint32_t blksize;
+    u32 blksize;
 
-    uint32_t command_index;
+    u32 command_index;
 } current_task_status_t;
 
 /*
@@ -266,33 +265,33 @@ typedef struct {
     card_type_e    card_type;
     card_state_e card_state;
     union {
-        uint32_t csd_dwords[4];
-        uint8_t csd_bytes[16];
+        u32 csd_dwords[4];
+        u8 csd_bytes[16];
     } csd_union;
     union {
-        uint32_t cid_dwords[4];
-        uint8_t cid_bytes[16];
+        u32 cid_dwords[4];
+        u8 cid_bytes[16];
     } cid_union;
 #ifdef CONDIF_SUPPORT_EMMC_EXTCSD
     union {
-        uint32_t extcsd_dwords[128];
-        uint8_t extcsd_bytes[512];
+        u32 extcsd_dwords[128];
+        u8 extcsd_bytes[512];
     } extcsd_union;
 #endif
     union {
-        uint32_t scr_dwords[2];
-        uint8_t scr_bytes[8];
+        u32 scr_dwords[2];
+        u8 scr_bytes[8];
     } scr_union;
 
-    uint8_t the_cccr_bytes[CCCR_LENGTH];
+    u8 the_cccr_bytes[CCCR_LENGTH];
 
-    uint32_t the_rca;
-    uint32_t card_write_blksize;
-    uint32_t card_read_blksize;
-    uint32_t orig_card_write_blksize;
-    uint32_t orig_card_read_blksize;
-    uint32_t card_size;
-    uint32_t divider_val;
+    u32 the_rca;
+    u32 card_write_blksize;
+    u32 card_read_blksize;
+    u32 orig_card_write_blksize;
+    u32 orig_card_read_blksize;
+    u32 card_size;
+    u32 divider_val;
 } card_info_t;
 
 #define the_cid	cid_union.cid_dwords
@@ -432,17 +431,17 @@ typedef struct {
 #define R5_IO_FUNC_ERR	0x00000200
 #define R5_IO_OUT_RANGE	0x00000100
 
-uint32_t emmc_host_init(card_info_t *emmc_card_info);
-uint32_t emmc_send_clock_only_cmd(void);
-uint32_t emmc_execute_command(uint32_t cmd_register, uint32_t arg_register);
-int32_t emmc_init(void);
-uint32_t emmc_enumerate_the_card(uint32_t slot_num);
-uint32_t emmc_check_r1_resp(uint32_t the_response);
-uint32_t emmc_put_in_trans_state(uint32_t slot);
-void emmc_emmc_read(uint8_t slot_id, uint32_t from, uint32_t len, uint8_t *buf);
-void emmc_emmc_write(uint8_t slot_id, uint32_t to, uint32_t len, const uint8_t *buf);
-uint32_t emmc_write_out_data(current_task_status_t *the_task_status, uint32_t the_interrupt_status);
-uint32_t emmc_read_in_data(current_task_status_t *the_task_status, uint32_t the_interrupt_status);
+u32 emmc_host_init(card_info_t *emmc_card_info);
+u32 emmc_send_clock_only_cmd(void);
+u32 emmc_execute_command(u32 cmd_register, u32 arg_register);
+s32 emmc_init(void);
+u32 emmc_enumerate_the_card(u32 slot_num);
+u32 emmc_check_r1_resp(u32 the_response);
+u32 emmc_put_in_trans_state(u32 slot);
+void emmc_emmc_read(u8 slot_id, u32 from, u32 len, u8 *buf);
+void emmc_emmc_write(u8 slot_id, u32 to, u32 len, const u8 *buf);
+u32 emmc_write_out_data(current_task_status_t *the_task_status, u32 the_interrupt_status);
+u32 emmc_read_in_data(current_task_status_t *the_task_status, u32 the_interrupt_status);
 
 #endif /* __ASM_ARCH_EMMC_H  */
 

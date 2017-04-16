@@ -5,15 +5,11 @@
  */
 
 #include <common.h>
-#include <asm/arch-eragon/interrupt.h>
+#include <asm/arch/interrupt.h>
 
 #define CONFIG_SYS_NUM_IRQS		32
 
-#ifdef CONFIG_SPL_BUILD
-#define PCK_INTC ((PCKStruct_INTC)(ERAGON_INTC_BASE - 0xa0000000))
-#else
-#define PCK_INTC ((PCKStruct_INTC)ERAGON_INTC_BASE)
-#endif
+#define PCK_INTC ((PCKStruct_INTC)INTC_BASEADDR)
 
 void mask_irq(int irq);
 void unmask_irq(int irq);
@@ -22,7 +18,7 @@ static void enter_critical(int *psr);
 static void exit_critical(int psr);
 
 
-struct CK_IRQ_Handler {
+struct IRQ_Handler {
 	interrupt_handler_t *handler;
 	void *arg;
 };
@@ -32,7 +28,7 @@ struct CK_IRQ_Handler {
  */
 volatile CKStruct_INTC *icrp = PCK_INTC;
 
-static struct CK_IRQ_Handler ckirq_handlers[CONFIG_SYS_NUM_IRQS] = { {0} };
+static struct IRQ_Handler ckirq_handlers[CONFIG_SYS_NUM_IRQS] = { {0} };
 
 int interrupt_init (void)
 {

@@ -6,7 +6,7 @@
 
 #ifndef __ASM_ARCH_EMMC_INTERFACE_H
 #define __ASM_ARCH_EMMC_INTERFACE_H
-#include "datatype.h"
+#include <asm/datatype.h>
 
 /**
   * Controller Register definitions
@@ -218,12 +218,12 @@ typedef enum {
 #define SD_CMD8		    208  /*This is added to support SD 2.0 (SDHC) cards*/
 #define SD_CMD11     	211  /*This is added to support SDXC Voltage Switching*/
 
-uint32_t emmc_set_bits(controller_reg_e reg, uint32_t val);
-uint32_t emmc_clear_bits(controller_reg_e reg, uint32_t val);
-uint32_t emmc_set_register(controller_reg_e reg, uint32_t val);
-uint32_t emmc_read_register(controller_reg_e reg);
+u32 emmc_set_bits(controller_reg_e reg, u32 val);
+u32 emmc_clear_bits(controller_reg_e reg, u32 val);
+u32 emmc_set_register(controller_reg_e reg, u32 val);
+u32 emmc_read_register(controller_reg_e reg);
 void *emmc_get_fifo_address(void);
-void plat_loop(uint32_t value);
+void plat_loop(u32 value);
 
 #endif /* __ASM_ARCH_EMMC_INTERFACE_H */
 

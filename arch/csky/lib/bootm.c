@@ -15,7 +15,7 @@
 #include <linux/compiler.h>
 #include <bootm.h>
 #include <vxworks.h>
-#include <asm/arch-eragon/interrupt.h>
+#include <asm/arch/interrupt.h>
 DECLARE_GLOBAL_DATA_PTR;
 
 /* Main Entry point for arm bootm implementation

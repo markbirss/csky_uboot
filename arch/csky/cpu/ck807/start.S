@@ -7,7 +7,7 @@
 #include <config.h>
 #include <asm-offsets.h>
 #include <linux/linkage.h>
-#include <asm/arch-eragon/mmu.h>
+#include <asm/arch/mmu.h>
 .export hw_vsr_autovec
 .export csky_vsr_table      /* Vector table base address. */
 .globl  _start

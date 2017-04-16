@@ -1,42 +1,14 @@
-/******************************************************************************
- * @file     spiflash.h
- * @brief    The Head File for the spiflash driver definitions
- * @version  V1.0
- * @date     23. Dec 2016
- ******************************************************************************/
-/* ---------------------------------------------------------------------------
- * Copyright (C) 2016 CSKY Limited. All rights reserved.
+/*
+ * Copyright (C) 2017 C-SKY Microsystems
  *
- * Redistribution and use of this software in source and binary forms,
- * with or without modification, are permitted provided that the following
- * conditions are met:
- *   * Redistributions of source code must retain the above copyright notice,
- *     this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above copyright notice,
- *     this list of conditions and the following disclaimer in the documentation
- *     and/or other materials provided with the distribution.
- *   * Neither the name of CSKY Ltd. nor the names of CSKY's contributors may
- *     be used to endorse or promote products derived from this software without
- *     specific prior written permission of CSKY Ltd.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
- * THE POSSIBILITY OF SUCH DAMAGE.
- * -------------------------------------------------------------------------- */
+ * SPDX-License-Identifier:	GPL-2.0+
+ */
 
 #ifndef __SPIFLASH_H__
 #define __SPIFLASH_H__
 
 #include "datatype.h"
-#include <configs/eragon.h>
+#include <asm/arch/hardware.h>
 
 typedef enum ERASE_TYPE_e{
     ERASE_BY_SECTOR,
@@ -44,7 +16,7 @@ typedef enum ERASE_TYPE_e{
     ERASE_BY_CHIP
 }ERASE_TYPE_t;
 
-int32_t spiflash_init(void);
+s32 spiflash_init(void);
 
 /*
  * read the spiflash id.
@@ -52,14 +24,14 @@ int32_t spiflash_init(void);
  *   id: the pointer to the id buffer.
  * return: SUCCESS or FAILURE.
  */
-int32_t spiflash_read_id(uint8_t *id);
+s32 spiflash_read_id(u8 *id);
 /*
  * read the spiflash status register.
  * Parameters:
  *   status: the pointer to the status buffer.
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_norflash_read_status_register(uint8_t *status);
+s32 spi_norflash_read_status_register(u8 *status);
 
 /*
  * write the spiflash status register.
@@ -67,7 +39,7 @@ int32_t spi_norflash_read_status_register(uint8_t *status);
  *   status: the pointer to the status buffer.
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_norflash_write_status_register(uint8_t *status);
+s32 spi_norflash_write_status_register(u8 *status);
 
 /*
  * read data from the spiflash.
@@ -77,7 +49,7 @@ int32_t spi_norflash_write_status_register(uint8_t *status);
  *   len: the read data length.
  * return: SUCCESS or FAILURE.
  */
-int32_t spiflash_read(uint8_t id, uint32_t offset, uint8_t *buf, uint32_t length, uint32_t * retlen);
+s32 spiflash_read(u8 id, u32 offset, u8 *buf, u32 length, u32 * retlen);
 
 /*
  * erase the chip.
@@ -85,7 +57,7 @@ int32_t spiflash_read(uint8_t id, uint32_t offset, uint8_t *buf, uint32_t length
  *   None.
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_norflash_erase_chip(uint8_t id);
+s32 spi_norflash_erase_chip(u8 id);
 
 /*
  * erase the spiflash by block.
@@ -93,7 +65,7 @@ int32_t spi_norflash_erase_chip(uint8_t id);
  *   src_addr: the start address to be erased.
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_norflash_erase_block(uint8_t id, uint32_t offset, uint32_t length);
+s32 spi_norflash_erase_block(u8 id, u32 offset, u32 length);
 
 /*
  * erase the spiflash by sector.
@@ -101,9 +73,9 @@ int32_t spi_norflash_erase_block(uint8_t id, uint32_t offset, uint32_t length);
  *   src_addr: the start address to be erased.
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_norflash_erase_sector(uint8_t id, uint32_t offset, uint32_t length);
+s32 spi_norflash_erase_sector(u8 id, u32 offset, u32 length);
 
-int32_t spiflash_erase(uint8_t id, ERASE_TYPE_t type, uint32_t offset, uint32_t length);
+s32 spiflash_erase(u8 id, ERASE_TYPE_t type, u32 offset, u32 length);
 /*
  * write data to the spiflash by page.
  * Parameters:
@@ -112,9 +84,9 @@ int32_t spiflash_erase(uint8_t id, ERASE_TYPE_t type, uint32_t offset, uint32_t 
  *   len: the write data length.
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_norflash_write_page(uint8_t id, uint32_t dst_addr, uint8_t *src_buf, uint32_t len);
+s32 spi_norflash_write_page(u8 id, u32 dst_addr, u8 *src_buf, u32 len);
 
-int32_t spiflash_write(uint8_t id, uint32_t offset, const uint8_t *buf, uint32_t length, uint32_t *retlen);
+s32 spiflash_write(u8 id, u32 offset, const u8 *buf, u32 length, u32 *retlen);
 /*
  * program data to the spiflash.
  * Parameters:
@@ -123,7 +95,7 @@ int32_t spiflash_write(uint8_t id, uint32_t offset, const uint8_t *buf, uint32_t
  *   len: the program data length.
  * return: SUCCESS or FAILURE.
  */
-//int spi_norflash_program(uint32_t dst_addr, uint8_t *src_buf, uint8_t len);
+//int spi_norflash_program(u32 dst_addr, u8 *src_buf, u8 len);
 #endif
 
 

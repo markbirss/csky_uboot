@@ -4,10 +4,10 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#include <configs/eragon.h>
-#include <asm/arch-eragon/gpio.h>
-#include <asm/arch-eragon/mini_printf.h>
-#include <asm/arch-eragon/ddr.h>
+#include <asm/arch/hardware.h>
+#include <asm/arch/gpio.h>
+#include <asm/mini_printf.h>
+#include <asm/arch/ddr.h>
 #include <common.h>
 #include <mmc.h>
 #include <miiphy.h>
@@ -66,8 +66,8 @@ void show_boot_progress(int val) {}
 int board_early_init_f(void)
 {
 	/* Use the UART 2 */
-	gpio_set_reuse(GPIOB, 0x3, CK_GPIO_BEHARDWARE);
-	gpio_set_reuse(GPIOB, 0x30, CK_GPIO_BEHARDWARE);
+	gpio_set_reuse(GPIOB, 0x3, GPIO_BEHARDWARE);
+	gpio_set_reuse(GPIOB, 0x30, GPIO_BEHARDWARE);
 	return 0;
 }
 
@@ -84,7 +84,7 @@ int board_eth_init(bd_t *bis)
 	int ret = 0;
 
 #if defined(CONFIG_ETH_DESIGNWARE)
-	ret = designware_initialize(ERAGON_GMAC_ADDRBASE, PHY_INTERFACE_MODE_MII);
+	ret = designware_initialize(GMAC_BASEADDR, PHY_INTERFACE_MODE_MII);
 #endif
 	return ret;
 }

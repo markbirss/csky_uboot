@@ -6,7 +6,7 @@
 #include <config.h>
 #include <asm-offsets.h>
 #include <linux/linkage.h>
-#include <asm/arch-eragon/mmu.h>
+#include <asm/arch/mmu.h>
 .import start_cskyboot
 .import __text_start
 .global _main

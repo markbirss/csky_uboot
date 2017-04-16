@@ -24,7 +24,8 @@ config BLACKFIN
 	bool "Blackfin architecture"
 
 config CSKY
-    bool "CSKY architecture"
+	bool "CSKY architecture"
+	select CREATE_ARCH_SYMLINK
 
 config M68K
 	bool "M68000 architecture"

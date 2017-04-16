@@ -122,7 +122,7 @@ hw_vsr_autovec:
         stw     r2, (sp,0)         /* save epc register */
 
         /* read the interrupt vector number from interrupt status register */
-        lrw     r4, CK_INTC_BASEADDRESS
+        lrw     r4, INTC_BASEADDRESS
         ldw     r0, (r4, 0x0)
         movi    r10,0x7f
         and     r0, r10
@@ -148,7 +148,7 @@ hw_vsr_autovec:
         .balign 4
 hw_vsr_fastautovec:
         /*read the interrupt vector number from interrupt status register */
-        lrw     r4, CK_INTC_BASEADDRESS
+        lrw     r4, INTC_BASEADDRESS
         ldw     r0, (r4, 0x0)
         movi    r10,0x7f
         and     r0, r10

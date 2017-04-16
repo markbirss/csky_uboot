@@ -1,11 +1,14 @@
 /*
+ * Copyright (C) 2017 C-SKY Microsystems
+ *
+ * SPDX-License-Identifier:     GPL-2.0+
  */
 
 #ifndef __INTERRUPT_H_
 #define __INTERRUPT_H_
 
-#include <configs/eragon.h>
-#include "datatype.h"
+#include <asm/arch/hardware.h>
+#include <asm/datatype.h>
 
 /*
  * define the registers structure of the interrupt controller
@@ -14,18 +17,18 @@
 typedef struct CKS_INTC
 {
 	union {
-		CK_SREG		ICR;
-		CK_SREG		ISR;
+		volatile u16	ICR;
+		volatile u16	ISR;
 	};
-	CK_REG    Rev0;
-	CK_REG    IFR;
-	CK_REG    IPR;
-	CK_REG    NIER;
-	CK_REG    NIPR;
-	CK_REG    FIER;
-	CK_REG    FIPR;
-	CK_REG    Rev[8];
-	CK_REG    PR[8];
+	volatile u32	Rev0;
+	volatile u32	IFR;
+	volatile u32	IPR;
+	volatile u32	NIER;
+	volatile u32	NIPR;
+	volatile u32	FIER;
+	volatile u32	FIPR;
+	volatile u32	Rev[8];
+	volatile u32	PR[8];
 }CKStruct_INTC, *PCKStruct_INTC;
 
 /*
@@ -41,4 +44,4 @@ void enable_normalirq(int irq);
 void disable_normalirq(int irq);
 int disable_inerrupts(void);
 
-#endif /* CK_INTERRUPT_H_ */
+#endif /* __INTERRUPT_H_ */

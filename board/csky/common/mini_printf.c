@@ -1,16 +1,16 @@
-/******************************************************************************
- * @file     printf.c
- * @brief    The File for the printf function
- * @version  V1.0
- * @date     23. Dec 2016
- ******************************************************************************/
+/*
+ * Copyright (C) 2017 C-SKY Microsystems
+ *
+ * SPDX-License-Identifier:	GPL-2.0+
+ */
+
 #include <linux/string.h>
-#include <configs/eragon.h>
-#include <asm/arch-eragon/uart.h>
+#include <asm/arch/hardware.h>
+#include <asm/uart.h>
 #include <stdarg.h>
 #include <common.h>
 #include <serial.h>
-#include <asm/arch-eragon/mini_printf.h>
+#include <asm/mini_printf.h>
 /******************************************************
 *change the number to string
 *
@@ -126,7 +126,7 @@ void mini_puts(const char *s)
 int getchar(void)
 {
   char ch;
-  while(uart_get_char(CONSOLE_UART_BASE, (uint8_t *)&ch) != SUCCESS);
+  while(uart_get_char(CONSOLE_UART_BASE, (u8 *)&ch) != SUCCESS);
   return ch;
 }
 
@@ -138,7 +138,7 @@ int mini_printf ( const char *fmt, ... )
 {
   const char *s;
   int        value;
-  uint32_t        ptr;
+  u32        ptr;
   char       ch, buf[64], *pbuf;
   va_list    ap;
 

@@ -1,34 +1,18 @@
-/* ---------------------------------------------------------------------------
+/*
+ * Copyright (C) 2017 C-SKY Microsystems
  *
- * C-Sky Microsystems Confidential
- * -------------------------------
- * This file and all its contents are properties of C-Sky Microsystems. The
- * information contained herein is confidential and proprietary and is not
- * to be disclosed outside of C-Sky Microsystems except under a
- * Non-Disclosured Agreement (NDA).
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
- * THE POSSIBILITY OF SUCH DAMAGE.
- * --------------------------------------------------------------------------*/
+ * SPDX-License-Identifier:	GPL-2.0+
+ */
 
 #include <linux/string.h>
-#include <asm/arch-eragon/emmc_interface.h>
-#include <asm/arch-eragon/emmc_callback.h>
-#include <asm/arch-eragon/mini_printf.h>
+#include <asm/mmc/emmc_interface.h>
+#include <asm/mmc/emmc_callback.h>
+#include <asm/mini_printf.h>
 emmc_status_info_t emmc_status_info;
 card_info_t card_info;
 extern current_task_status_t current_task;
 
-uint32_t emmc_send_clock_only_cmd(void)
+u32 emmc_send_clock_only_cmd(void)
 {
     return emmc_execute_command(CLK_ONLY_CMD | CMD_WAIT_PRV_DAT_BIT, 0);
 }
@@ -36,9 +20,9 @@ uint32_t emmc_send_clock_only_cmd(void)
 /**
   * Enables all clocks to all card slots in the controller.
   */
-uint32_t emmc_enable_all_clocks(void)
+u32 emmc_enable_all_clocks(void)
 {
-    uint32_t clock_val;
+    u32 clock_val;
 
     clock_val = (1 << 1) - 1;
     clock_val |= (1 << 16);
@@ -49,13 +33,13 @@ uint32_t emmc_enable_all_clocks(void)
 /**
   * Disables all clocks to the controller.
   */
-uint32_t emmc_disable_all_clocks(void)
+u32 emmc_disable_all_clocks(void)
 {
     emmc_set_register(CLKENA, 0);
     return emmc_send_clock_only_cmd();
 }
 
-uint32_t emmc_enable_clocks_with_val(uint32_t val)
+u32 emmc_enable_clocks_with_val(u32 val)
 {
     emmc_set_register(CLKENA, val);
     return emmc_send_clock_only_cmd();
@@ -67,10 +51,10 @@ uint32_t emmc_enable_clocks_with_val(uint32_t val)
   * @param[in] divider The divider value.
   * \return 0 upon success. Error code upon failure.
   */
-uint32_t emmc_set_clk_freq(uint32_t divider)
+u32 emmc_set_clk_freq(u32 divider)
 {
-    uint32_t orig_clkena;
-    uint32_t retval;
+    u32 orig_clkena;
+    u32 retval;
 
     if (divider > MAX_DIVIDER_VALUE) {
         return 0xffffffff;
@@ -102,9 +86,9 @@ uint32_t emmc_set_clk_freq(uint32_t divider)
 This function is a blocking function. it reads the CMD register for CMD_MAX_RETRIES to
 see if the CMD_DONE_BIT is set to 0 by CIU
 */
-uint32_t emmc_poll_cmd_register(void)
+u32 emmc_poll_cmd_register(void)
 {
-    uint32_t num_of_retries = 0;
+    u32 num_of_retries = 0;
 
     while (1) {
         if (num_of_retries > CMD_MAX_RETRIES) {
@@ -127,16 +111,16 @@ uint32_t emmc_poll_cmd_register(void)
   * This function does the final part of sending commands.
   * It sets the CMD register and CMD ARG register
   */
-uint32_t emmc_execute_command(uint32_t cmd_register, uint32_t arg_register)
+u32 emmc_execute_command(u32 cmd_register, u32 arg_register)
 {
     emmc_set_register(CMDARG, arg_register);
     emmc_set_register(CMD, cmd_register);
     return (emmc_poll_cmd_register());
 }
 
-void emmc_send_raw_command(uint32_t slot, uint32_t cmd, uint32_t arg)
+void emmc_send_raw_command(u32 slot, u32 cmd, u32 arg)
 {
-    uint32_t buff_cmd;
+    u32 buff_cmd;
     buff_cmd = cmd | CMD_DONE_BIT;
     SET_CARD_NUM(buff_cmd, slot);
     emmc_execute_command(buff_cmd, arg);
@@ -149,7 +133,7 @@ void emmc_send_raw_command(uint32_t slot, uint32_t cmd, uint32_t arg)
   * emmc_send_raw_command to dispatch the command on the bus.
   * @param[in] slot The slot to which the command is to be sent.
   */
-void emmc_abort_trans_work(uint32_t slot)
+void emmc_abort_trans_work(u32 slot)
 {
     /* Send a raw command */
     emmc_send_raw_command(slot, CMD_USE_HOLD | CMD12 | CMD_RESP_EXP_BIT | CMD_ABRT_CMD_BIT, 0x00010000);
@@ -163,16 +147,16 @@ void emmc_abort_trans_work(uint32_t slot)
   * @param[in] the_interrupt_status the flags for which particular interrupts
  */
 
-uint32_t emmc_read_in_data(current_task_status_t *the_task_status, uint32_t the_interrupt_status)
+u32 emmc_read_in_data(current_task_status_t *the_task_status, u32 the_interrupt_status)
 {
-    uint32_t fifo_level;
-    uint8_t count = 0;
-    uint8_t *uint8_t_buffer = the_task_status->data_buffer + the_task_status->num_bytes_read;
+    u32 fifo_level;
+    u8 count = 0;
+    u8 *u8_buffer = the_task_status->data_buffer + the_task_status->num_bytes_read;
 
     fifo_level = (GET_FIFO_COUNT(emmc_read_register(STATUS)));
 
     while (fifo_level > 0) {
-        *((uint32_t *)(uint8_t_buffer + (count << 2))) = emmc_read_register(FIFODAT);
+        *((u32 *)(u8_buffer + (count << 2))) = emmc_read_register(FIFODAT);
         fifo_level--;
         count++;
     }
@@ -194,11 +178,11 @@ uint32_t emmc_read_in_data(current_task_status_t *the_task_status, uint32_t the_
   * @param[in] the_interrupt_status The value of the interrupt flags.
   */
 
-uint32_t emmc_write_out_data(current_task_status_t *the_task_status, uint32_t the_interrupt_status)
+u32 emmc_write_out_data(current_task_status_t *the_task_status, u32 the_interrupt_status)
 {
-    uint32_t *buffer = (uint32_t *)(the_task_status->data_buffer + the_task_status->num_bytes_read);
-    uint32_t len;
-    uint32_t the_size = the_task_status->blksize * the_task_status->num_of_blocks - the_task_status->num_bytes_read;
+    u32 *buffer = (u32 *)(the_task_status->data_buffer + the_task_status->num_bytes_read);
+    u32 len;
+    u32 the_size = the_task_status->blksize * the_task_status->num_of_blocks - the_task_status->num_bytes_read;
 
     len = FIFO_WIDTH - (GET_FIFO_COUNT(emmc_read_register(STATUS)));
 
@@ -227,9 +211,9 @@ uint32_t emmc_write_out_data(current_task_status_t *the_task_status, uint32_t th
   *
   * \return The error status if an error is found in the response. Else 0.
   */
-uint32_t emmc_check_r1_resp(uint32_t the_response)
+u32 emmc_check_r1_resp(u32 the_response)
 {
-    uint32_t retval = 0;
+    u32 retval = 0;
 
     if (the_response & R1CS_ERROR_OCCURED_MAP) {
 #if (MMC_DEBUG == 1)
@@ -296,9 +280,9 @@ void emmc_reset_fifo(void)
     return;
 }
 
-uint32_t emmc_wait_cmd(emmc_postproc_callback the_callback)
+u32 emmc_wait_cmd(emmc_postproc_callback the_callback)
 {
-    uint32_t status, int_status;
+    u32 status, int_status;
 
     /* Read the masked interrupt status to see what interrupt has occured */
     int_status = emmc_read_register(RINTSTS);
@@ -331,8 +315,8 @@ uint32_t emmc_wait_cmd(emmc_postproc_callback the_callback)
   * setup the flag idma_mode_on to indicate the ISR that the present transfer
   * uses IDMAC flow rather than Slave mode flow.
   */
-uint32_t emmc_cmd_to_host(uint32_t slot, uint32_t cmd_register, uint32_t arg_register, uint32_t *resp_buffer,
-                          uint8_t *data_buffer, emmc_postproc_callback the_callback, uint32_t flags)
+u32 emmc_cmd_to_host(u32 slot, u32 cmd_register, u32 arg_register, u32 *resp_buffer,
+                          u8 *data_buffer, emmc_postproc_callback the_callback, u32 flags)
 {
     /* update the task status with call back, response buffer,
        data buffer,error_status,cmd_status,bus_corruption_occured,...
@@ -360,16 +344,16 @@ This function is used to form the command with the parameters sent to this
  @param[in] data_buffer
  @param[in] flags
 */
-uint32_t emmc_send_serial_command(uint32_t card_num, uint32_t cmd_index, uint32_t cmd_arg,
-                                  uint32_t *resp_buffer, uint8_t *data_buffer, uint32_t flags)
+u32 emmc_send_serial_command(u32 card_num, u32 cmd_index, u32 cmd_arg,
+                                  u32 *resp_buffer, u8 *data_buffer, u32 flags)
 {
-    uint32_t cmd_register = 0;
+    u32 cmd_register = 0;
     emmc_postproc_callback post_callback = NULL;
     emmc_preproc_callback preproc_fn = NULL;
-    uint32_t arg_register = cmd_arg;
+    u32 arg_register = cmd_arg;
 
     /* First time make the previous divider a maximum value.*/
-    static uint32_t previous_divider = 0xff;
+    static u32 previous_divider = 0xff;
 
     /* whether post_callback is from table or custom_callback? */
 
@@ -406,9 +390,9 @@ uint32_t emmc_send_serial_command(uint32_t card_num, uint32_t cmd_index, uint32_
   * @param[out] status The status of the card is populated in this argument.
   * \return Returns 0 on success. Error status upon error.
   */
-uint32_t emmc_get_status_of_card(uint32_t slot, card_state_e *status)
+u32 emmc_get_status_of_card(u32 slot, card_state_e *status)
 {
-    uint32_t resp_buffer, retval = 0;
+    u32 resp_buffer, retval = 0;
 
     /* Pick up the status from a R1 response */
     if ((retval = emmc_send_serial_command(slot, CMD13, 0x00010000, &resp_buffer, NULL, 0))) {
@@ -431,9 +415,9 @@ uint32_t emmc_get_status_of_card(uint32_t slot, card_state_e *status)
   * @param[in] slot The specified card
   * \return Returns 0 upon success. Error status upon error.
   */
-uint32_t emmc_put_in_trans_state(uint32_t slot)
+u32 emmc_put_in_trans_state(u32 slot)
 {
-    uint32_t retval = 0, resp_buffer;
+    u32 retval = 0, resp_buffer;
     card_state_e the_state;
 
 
@@ -480,11 +464,11 @@ uint32_t emmc_put_in_trans_state(uint32_t slot)
   * @param[in] area emmc boot area
   * return Returns 0 upon success. Error status upon error
   */
-uint32_t emmc_select_area(uint32_t slot , emmc_area_e area)
+u32 emmc_select_area(u32 slot , emmc_area_e area)
 {
-    uint32_t arg_value = 0;
-    uint32_t resp_buff;
-    uint32_t retval = 0;
+    u32 arg_value = 0;
+    u32 resp_buff;
+    u32 retval = 0;
 
     switch (area) {
         case EMMC_BOOT_PARTITION_1:
@@ -532,9 +516,9 @@ uint32_t emmc_select_area(uint32_t slot , emmc_area_e area)
   * @param[in] slot The slot in which the card is
   * \return Returns 0 upon succes and error status upon failure
   */
-uint32_t emmc_set_mmc_voltage_range(uint32_t slot)
+u32 emmc_set_mmc_voltage_range(u32 slot)
 {
-    uint32_t retval = 0, resp_buffer, new_ocr = 0;
+    u32 retval = 0, resp_buffer, new_ocr = 0;
     int count = CMD1_RETRY_COUNT;
 
     /* Check if it is in the correct state */
@@ -586,9 +570,9 @@ uint32_t emmc_set_mmc_voltage_range(uint32_t slot)
   * @param slot The slot number for the card
   * \return Returns 0 on success and error code upon return.
   */
-uint32_t emmc_get_cid(uint32_t slot)
+u32 emmc_get_cid(u32 slot)
 {
-    uint32_t buffer_reg, retval = 0;
+    u32 buffer_reg, retval = 0;
     int count;
     //char product_name[7];
     //int product_revision[2];
@@ -663,10 +647,10 @@ uint32_t emmc_get_cid(uint32_t slot)
   * @param[in] slot The specified slot
   * \return 0 upon success. The error status upon error.
   */
-uint32_t emmc_set_rca(uint32_t slot)
+u32 emmc_set_rca(u32 slot)
 {
-    uint32_t buffer_reg, resp_buffer, retval = 0;
-    uint32_t the_rca;
+    u32 buffer_reg, resp_buffer, retval = 0;
+    u32 the_rca;
 
     /* Check if the card is connected */
     buffer_reg = emmc_read_register(CDETECT);
@@ -697,12 +681,12 @@ uint32_t emmc_set_rca(uint32_t slot)
   * @param[in] slot The specified slot.
   * \return 0 upon success. The error status upon error.
   */
-uint32_t emmc_process_MMC_csd(uint32_t slot)
+u32 emmc_process_MMC_csd(u32 slot)
 {
-    uint32_t buffer_reg, retval;
-    uint32_t read_block_size, write_block_size;
-    uint32_t card_size;
-    uint32_t blocknr, blocklen;
+    u32 buffer_reg, retval;
+    u32 read_block_size, write_block_size;
+    u32 card_size;
+    u32 blocknr, blocklen;
 
     buffer_reg = emmc_read_register(CDETECT);
 
@@ -756,9 +740,9 @@ mini_printf("%x,%x,%x,%x\n",card_info.the_csd[0],card_info.the_csd[1],card_info.
   * to receive any data.
   * @param[in] slot The slot for the card
   */
-uint32_t emmc_is_card_ready_for_data(uint32_t slot)
+u32 emmc_is_card_ready_for_data(u32 slot)
 {
-    uint32_t resp_buffer, retval = 0;
+    u32 resp_buffer, retval = 0;
     int count;
 
     for (count = 0; count < READY_FOR_DATA_RETRIES; count++) {
@@ -833,14 +817,14 @@ uint32_t emmc_is_card_ready_for_data(uint32_t slot)
   * \return Returns 0 on successful read and error status
      upon error.
   */
-uint32_t emmc_read_write_bytes(uint32_t slot, uint32_t *resp_buffer,
-                               uint8_t *data_buffer, uint32_t start, uint32_t end,
-                               uint32_t argreg, uint32_t read_or_write,
-                               uint32_t custom_command)
+u32 emmc_read_write_bytes(u32 slot, u32 *resp_buffer,
+                               u8 *data_buffer, u32 start, u32 end,
+                               u32 argreg, u32 read_or_write,
+                               u32 custom_command)
 {
-    uint32_t retval = 0;
-    uint32_t num_of_blocks, command_to_send, num_of_primary_dwords = 0, the_block_size;
-    uint32_t arg_to_send;
+    u32 retval = 0;
+    u32 num_of_blocks, command_to_send, num_of_primary_dwords = 0, the_block_size;
+    u32 arg_to_send;
 
     /* Check if the card is inserted */
     if (emmc_read_register(CDETECT) & (1 << slot)) {
@@ -1017,11 +1001,11 @@ HOUSEKEEP:
   * Reads in the Ext CSD for the card and stores it in the card_info structure.
   * @param[in] slot The slot for the card for which the EXT CSD is to be read
   */
-uint32_t emmc_process_extcsd(uint32_t slot)
+u32 emmc_process_extcsd(u32 slot)
 {
-    uint32_t i = 0;
-    uint8_t *the_extcsd_buffer = card_info.the_extcsd_bytes;
-    uint32_t resp[4], retval;
+    u32 i = 0;
+    u8 *the_extcsd_buffer = card_info.the_extcsd_bytes;
+    u32 resp[4], retval;
 
     if (emmc_read_register(CDETECT) & (1 << slot)) {
         return ERRCARDNOTCONN;
@@ -1064,12 +1048,12 @@ uint32_t emmc_process_extcsd(uint32_t slot)
   * \return Returns 0 upon success and the error status upon failure.
   * \callgraph
   */
-uint32_t emmc_reset_mmc_card(uint32_t slot)
+u32 emmc_reset_mmc_card(u32 slot)
 {
-    uint32_t buffer_reg;
-    uint32_t retval = 0;
+    u32 buffer_reg;
+    u32 retval = 0;
     /*value to configure the clock divider for data transfer*/
-    uint32_t clock_freq_to_set = ONE_BIT_BUS_FREQ;
+    u32 clock_freq_to_set = ONE_BIT_BUS_FREQ;
 
     /* Check if the card is connected */
     buffer_reg = emmc_read_register(CDETECT);
@@ -1153,11 +1137,11 @@ HOUSEKEEP:
  *  The caller of the function is responsible for the size.
  */
 
-uint32_t emmc_read_write_block(uint32_t slot, uint32_t start_sect, uint8_t *buffer,
-                               uint32_t num_of_sects, uint32_t read_or_write, uint32_t sect_size)
+u32 emmc_read_write_block(u32 slot, u32 start_sect, u8 *buffer,
+                               u32 num_of_sects, u32 read_or_write, u32 sect_size)
 {
-    uint32_t retval = 0;
-    uint32_t resp_buff[4];
+    u32 retval = 0;
+    u32 resp_buff[4];
 
     retval = emmc_read_write_bytes(slot, resp_buff, buffer,
                                    start_sect * sect_size,
@@ -1178,9 +1162,9 @@ uint32_t emmc_read_write_block(uint32_t slot, uint32_t start_sect, uint8_t *buff
   *	@param[in] slot The index of the slot in which the card is in.
   *	return Returns the card type found.
   */
-card_type_e emmc_get_card_type(uint32_t slot)
+card_type_e emmc_get_card_type(u32 slot)
 {
-    uint32_t buffer_reg, retval;
+    u32 buffer_reg, retval;
 
     /*Read the CDETECT bit 0 => card connected. Note this is not true for CEATA so you find a hack in the emmc_read_register() */
     buffer_reg = emmc_read_register(CDETECT);
@@ -1236,11 +1220,11 @@ CONT_MMC:
 }
 #endif
 
-uint32_t emmc_set_bus_width(uint32_t slot)
+u32 emmc_set_bus_width(u32 slot)
 {
-    uint32_t arg_value = 0;
-    uint32_t resp_buff;
-    uint32_t retval = 0;
+    u32 arg_value = 0;
+    u32 resp_buff;
+    u32 retval = 0;
 
     arg_value = 2 << 8   | ARG_BUSWIDTH_ACCESS_WRITE | ARG_BUSWIDTH_INDEX ;
 
@@ -1259,12 +1243,12 @@ uint32_t emmc_set_bus_width(uint32_t slot)
     return 0;
 }
 
-uint32_t emmc_host_init(card_info_t *emmc_card_info)
+u32 emmc_host_init(card_info_t *emmc_card_info)
 {
-    uint32_t buffer_reg = 0;	/* multipurpose buffer register */
-    uint32_t num_of_cards;
-    uint32_t retval = 0;
-    uint32_t slot_num;
+    u32 buffer_reg = 0;	/* multipurpose buffer register */
+    u32 num_of_cards;
+    u32 retval = 0;
+    u32 slot_num;
     card_type_e card_type;
 
     //PDEBUG("Starting emmc_init\n");
@@ -1363,14 +1347,14 @@ uint32_t emmc_host_init(card_info_t *emmc_card_info)
     return ERRCARDNOTFOUND;
 }
 
-void emmc_emmc_read(uint8_t slot_id, uint32_t from, uint32_t len, uint8_t *buf)
+void emmc_emmc_read(u8 slot_id, u32 from, u32 len, u8 *buf)
 {
     emmc_read_write_block(slot_id, from, buf, 1, 0, 512);
 }
 
-void emmc_emmc_write(uint8_t slot_id, uint32_t to, uint32_t len, const uint8_t *buf)
+void emmc_emmc_write(u8 slot_id, u32 to, u32 len, const u8 *buf)
 {
-    emmc_read_write_block(slot_id, to, (uint8_t *)buf, 1, 1, 512);
+    emmc_read_write_block(slot_id, to, (u8 *)buf, 1, 1, 512);
 }
 
 #define EMMC_FLASH_PAGE_SIZE   512       // 512B

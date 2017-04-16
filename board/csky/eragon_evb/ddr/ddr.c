@@ -130,7 +130,7 @@
 //version       :1.16
 //note          :
 //1.if ddr has already initialize,do not initialize,return immediately
-#include <asm/arch-eragon/ddr.h>
+#include <asm/arch/ddr.h>
 
 //FPGA mode
 #define FPGA

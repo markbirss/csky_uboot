@@ -15,7 +15,6 @@
 #include <errno.h>
 #include <mmc.h>
 #include <image.h>
-#include <asm/arch-eragon/mini_printf.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -88,8 +87,7 @@ static int mmc_load_image_raw_sector(struct mmc *mmc, unsigned long sector)
 end:
 	if (ret) {
 #ifdef CONFIG_SPL_LIBCOMMON_SUPPORT
-//		puts("mmc_load_image_raw_sector: mmc block read error\n");
-		mini_printf("mmc_load_image_raw_sector: mmc block read error\n");
+		puts("mmc_load_image_raw_sector: mmc block read error\n");
 #endif
 		return -1;
 	}
@@ -122,16 +120,13 @@ static int spl_mmc_find_device(struct mmc **mmcp, u32 boot_device)
 	int err, mmc_dev;
 
 	mmc_dev = spl_mmc_get_device_index(boot_device);
-	mini_printf("the mmc_dev = %d\n", mmc_dev);
 	if (mmc_dev < 0)
 		return mmc_dev;
 
 	err = mmc_initialize(NULL);
-	mini_printf("the err = %d\n", err);
 	if (err) {
 #ifdef CONFIG_SPL_LIBCOMMON_SUPPORT
-//		printf("spl: could not initialize mmc. error: %d\n", err);
-		mini_printf("spl: could not initialize mmc. error: %d\n", err);
+		printf("spl: could not initialize mmc. error: %d\n", err);
 #endif
 		return err;
 	}
@@ -146,8 +141,7 @@ static int spl_mmc_find_device(struct mmc **mmcp, u32 boot_device)
 #endif
 	if (err) {
 #ifdef CONFIG_SPL_LIBCOMMON_SUPPORT
-//		printf("spl: could not find mmc device. error: %d\n", err);
-		mini_printf("spl: could not find mmc device. error: %d\n", err);
+		printf("spl: could not find mmc device. error: %d\n", err);
 #endif
 		return err;
 	}
@@ -164,8 +158,7 @@ static int mmc_load_image_raw_partition(struct mmc *mmc, int partition)
 	err = part_get_info(&mmc->block_dev, partition, &info);
 	if (err) {
 #ifdef CONFIG_SPL_LIBCOMMON_SUPPORT
-//		puts("spl: partition error\n");
-		mini_printf("spl: partition error\n");
+		puts("spl: partition error\n");
 #endif
 		return -1;
 	}
@@ -197,8 +190,7 @@ static int mmc_load_image_raw_os(struct mmc *mmc)
 		(void *) CONFIG_SYS_SPL_ARGS_ADDR);
 	if (count == 0) {
 #ifdef CONFIG_SPL_LIBCOMMON_SUPPORT
-//		puts("mmc_load_image_raw_os: mmc block read error\n");
-		mini_printf("mmc_load_image_raw_os: mmc block read error\n");
+		puts("mmc_load_image_raw_os: mmc block read error\n");
 #endif
 		return -1;
 	}
@@ -283,15 +275,13 @@ int spl_mmc_load_image(u32 boot_device)
 	__maybe_unused int part;
 
 	err = spl_mmc_find_device(&mmc, boot_device);
-	mini_printf("the err = %d\n", err);
 	if (err)
 		return err;
 
 	err = mmc_init(mmc);
 	if (err) {
 #ifdef CONFIG_SPL_LIBCOMMON_SUPPORT
-//		printf("spl: mmc init failed with error: %d\n", err);
-		mini_printf("spl: mmc init failed with error: %d\n", err);
+		printf("spl: mmc init failed with error: %d\n", err);
 #endif
 		return err;
 	}

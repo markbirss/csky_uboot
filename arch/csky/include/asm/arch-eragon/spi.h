@@ -1,101 +1,74 @@
-/******************************************************************************
- * @file     spi.c
- * @brief    The Head File for the spi interface
- * @version  V1.0
- * @date     23. Dec 2016
- ******************************************************************************/
-/* ---------------------------------------------------------------------------
- * Copyright (C) 2016 CSKY Limited. All rights reserved.
+/*
+ * Copyright (C) 2017 C-SKY Microsystems
  *
- * Redistribution and use of this software in source and binary forms,
- * with or without modification, are permitted provided that the following
- * conditions are met:
- *   * Redistributions of source code must retain the above copyright notice,
- *     this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above copyright notice,
- *     this list of conditions and the following disclaimer in the documentation
- *     and/or other materials provided with the distribution.
- *   * Neither the name of CSKY Ltd. nor the names of CSKY's contributors may
- *     be used to endorse or promote products derived from this software without
- *     specific prior written permission of CSKY Ltd.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
- * THE POSSIBILITY OF SUCH DAMAGE.
- * -------------------------------------------------------------------------- */
+ * SPDX-License-Identifier:	GPL-2.0+
+ */
 
 #ifndef __SPI_H__
 #define __SPI_H__
 
 #include "datatype.h"
-#include <configs/eragon.h>
+#include <asm/types.h>
+#include <asm/arch/hardware.h>
 
-#define CK_SPI              CK_SPI0
+#define SPI              SPI0
 typedef enum{
-    CK_SPI0 = CK_SPI0_ADDRBASE,
-    CK_SPI1 = CK_SPI1_ADDRBASE,
+    SPI0 = SPI0_BASEADDR,
+    SPI1 = SPI1_BASEADDR,
 }enum_spi_device_t;
 
 typedef enum{
-    CK_SPI_TXRX = 0,
-    CK_SPI_TX = 1,
-    CK_SPI_RX = 2,
-    CK_SPI_EERX=3
+    SPI_TXRX = 0,
+    SPI_TX = 1,
+    SPI_RX = 2,
+    SPI_EERX=3
 }enum_spi_mode_t;
 
 typedef enum{
-    CK_SPI_CLOCK_POLARITY_LOW = 0,
-    CK_SPI_CLOCK_POLARITY_HIGH = 1
+    SPI_CLOCK_POLARITY_LOW = 0,
+    SPI_CLOCK_POLARITY_HIGH = 1
 }enum_spi_polarity_t;
 
 typedef enum{
-    CK_SPI_CLOCK_PHASE_MIDDLE = 0,
-    CK_SPI_CLOCK_PHASE_START = 1
+    SPI_CLOCK_PHASE_MIDDLE = 0,
+    SPI_CLOCK_PHASE_START = 1
 }enum_spi_phase_t;
 
 typedef enum{
-    CK_SPI_DataSize_4 = 3,
-    CK_SPI_DataSize_5 = 4,
-    CK_SPI_DataSize_6 = 5,
-    CK_SPI_DataSize_7 = 6,
-    CK_SPI_DataSize_8 = 7,
-    CK_SPI_DataSize_9 =  8,
-    CK_SPI_DataSize_10 = 9,
-    CK_SPI_DataSize_11 = 10,
-    CK_SPI_DataSize_12 = 11,
-    CK_SPI_DataSize_13 = 12,
-    CK_SPI_DataSize_14 = 13,
-    CK_SPI_DataSize_15 = 14,
-    CK_SPI_DataSize_16 = 15
+    SPI_DataSize_4 = 3,
+    SPI_DataSize_5 = 4,
+    SPI_DataSize_6 = 5,
+    SPI_DataSize_7 = 6,
+    SPI_DataSize_8 = 7,
+    SPI_DataSize_9 =  8,
+    SPI_DataSize_10 = 9,
+    SPI_DataSize_11 = 10,
+    SPI_DataSize_12 = 11,
+    SPI_DataSize_13 = 12,
+    SPI_DataSize_14 = 13,
+    SPI_DataSize_15 = 14,
+    SPI_DataSize_16 = 15
 }enum_spi_datawidth_t;
 
 
 typedef enum{
-    CK_SPI_CS0 = 1,
-    CK_SPI_CS1 = 2
+    SPI_CS0 = 1,
+    SPI_CS1 = 2
 }enum_spi_slave_t;
 
 
 typedef enum{
-    CK_SPI_TxComplete = 0,
-    CK_SPI_RxComplete = 1,
-    CK_SPI_Rx_Overflow = 2,
-    CK_SPI_DMATransfer_Complete = 3,
-    CK_SPI_DMATransfer_Error = 4
+    SPI_TxComplete = 0,
+    SPI_RxComplete = 1,
+    SPI_Rx_Overflow = 2,
+    SPI_DMATransfer_Complete = 3,
+    SPI_DMATransfer_Error = 4
 }enum_spi_error_t;
 
 
 typedef enum{
-    CK_SPI_DMA_RX,
-    CL_SPI_DMA_TX
+    SPI_DMA_RX,
+    SPI_DMA_TX
 }enum_spi_direction_t;
 
 /* definations of functions */
@@ -107,14 +80,14 @@ typedef enum{
  *   slave: choose the corresponding slave
  * return: SUCCESS or FAILURE.
  */
-uint8_t spi_disable_slave(enum_spi_device_t id,enum_spi_slave_t slave);
+u8 spi_disable_slave(enum_spi_device_t id,enum_spi_slave_t slave);
 /*
  * disable the spi.
  * Parameters:
  *   id: the spi id.
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_disable(enum_spi_device_t id);
+s32 spi_disable(enum_spi_device_t id);
 /*
  * set the recieve num.
  * Parameters:
@@ -122,14 +95,14 @@ int32_t spi_disable(enum_spi_device_t id);
  *   num: recieve data num.
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_set_ndf(enum_spi_device_t id,uint32_t num);
+s32 spi_set_ndf(enum_spi_device_t id,u32 num);
 /*
  * enable the spi.
  * Parameters:
  *   id: the spi id.
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_enable(enum_spi_device_t id);
+s32 spi_enable(enum_spi_device_t id);
 
 
 /*
@@ -139,14 +112,14 @@ int32_t spi_enable(enum_spi_device_t id);
  *     serial clock polarity - low
  *     serial clock phase - middle
  * Set the SPI irqhandler and register it into interrupt controller. Disable
- * the interrupts. Set the opening sign in CK_SPIInfo.
+ * the interrupts. Set the opening sign in SPIInfo.
  * Parameters:
  *   id - SPI ID
  *   handler -
  *   bfast -
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_open(
+s32 spi_open(
     enum_spi_device_t spiid
     );
 
@@ -161,7 +134,7 @@ int32_t spi_open(
  * Author: Yun Ye (yun_ye@c-sky.com)
  * Date: Otc 13, 2008.
  */
-int32_t spi_close(enum_spi_device_t spiid);
+s32 spi_close(enum_spi_device_t spiid);
 
 /*
  * Set the transfer mode of spi.
@@ -170,7 +143,7 @@ int32_t spi_close(enum_spi_device_t spiid);
  *   mode - has three modes: transmit&receive, transmit only, and receive only.
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_set_mode(
+s32 spi_set_mode(
     enum_spi_device_t spiid,
     enum_spi_mode_t mode
     );
@@ -182,7 +155,7 @@ int32_t spi_set_mode(
  *   polarity - serial clock polarity.
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_set_polarity(
+s32 spi_set_polarity(
     enum_spi_device_t spiid,
     enum_spi_polarity_t polarity
     );
@@ -197,7 +170,7 @@ int32_t spi_set_polarity(
  *   phase - serial clock phase
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_set_phase(
+s32 spi_set_phase(
     enum_spi_device_t spiid,
     enum_spi_phase_t phase
     );
@@ -216,7 +189,7 @@ int32_t spi_set_phase(
  *   datawidth - data frame size
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_set_datawidth(
+s32 spi_set_datawidth(
     enum_spi_device_t spiid,
     enum_spi_datawidth_t datawidth
     );
@@ -230,9 +203,9 @@ int32_t spi_set_datawidth(
  *   baudrate - transfer speed to be set
  * return: SUCCESS or FAILURE.
  */
-int32_t spi_set_baudrate(
+s32 spi_set_baudrate(
     enum_spi_device_t spiid,
-    uint32_t baudrate
+    u32 baudrate
     );
 
 /*
@@ -246,13 +219,13 @@ int32_t spi_set_baudrate(
  *   rx_length - length of data to be received
  *return:
  */
-uint8_t spi_transfer(
+u8 spi_transfer(
     enum_spi_device_t spiid,
     enum_spi_slave_t slave,
-    uint8_t *ptx_buffer,
-    uint8_t tx_length,
-    uint8_t *prx_buffer,
-    uint32_t rx_length
+    u8  *ptx_buffer,
+    u8  tx_length,
+    u8  *prx_buffer,
+    u32 rx_length
     );
 
 /*
@@ -266,13 +239,13 @@ uint8_t spi_transfer(
  *    itxlength - length of datas to be transmitted.
  * Return: NONE
  */
-uint32_t spi_send_query(
+u32 spi_send_query(
        enum_spi_device_t spiid,
        enum_spi_slave_t slave,
-       uint8_t *ptxbuffer,
-       uint16_t txlength);
+       u8 *ptxbuffer,
+       u16 txlength);
 
-uint8_t spi_set_transfer_threshold(enum_spi_device_t spiid,uint8_t txftlr,uint8_t rxftlr);
+u8 spi_set_transfer_threshold(enum_spi_device_t spiid,u8 txftlr, u8 rxftlr);
 
 /*
  * transfer the spi and slave by query mode.
@@ -285,13 +258,13 @@ uint8_t spi_set_transfer_threshold(enum_spi_device_t spiid,uint8_t txftlr,uint8_
  *   rx_length: the recieve data length.
  * return: SUCCESS or FAILURE.
  */
-uint8_t spi_transfer_query(
+u8 spi_transfer_query(
     enum_spi_device_t spiid,
     enum_spi_slave_t slave,
-    uint8_t *ptx_buffer,
-    uint8_t tx_length,
-    uint8_t *prx_buffer,
-    uint32_t rx_length
+    u8  *ptx_buffer,
+    u8  tx_length,
+    u8  *prx_buffer,
+    u32 rx_length
     );
 #endif
 

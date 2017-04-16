@@ -20,6 +20,7 @@
 #include <linux/compiler.h>
 
 DECLARE_GLOBAL_DATA_PTR;
+
 #ifndef CONFIG_SYS_UBOOT_START
 #define CONFIG_SYS_UBOOT_START	CONFIG_SYS_TEXT_BASE
 #endif
@@ -235,7 +236,7 @@ static u32 spl_boot_list[] = {
 
 __weak void board_boot_order(u32 *spl_boot_list)
 {
-//	spl_boot_list[0] = spl_boot_device();
+	spl_boot_list[0] = spl_boot_device();
 }
 
 #ifdef CONFIG_SPL_BOARD_LOAD_IMAGE

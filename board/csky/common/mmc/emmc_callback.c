@@ -1,27 +1,11 @@
-/* ---------------------------------------------------------------------------
+/*
+ * Copyright (C) 2017 C-SKY Microsystems
  *
- * C-Sky Microsystems Confidential
- * -------------------------------
- * This file and all its contents are properties of C-Sky Microsystems. The
- * information contained herein is confidential and proprietary and is not
- * to be disclosed outside of C-Sky Microsystems except under a
- * Non-Disclosured Agreement (NDA).
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
- * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
- * THE POSSIBILITY OF SUCH DAMAGE.
- * --------------------------------------------------------------------------*/
+ * SPDX-License-Identifier:	GPL-2.0+
+ */
 
-#include <asm/arch-eragon/emmc_callback.h>
-#include <asm/arch-eragon/emmc_interface.h>
+#include <asm/mmc/emmc_callback.h>
+#include <asm/mmc/emmc_interface.h>
 
 typedef struct {
     emmc_preproc_callback preproc;
@@ -29,14 +13,14 @@ typedef struct {
 } callback_t;
 
 typedef struct {
-    uint32_t cmd_index;
+    u32 cmd_index;
     callback_t the_callbacks;
 } callback_search_table;
 
 current_task_status_t current_task;
 
-static void no_response_preproc(uint32_t card_num, uint32_t cmd_index,
-                                uint32_t *cmd_reg, uint32_t *arg_reg)
+static void no_response_preproc(u32 card_num, u32 cmd_index,
+                                u32 *cmd_reg, u32 *arg_reg)
 {
     UNSET_BITS(*cmd_reg, CMD_ABRT_CMD_BIT);
     UNSET_BITS(*cmd_reg, CMD_RESP_EXP_BIT);
@@ -52,14 +36,14 @@ static void no_response_preproc(uint32_t card_num, uint32_t cmd_index,
 
 }
 
-static void no_response_preproc_abrt(uint32_t card_num, uint32_t cmd_index,
-                                     uint32_t *cmd_reg, uint32_t *arg_reg)
+static void no_response_preproc_abrt(u32 card_num, u32 cmd_index,
+                                     u32 *cmd_reg, u32 *arg_reg)
 {
     no_response_preproc(card_num, cmd_index, cmd_reg, arg_reg);
     SET_BITS(*cmd_reg, CMD_ABRT_CMD_BIT);
 }
-static void long_response_preproc(uint32_t card_num, uint32_t cmd_index,
-                                  uint32_t *cmd_reg, uint32_t *arg_reg)
+static void long_response_preproc(u32 card_num, u32 cmd_index,
+                                  u32 *cmd_reg, u32 *arg_reg)
 {
     UNSET_BITS(*cmd_reg, CMD_ABRT_CMD_BIT);
     SET_BITS(*cmd_reg, CMD_RESP_EXP_BIT);
@@ -75,8 +59,8 @@ static void long_response_preproc(uint32_t card_num, uint32_t cmd_index,
     SET_CMD_INDEX(*cmd_reg, cmd_index);
 }
 
-static void short_response_preproc(uint32_t card_num, uint32_t cmd_index,
-                                   uint32_t *cmd_reg, uint32_t *arg_reg)
+static void short_response_preproc(u32 card_num, u32 cmd_index,
+                                   u32 *cmd_reg, u32 *arg_reg)
 {
     SET_BITS(*cmd_reg, CMD_RESP_EXP_BIT);
     UNSET_BITS(*cmd_reg, CMD_RESP_LENGTH_BIT);
@@ -89,22 +73,22 @@ static void short_response_preproc(uint32_t card_num, uint32_t cmd_index,
     SET_CMD_INDEX(*cmd_reg, cmd_index);
     SET_CARD_NUM(*cmd_reg, card_num);
 }
-static void short_response_preproc_abrt(uint32_t card_num, uint32_t cmd_index,
-                                        uint32_t *cmd_reg, uint32_t *arg_reg)
+static void short_response_preproc_abrt(u32 card_num, u32 cmd_index,
+                                        u32 *cmd_reg, u32 *arg_reg)
 {
     short_response_preproc(card_num, cmd_index, cmd_reg, arg_reg);
     SET_BITS(*cmd_reg, CMD_ABRT_CMD_BIT);
 }
 
-static void short_response_preproc_with_init(uint32_t card_num, uint32_t cmd_index,
-        uint32_t *cmd_reg, uint32_t *arg_reg)
+static void short_response_preproc_with_init(u32 card_num, u32 cmd_index,
+        u32 *cmd_reg, u32 *arg_reg)
 {
     short_response_preproc(card_num, cmd_index, cmd_reg, arg_reg);
 }
 
-static void short_response_block_data_preproc(uint32_t card_num,
-        uint32_t cmd_index,
-        uint32_t *cmd_reg, uint32_t *arg_reg)
+static void short_response_block_data_preproc(u32 card_num,
+        u32 cmd_index,
+        u32 *cmd_reg, u32 *arg_reg)
 {
     short_response_preproc(card_num, cmd_index, cmd_reg, arg_reg);
     SET_BITS(*cmd_reg, CMD_DATA_EXP_BIT);
@@ -124,19 +108,19 @@ static void short_response_block_data_preproc(uint32_t card_num,
 }
 
 
-static void short_response_block_data_preproc_noac(uint32_t card_num,
-        uint32_t cmd_index,
-        uint32_t *cmd_reg,
-        uint32_t *arg_reg)
+static void short_response_block_data_preproc_noac(u32 card_num,
+        u32 cmd_index,
+        u32 *cmd_reg,
+        u32 *arg_reg)
 {
     short_response_block_data_preproc(card_num, cmd_index, cmd_reg, arg_reg);
     UNSET_BITS(*cmd_reg, CMD_SENT_AUTO_STOP_BIT);
 }
 
-static void short_response_block_write_preproc(uint32_t card_num,
-        uint32_t cmd_index,
-        uint32_t *cmd_reg,
-        uint32_t *arg_reg)
+static void short_response_block_write_preproc(u32 card_num,
+        u32 cmd_index,
+        u32 *cmd_reg,
+        u32 *arg_reg)
 {
     short_response_preproc(card_num, cmd_index, cmd_reg, arg_reg);
     SET_BITS(*cmd_reg, CMD_DATA_EXP_BIT);
@@ -157,39 +141,39 @@ static void short_response_block_write_preproc(uint32_t card_num,
 }
 #ifdef CONFIG_SUPPORT_ALL_EMMC_CMD
 
-static void short_response_stream_write_preproc(uint32_t card_num,
-        uint32_t cmd_index,
-        uint32_t *cmd_reg,
-        uint32_t *arg_reg)
+static void short_response_stream_write_preproc(u32 card_num,
+        u32 cmd_index,
+        u32 *cmd_reg,
+        u32 *arg_reg)
 {
     short_response_block_write_preproc(card_num, cmd_index, cmd_reg, arg_reg);
     SET_BITS(*cmd_reg, CMD_TRANSMODE_BIT);
 }
 
-static void short_response_block_write_preproc_noac(uint32_t card_num,
-        uint32_t cmd_index,
-        uint32_t *cmd_reg,
-        uint32_t *arg_reg)
+static void short_response_block_write_preproc_noac(u32 card_num,
+        u32 cmd_index,
+        u32 *cmd_reg,
+        u32 *arg_reg)
 {
     short_response_block_write_preproc(card_num, cmd_index, cmd_reg, arg_reg);
     UNSET_BITS(*cmd_reg, CMD_SENT_AUTO_STOP_BIT);
 }
 #endif
-static void short_response_rca_preproc(uint32_t card_num, uint32_t cmd_index,
-                                       uint32_t *cmd_reg, uint32_t *arg_reg)
+static void short_response_rca_preproc(u32 card_num, u32 cmd_index,
+                                       u32 *cmd_reg, u32 *arg_reg)
 {
     short_response_preproc(card_num, cmd_index, cmd_reg, arg_reg);
 //	SET_RCA(*arg_reg, card_info.the_rca);
 }
 
-static void long_response_rca_preproc(uint32_t card_num, uint32_t cmd_index,
-                                      uint32_t *cmd_reg, uint32_t *arg_reg)
+static void long_response_rca_preproc(u32 card_num, u32 cmd_index,
+                                      u32 *cmd_reg, u32 *arg_reg)
 {
     long_response_preproc(card_num, cmd_index, cmd_reg, arg_reg);
     //SET_RCA(*arg_reg, card_info.the_rca);
 }
 
-void short_response_postproc(void *the_data, uint32_t *interrupt_status)
+void short_response_postproc(void *the_data, u32 *interrupt_status)
 {
     current_task_status_t *the_task_status = (current_task_status_t *) the_data;
 
@@ -201,7 +185,7 @@ void short_response_postproc(void *the_data, uint32_t *interrupt_status)
     }
 }
 
-void long_response_postproc(void *the_data, uint32_t *interrupt_status)
+void long_response_postproc(void *the_data, u32 *interrupt_status)
 {
     current_task_status_t *the_task_status = (current_task_status_t *) the_data;
 
@@ -215,7 +199,7 @@ void long_response_postproc(void *the_data, uint32_t *interrupt_status)
     }
 }
 
-void no_response_postproc(void *the_data, uint32_t *interrupt_status)
+void no_response_postproc(void *the_data, u32 *interrupt_status)
 {
     current_task_status_t *the_task_status = (current_task_status_t *) the_data;
 
@@ -230,9 +214,9 @@ void no_response_postproc(void *the_data, uint32_t *interrupt_status)
     return;
 }
 
-static void r1_r6_response_postproc(void *the_data, uint32_t *interrupt_status)
+static void r1_r6_response_postproc(void *the_data, u32 *interrupt_status)
 {
-    uint32_t r1_check_val;
+    u32 r1_check_val;
     current_task_status_t *the_task_status = (current_task_status_t *) the_data;
 
     short_response_postproc(the_data, interrupt_status);
@@ -252,7 +236,7 @@ static void r1_r6_response_postproc(void *the_data, uint32_t *interrupt_status)
     return;
 }
 
-static void r1_response_postproc(void *the_data, uint32_t *interrupt_status)
+static void r1_response_postproc(void *the_data, u32 *interrupt_status)
 {
     current_task_status_t *the_task_status = (current_task_status_t *) the_data;
     short_response_postproc(the_data, interrupt_status);
@@ -268,7 +252,7 @@ static void r1_response_postproc(void *the_data, uint32_t *interrupt_status)
     return;
 }
 
-static void r1b_response_postproc(void *the_data, uint32_t *interrupt_status)
+static void r1b_response_postproc(void *the_data, u32 *interrupt_status)
 {
     r1_response_postproc(the_data, interrupt_status);
 
@@ -279,10 +263,10 @@ static void r1b_response_postproc(void *the_data, uint32_t *interrupt_status)
 
 #ifdef CONFIG_SUPPORT_ALL_EMMC_CMD
 static void r1_response_write_bstst_postproc(void *the_data,
-        uint32_t *interrupt_status)
+        u32 *interrupt_status)
 {
     current_task_status_t *the_task_status = (current_task_status_t *) the_data;
-    uint32_t cmd_status;
+    u32 cmd_status;
 
     //The following variables are required for IDMAC mode interrupt handling
 
@@ -320,10 +304,10 @@ static void r1_response_write_bstst_postproc(void *the_data,
 }
 #endif
 static void r1b_response_write_data_postproc(void *the_data,
-        uint32_t *interrupt_status)
+        u32 *interrupt_status)
 {
     current_task_status_t *the_task_status = (current_task_status_t *) the_data;
-    uint32_t cmd_status;
+    u32 cmd_status;
 
     //The following variables are required for IDMAC mode interrupt handling
 
@@ -352,10 +336,10 @@ static void r1b_response_write_data_postproc(void *the_data,
     return;
 }
 
-static void r1_response_write_data_postproc(void *the_data, uint32_t *interrupt_status)
+static void r1_response_write_data_postproc(void *the_data, u32 *interrupt_status)
 {
     current_task_status_t *the_task_status = (current_task_status_t *) the_data;
-    uint32_t cmd_status;
+    u32 cmd_status;
 
     //The following variables are required for IDMAC mode interrupt handling
 
@@ -387,10 +371,10 @@ static void r1_response_write_data_postproc(void *the_data, uint32_t *interrupt_
 }
 #if 0
 static void r1_response_read_bstst_postproc(void *the_data,
-        uint32_t *interrupt_status)
+        u32 *interrupt_status)
 {
     current_task_status_t *the_task_status = (current_task_status_t *) the_data;
-    uint32_t cmd_status;
+    u32 cmd_status;
     //The following variables are required for IDMAC mode interrupt handling
 
     r1_response_postproc(the_data, interrupt_status);
@@ -431,10 +415,10 @@ static void r1_response_read_bstst_postproc(void *the_data,
     return;
 }
 #endif
-static void r1_response_read_data_postproc(void *the_data, uint32_t *interrupt_status)
+static void r1_response_read_data_postproc(void *the_data, u32 *interrupt_status)
 {
     current_task_status_t *the_task_status = (current_task_status_t *) the_data;
-    //uint32_t cmd_status;
+    //u32 cmd_status;
 
     r1_response_postproc(the_data, interrupt_status);
 
@@ -472,10 +456,10 @@ static void r1_response_read_data_postproc(void *the_data, uint32_t *interrupt_s
 
 #ifdef CONFIG_SUPPORT_ALL_EMMC_CMD
 
-static void short_response_sd_app_specific_data(uint32_t card_num,
-        uint32_t cmd_index,
-        uint32_t *cmd_reg,
-        uint32_t *arg_reg)
+static void short_response_sd_app_specific_data(u32 card_num,
+        u32 cmd_index,
+        u32 *cmd_reg,
+        u32 *arg_reg)
 {
     // emmc_send_serial_command(card_num, CMD55, 0, NULL, NULL, 0);
     short_response_preproc(card_num, cmd_index, cmd_reg, arg_reg);
@@ -485,10 +469,10 @@ static void short_response_sd_app_specific_data(uint32_t card_num,
 }
 
 
-static void short_response_sd_data_app_specific_data(uint32_t card_num,
-        uint32_t cmd_index,
-        uint32_t *cmd_reg,
-        uint32_t *arg_reg)
+static void short_response_sd_data_app_specific_data(u32 card_num,
+        u32 cmd_index,
+        u32 *cmd_reg,
+        u32 *arg_reg)
 {
 
     short_response_sd_app_specific_data(card_num, cmd_index, cmd_reg, arg_reg);
@@ -555,11 +539,11 @@ static const callback_search_table the_callback_table[] = {
   * \todo This function has to be converted to a minimal perfect hash table search.
   * \callgraph
   */
-static const callback_t *emmc_lookup_callback_table(uint32_t cmd_index)
+static const callback_t *emmc_lookup_callback_table(u32 cmd_index)
 {
-    uint32_t num_commands = (sizeof(the_callback_table) / sizeof(callback_search_table)) -  1;
-    uint32_t left, right;
-    uint32_t present_index;
+    u32 num_commands = (sizeof(the_callback_table) / sizeof(callback_search_table)) -  1;
+    u32 left, right;
+    u32 present_index;
 
     left = 0;
     right = num_commands;
@@ -586,7 +570,7 @@ static const callback_t *emmc_lookup_callback_table(uint32_t cmd_index)
   * \return The function pointer to the post processing function.
   * \callgraph
   */
-emmc_postproc_callback emmc_get_post_callback(uint32_t cmd_index)
+emmc_postproc_callback emmc_get_post_callback(u32 cmd_index)
 {
     emmc_postproc_callback retval = NULL;
     const callback_t *the_callbacks;
@@ -606,7 +590,7 @@ emmc_postproc_callback emmc_get_post_callback(uint32_t cmd_index)
   * @param[in] cmd_index. The command which is to be sent on the bus.
   * \return The function pointer to the pre processing function.
   */
-emmc_preproc_callback emmc_get_pre_callback(uint32_t cmd_index)
+emmc_preproc_callback emmc_get_pre_callback(u32 cmd_index)
 {
     emmc_preproc_callback retval = NULL;
     const callback_t *the_callbacks;
@@ -640,9 +624,9 @@ emmc_preproc_callback emmc_get_pre_callback(uint32_t cmd_index)
   * \return returns void.
   * \callgraph
   */
-void emmc_set_data_trans_params(uint32_t slot, CK_UINT8 *data_buffer,
-                                uint32_t num_of_blocks, uint32_t epoch_count, uint32_t flag,
-                                uint32_t custom_blocksize)
+void emmc_set_data_trans_params(u32 slot, u8 *data_buffer,
+                                u32 num_of_blocks, u32 epoch_count, u32 flag,
+                                u32 custom_blocksize)
 {
     current_task.num_of_blocks = num_of_blocks;
     current_task.slot_num = slot;
@@ -652,8 +636,8 @@ void emmc_set_data_trans_params(uint32_t slot, CK_UINT8 *data_buffer,
 //	emmc_set_bits(CTRL, INT_ENABLE);
 }
 
-void emmc_set_current_task_status_t(uint32_t slot, uint32_t *resp_buffer,
-                                    CK_UINT8 *data_buffer)
+void emmc_set_current_task_status_t(u32 slot, u32 *resp_buffer,
+                                    u8 *data_buffer)
 {
     current_task.resp_buffer = resp_buffer;
     current_task.data_buffer = data_buffer;

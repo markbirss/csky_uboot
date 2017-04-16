@@ -9,7 +9,6 @@
 #include <dwmmc.h>
 #include <malloc.h>
 #include <asm-generic/errno.h>
-#include <asm/arch-eragon/mini_printf.h>
 
 #define	DWMMC_MAX_CH_NUM		4
 

@@ -4,17 +4,17 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#include <configs/eragon.h>
-#include <asm/arch-eragon/om.h>
-#include <asm/arch-eragon/datatype.h>
+#include <asm/arch/hardware.h>
+#include <asm/arch/om.h>
+#include <asm/datatype.h>
 
 /*
  * get the om pin value
  *
  */
-int8_t get_boot_select(void)
+s8 get_boot_select(void)
 {
-   int8_t *bootsel = (int8_t *)CK_OM_ADDRBASE;
+   int8_t *bootsel = (s8 *)OM_BASEADDR;
 
    return (*bootsel);
 }

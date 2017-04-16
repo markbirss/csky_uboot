@@ -18,14 +18,14 @@
 #define CMD_COMMAND_ABORTING	6
 #define CMD_STATE_POLLD   	    7
 
-emmc_postproc_callback emmc_get_post_callback(uint32_t);
-emmc_preproc_callback emmc_get_pre_callback(uint32_t);
-void emmc_set_data_trans_params(uint32_t slot, uint8_t *data_buffer,
-                                uint32_t num_of_blocks, uint32_t epoch_count,
-                                uint32_t flag, uint32_t custom_blocksize);
+emmc_postproc_callback emmc_get_post_callback(u32);
+emmc_preproc_callback emmc_get_pre_callback(u32);
+void emmc_set_data_trans_params(u32 slot, uint8_t *data_buffer,
+                                u32 num_of_blocks, u32 epoch_count,
+                                u32 flag, u32 custom_blocksize);
 
-void emmc_set_current_task_status_t(uint32_t slot, uint32_t *resp_buffer,
-                                    CK_UINT8 *data_buffer);
+void emmc_set_current_task_status_t(u32 slot, u32 *resp_buffer,
+                                    u8 *data_buffer);
 
 #endif /* __ASM_ARCH_EMMC_CALLBACK_H */
 

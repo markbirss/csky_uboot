@@ -4,8 +4,8 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#include <configs/eragon.h>
-#include <asm/arch-eragon/mini_printf.h>
+#include <asm/arch/hardware.h>
+#include <asm/mini_printf.h>
 #include <serial.h>
 #include <common.h>
 
