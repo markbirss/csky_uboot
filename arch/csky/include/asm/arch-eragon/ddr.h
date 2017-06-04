@@ -3,6 +3,7 @@
 
 int init_ddr(void);
 
+//block name: UMCTL2_REGS
 #define MSTR        0x0
 #define STAT        0x4
 #define MSTR1       0x8
@@ -141,6 +142,8 @@ int init_ddr(void);
 #define OCPARARLOG1 0x368
 #define POISONCFG   0x36c
 #define POISONSTAT  0x370
+
+#define  COM_MEM_BADDR 0x1fd03000
 
 //block name: UMCTL2_MP registers
 #define PSTAT       0x3fc
@@ -331,8 +334,6 @@ int init_ddr(void);
 #define PUB_DX3LCDLR2   0x0aa
 #define PUB_DX3MDLR     0x0ab
 
-
-#define  COM_MEM_BADDR 0x1fd03000
 #define _CHIP_CTRL_BADDR 0x1fbd0000
 #define _POWM_BADDR 0x1fbd0800
 

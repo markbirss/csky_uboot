@@ -130,6 +130,12 @@
 //version       :1.16
 //note          :
 //1.if ddr has already initialize,do not initialize,return immediately
+//
+//updater       :Wu Youfei
+//date          :2017/5/10
+//version       :1.17
+//note          :
+//1.map lcdc axi port to vpr to optimize QoS to avoid underflow
 #include <asm/arch/ddr.h>
 
 //FPGA mode
@@ -153,8 +159,7 @@
 //#define TRAIN_ON
 
 
-int init_ddr(void)
-{
+int init_ddr(){
 #ifdef FPGA
 *(volatile int *)_FLAG_DDR_INIT=0x0;//do not distinguish for FPGA
 if(PUB_REG(PUB_PGSR0)==0x9000005f){return 0;}//if DDR is initialized,return
@@ -421,6 +426,17 @@ if(PUB_REG(PUB_PGSR0)==0x9000005f){return 0;}//if DDR is initialized,return
        DDR_REG(SWCTL)=0x00000001;
      
        //DDR_REG(POISONCFG)=0x00100000;
+       DDR_REG(PERFVPR1)=0x10;
+       //***map lcdc port to vpr(Read)******//
+       DDR_REG(PCFGQOS0_2)=0x00100000;//map region1 to vpr
+       DDR_REG(PCFGQOS1_2)=0x00000008;//bule queue timeout value=8
+
+       //***map dx bar port to vpr(Read)******//
+       DDR_REG(PCFGQOS0_3)=0x00100000;//map region1 to vpr
+       DDR_REG(PCFGQOS1_3)=0x00000008;//bule queue timeout value=8
+       //***map dx bar port to vpr(Write)******//
+       DDR_REG(PCFGWQOS0_3)=0x00100000;//map region1 to vpr
+       DDR_REG(PCFGWQOS1_3)=0x00000008;//bule queue timeout value=8
      
        DDR_REG(PCCFG)=0x00000110;
      
@@ -499,6 +515,20 @@ if(PUB_REG(PUB_PGSR0)==0x9000005f){return 0;}//if DDR is initialized,return
      
         while(DDR_REG(STAT)!=0x00000001);
 
+       //PUB_REG(PUB_DX0BDLR1)=0x25;
+       //PUB_REG(PUB_DX1BDLR1)=0x25;
+       //PUB_REG(PUB_DX2BDLR1)=0x25;
+       //PUB_REG(PUB_DX3BDLR1)=0x25;
+
+       //PUB_REG(PUB_DX0BDLR2)=0x6;
+       //PUB_REG(PUB_DX1BDLR2)=0x6;
+       //PUB_REG(PUB_DX2BDLR2)=0x6;
+       //PUB_REG(PUB_DX3BDLR2)=0x6;
+
+       //PUB_REG(PUB_DX0BDLR4)=0x00180000;
+       //PUB_REG(PUB_DX1BDLR4)=0x00180000;
+       //PUB_REG(PUB_DX2BDLR4)=0x00180000;
+       //PUB_REG(PUB_DX3BDLR4)=0x00180000;
    #elif defined(DLL_OFF_250)
     //*************************************************//   
     ////**************DDR3 250mbps configuration************//
