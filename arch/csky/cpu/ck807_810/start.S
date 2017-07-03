@@ -50,10 +50,18 @@ _start:
 
     /* Invalid Instruction and data cache content */
     mfcr    r4, cr17
+    bseti   r4, 0
     bseti   r4, 1
-    bseti   r4, 2
     bseti   r4, 4
+    bseti   r4, 5
     mtcr    r4, cr17
+
+    mfcr    r4, cr31
+    bseti   r4, 4
+#ifdef CONFIG_CK810
+    bseti   r4, 2
+#endif
+    mtcr    r4, cr31
 
     jbsr    _main
 

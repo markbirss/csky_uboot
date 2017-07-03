@@ -1,4 +1,4 @@
-if TARGET_CK807
+if TARGET_ERAGON
 
 config SYS_BOARD
 	default "eragon_evb"
@@ -11,5 +11,22 @@ config SYS_SOC
 
 config SYS_CONFIG_NAME
 	default "eragon"
+
+endif
+
+if TARGET_KDGD
+
+config SYS_BOARD
+	default "eragon_evb"
+
+config SYS_VENDOR
+	default "csky"
+
+config SYS_SOC
+	default "kdgd"
+
+config SYS_CONFIG_NAME
+	default "kdgd"
+
 
 endif

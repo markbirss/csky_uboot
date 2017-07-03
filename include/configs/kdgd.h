@@ -2,12 +2,13 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#ifndef __ERAGON_H
-#define __ERAGON_H
+#ifndef __KDGD_H
+#define __KDGD_H
 
 /*
  * For the first version
  */
+#define CONFIG_CK810 1
 #define CONFIG_SYS_CLK_FREQ	60000000
 #define CONFIG_BOARD_MMC_SUPPORT
 #define CONFIG_BOARD_CONSOLE_SUPPORT
@@ -229,7 +230,7 @@
 	"linux_load_addr_virt=0x90000000\0"  \
 	"linux_load_addr_phys=0x10000000\0" \
 	"update_dtb=" \
-		"tftpboot ${dtb_load_addr_virt} eragon.dtb ; " \
+		"tftpboot ${dtb_load_addr_virt} kdgd.dtb ; " \
 		"setexpr fw_sz ${filesize} / 0x200 ; " \
 		"setexpr fw_sz ${fw_sz} + 1 ; " \
 		"mmc write ${dtb_load_addr_phys} ${dtb_start_sector} ${fw_sz} ; " \
@@ -252,4 +253,4 @@
 
 #define CONFIG_SPL_LDSCRIPT "arch/csky/cpu/ck807_810/u-boot-spl.lds"
 
-#endif /* __ERAGON_H */
+#endif /* __KDGD_H */
