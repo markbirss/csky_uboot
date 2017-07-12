@@ -10,8 +10,7 @@
 #include <asm/system.h>
 
 /*
- * The current upper bound for ARM L1 data cache line sizes is 64 bytes.  We
- * use that value for aligning DMA buffers unless the board config has specified
+ * We use that value for aligning DMA buffers unless the board config has specified
  * an alternate cache line size.
  */
 #ifdef CONFIG_SYS_CACHELINE_SIZE

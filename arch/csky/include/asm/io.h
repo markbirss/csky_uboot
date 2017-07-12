@@ -212,16 +212,9 @@ static inline void __raw_readsl(unsigned long addr, void *data, int longlen)
  *  IO port access primitives
  *  -------------------------
  *
- * The ARM doesn't have special IO access instructions; all IO is memory
- * mapped.  Note that these are defined to perform little endian accesses
- * only.  Their primary purpose is to access PCI and ISA peripherals.
- *
- * Note that for a big endian machine, this implies that the following
- * big endian mode connectivity is in place, as described by numerous
- * ARM documents:
- *
- *    PCI:  D0-D7   D8-D15 D16-D23 D24-D31
- *    ARM: D24-D31 D16-D23  D8-D15  D0-D7
+ * All IO is memory mapped.  Note that these are defined to perform
+ * little endian accesses only.  Their primary purpose is to access
+ * PCI and ISA peripherals.
  *
  * The machine specific io.h include defines __io to translate an "IO"
  * address to a memory address.

@@ -82,7 +82,7 @@ void __udelay(unsigned long usec)
 
 /*
  * This function is derived from PowerPC code (read timebase as long long).
- * On ARM it just returns the timer value.
+ * On CSKY it just returns the timer value.
  */
 unsigned long long get_ticks(void)
 {
@@ -91,7 +91,7 @@ unsigned long long get_ticks(void)
 
 /*
  * This function is derived from PowerPC code (timebase clock frequency).
- * On ARM it returns the number of timer ticks per second.
+ * On CSKY it returns the number of timer ticks per second.
  */
 ulong get_tbclk(void)
 {

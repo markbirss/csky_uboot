@@ -18,7 +18,7 @@
 #include <asm/arch/interrupt.h>
 DECLARE_GLOBAL_DATA_PTR;
 
-/* Main Entry point for arm bootm implementation
+/* Main Entry point for csky bootm implementation
  *
  * Modeled after the powerpc implementation
  * DIFFERENCE: Instead of calling prep and go at the end
