@@ -694,6 +694,11 @@ config CMD_FS_GENERIC
 	help
 	  Enables filesystem commands (e.g. load, ls) that work for multiple
 	  fs types.
+
+config CMD_MAILBOX_CSKY
+	bool "mailbox csky commands"
+	help
+	  To transfer command to other CPU and read response back.
 endmenu
 
 endmenu

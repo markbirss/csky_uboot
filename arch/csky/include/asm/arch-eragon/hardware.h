@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 C-SKY Microsystems
+ * Copyright (C) 2017 C-SKY MicroSystems Co.,Ltd.
  *
  * SPDX-License-Identifier:	GPL-2.0+
  */
@@ -25,6 +25,8 @@
 #define UART2_BASEADDR       (u32)(0x1fba4000)
 #define UART3_BASEADDR       (u32)(0x1fba5000)
 #define UART4_BASEADDR       (u32)(0x1fba6000)
+#define MAILBOX_BASEADDR     (u32)(0x1fbd4000)
+
 #else
 
 #define INTC_BASEADDR        (u32)(0xbfba3000)
@@ -43,6 +45,7 @@
 #define UART2_BASEADDR       (u32)(0xbfba4000)
 #define UART3_BASEADDR       (u32)(0xbfba5000)
 #define UART4_BASEADDR       (u32)(0xbfba6000)
+#define MAILBOX_BASEADDR     (u32)(0xbfbd4000)
 
 #endif /* CONFIG_SPL_BUILD */
 

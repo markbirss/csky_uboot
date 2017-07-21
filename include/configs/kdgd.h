@@ -8,6 +8,7 @@
 /*
  * For the first version
  */
+#define CONFIG_SYS_LONGHELP
 #define CONFIG_CK810 1
 #define CONFIG_SYS_CLK_FREQ	60000000
 #define CONFIG_BOARD_MMC_SUPPORT
@@ -19,6 +20,7 @@
 #define CONFIG_BOARD_EARLY_INIT_R
 #define CONFIG_SYS_HZ 1000
 #define CONFIG_IDENT_STRING "ERAGON 0.4"
+#define CONFIG_AUTO_COMPLETE	/* add autocompletion support */
 #define DEBUG
 /* #define CONFIG_SYS_GENERIC_GLOBAL_DATA */
 #define CONFIG_DDR_LOAD_ADDR (uint8_t *)(0x17a00000)

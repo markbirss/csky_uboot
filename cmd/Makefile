@@ -157,6 +157,9 @@ obj-$(CONFIG_CMD_REGULATOR) += regulator.o
 endif # !CONFIG_SPL_BUILD
 
 obj-$(CONFIG_CMD_BLOB) += blob.o
+ifndef CONFIG_SPL_BUILD
+obj-$(CONFIG_CMD_MAILBOX_CSKY) += mailbox-csky.o
+endif
 
 # core command
 obj-y += nvedit.o

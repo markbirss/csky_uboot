@@ -8,6 +8,7 @@
 /*
  * For the first version
  */
+#define CONFIG_SYS_LONGHELP
 #define CONFIG_SYS_CLK_FREQ	60000000
 #define CONFIG_BOARD_MMC_SUPPORT
 #define CONFIG_BOARD_CONSOLE_SUPPORT
@@ -17,7 +18,8 @@
 #define CONFIG_NR_DRAM_BANKS 1
 #define CONFIG_BOARD_EARLY_INIT_R
 #define CONFIG_SYS_HZ 1000
-#define CONFIG_IDENT_STRING "ERAGON 0.4"
+#define CONFIG_IDENT_STRING "ERAGON 0.5"
+#define CONFIG_AUTO_COMPLETE	/* add autocompletion support */
 #define DEBUG
 /* #define CONFIG_SYS_GENERIC_GLOBAL_DATA */
 #define CONFIG_DDR_LOAD_ADDR (uint8_t *)(0x17a00000)
@@ -209,6 +211,12 @@
 #define CONFIG_SYS_MAX_NAND_DEVICE	1
 #define CONFIG_SYS_NAND_BASE		0x4E000000
 #endif
+
+/************************************************************
+ * MAILBOX
+ ************************************************************/
+#define CONFIG_MAILBOX_DEV_ID_SEND	0
+#define CONFIG_MAILBOX_DEV_ID_RECV	1
 
 /* additions for new relocation code, must be added to all boards */
 /* #define CONFIG_SYS_SDRAM_BASE	PHYS_SDRAM_1 */
