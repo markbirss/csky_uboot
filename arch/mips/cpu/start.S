@@ -12,6 +12,12 @@
 #include <asm/regdef.h>
 #include <asm/mipsregs.h>
 
+#ifdef CONFIG_SPL_BUILD
+ENTRY(_start)
+	j	CONFIG_SYS_TEXT_BASE
+	nop
+END(_start)
+#else
 #ifndef CONFIG_SYS_MIPS_CACHE_MODE
 #define CONFIG_SYS_MIPS_CACHE_MODE CONF_CM_CACHABLE_NONCOHERENT
 #endif
@@ -117,6 +123,17 @@ reset:
 	MTC0	zero, CP0_WATCHLO
 	mtc0	zero, CP0_WATCHHI
 
+#ifdef CONFIG_ERA_LOONGSON
+	/* Only core 0 run, others sleep */
+	mfc0	t0, $15, 1
+	andi	t0, t0, 0x3ff
+	li	t1, 0x0
+	beq	t0, t1, core0
+	nop
+	wait
+#endif
+
+core0:
 	/* WP(Watch Pending), SW0/1 should be cleared */
 	mtc0	zero, CP0_CAUSE
 
@@ -188,10 +205,18 @@ reset:
 #endif
 
 	move	a0, zero		# a0 <-- boot_flags = 0
+#ifdef CONFIG_ERA_LOONGSON
+	jal	board_init_f
+	nop
+
+next:
+	jal	board_init_r
+	nop
+#else
 	PTR_LA	t9, board_init_f
 	jr	t9
 	 move	ra, zero
-
+#endif
 	END(_start)
 
 /*
@@ -318,3 +343,4 @@ in_ram:
 	 move	ra, zero
 
 	END(relocate_code)
+#endif

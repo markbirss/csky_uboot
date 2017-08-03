@@ -68,6 +68,8 @@ config ARCH_ATH79
 	select OF_CONTROL
 	select DM
 
+config MACH_LOONGSON
+	bool "Support Loongson"
 config MACH_PIC32
 	bool "Support Microchip PIC32"
 	select OF_CONTROL
@@ -80,8 +82,10 @@ source "board/imgtec/malta/Kconfig"
 source "board/micronas/vct/Kconfig"
 source "board/pb1x00/Kconfig"
 source "board/qemu-mips/Kconfig"
+source "board/loongson/era_loongson/Kconfig"
 source "arch/mips/mach-ath79/Kconfig"
 source "arch/mips/mach-pic32/Kconfig"
+source "arch/mips/mach-loongson/Kconfig"
 
 if MIPS
 

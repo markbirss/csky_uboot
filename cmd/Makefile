@@ -78,7 +78,9 @@ obj-$(CONFIG_CMD_CRAMFS) += cramfs.o
 obj-$(CONFIG_CMD_LDRINFO) += ldrinfo.o
 obj-$(CONFIG_CMD_LED) += led.o
 obj-$(CONFIG_CMD_LICENSE) += license.o
+ifndef CONFIG_ERA_LOONGSON
 obj-y += load.o
+endif
 obj-$(CONFIG_LOGBUFFER) += log.o
 obj-$(CONFIG_ID_EEPROM) += mac.o
 obj-$(CONFIG_CMD_MD5SUM) += md5sum.o

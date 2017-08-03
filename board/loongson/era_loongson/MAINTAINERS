@@ -1,0 +1,6 @@
+ERA_LOONGSON BOARD
+M:
+S:	Maintained
+F:	board/csky/eragon_evb/
+F:	include/configs/era_loongson.h
+F:	configs/era_loongson_defconfig

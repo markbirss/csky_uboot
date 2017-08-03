@@ -356,6 +356,9 @@ __BUILD_MEMORY_SINGLE(____raw_, bwlq, type, 0)
 
 __BUILDIO(q, u64)
 
+#define in_be32(a)			readl(a)
+#define out_be32(a,v)			writel(v,a)
+
 #define readb_relaxed			readb
 #define readw_relaxed			readw
 #define readl_relaxed			readl

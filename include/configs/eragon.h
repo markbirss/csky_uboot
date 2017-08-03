@@ -8,6 +8,7 @@
 /*
  * For the first version
  */
+#define CONFIG_ERAGON_ORIGINAL 1
 #define CONFIG_SYS_LONGHELP
 #define CONFIG_SYS_CLK_FREQ	60000000
 #define CONFIG_BOARD_MMC_SUPPORT
@@ -258,6 +259,6 @@
 		"mmc read ${linux_load_addr_phys} ${linux_start_sector} ${linux_size_sectors} ; " \
 		"bootm ${linux_load_addr_virt} "
 
-#define CONFIG_SPL_LDSCRIPT "arch/csky/cpu/ck807_810/u-boot-spl.lds"
+#define CONFIG_SPL_LDSCRIPT "board/csky/eragon_evb/eragon_original/u-boot-spl.lds"
 
 #endif /* __ERAGON_H */

@@ -63,8 +63,13 @@ PF_PIC				:= -fno-pic
 PF_PIE				:=
 else
 PF_ABICALLS			:= -mabicalls
+ifdef CONFIG_ERA_LOONGSON
+PF_PIC				:= -fno-pic
+PF_PIE				:=
+else
 PF_PIC				:= -fpic
 PF_PIE				:= -pie
+endif
 PF_OBJCOPY			:= -j .got -j .rel.dyn -j .padding
 PF_OBJCOPY			+= -j .dtb.init.rodata
 endif

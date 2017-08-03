@@ -28,6 +28,11 @@ config TARGET_KDGD
 	select CPU_CK807_810
 	select SUPPORT_SPL
 
+config TARGET_ERAGON_LS
+	bool "Support eragon_ls"
+	select CPU_CK807_810
+	select SUPPORT_SPL
+
 endchoice
 
 source "board/csky/eragon_evb/Kconfig"

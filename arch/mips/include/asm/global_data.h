@@ -21,6 +21,12 @@ struct arch_global_data {
 	unsigned long rev;
 	unsigned long ver;
 #endif
+#ifdef CONFIG_ERA_LOONGSON
+	unsigned long timer_rate_hz;
+	unsigned long tbu;
+	unsigned long tbl;
+	unsigned long lastinc;
+#endif
 };
 
 #include <asm-generic/global_data.h>

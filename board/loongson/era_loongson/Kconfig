@@ -1,0 +1,15 @@
+if SOC_ERA_LOONGSON
+
+config SYS_BOARD
+	default "era_loongson"
+
+config SYS_VENDOR
+	default "loongson"
+
+config SYS_SOC
+	default "era_loongson"
+
+config SYS_CONFIG_NAME
+	default "era_loongson"
+
+endif

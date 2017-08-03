@@ -114,8 +114,12 @@ static int initr_trace(void)
 
 static int initr_reloc(void)
 {
+#ifndef CONFIG_ERA_LOONGSON
 	/* tell others: relocation done */
 	gd->flags |= GD_FLG_RELOC | GD_FLG_FULL_MALLOC_INIT;
+#else
+	gd->flags |= GD_FLG_FULL_MALLOC_INIT;
+#endif
 
 	return 0;
 }
@@ -291,9 +295,15 @@ static int initr_malloc(void)
 	      gd->malloc_ptr / 1024);
 #endif
 	/* The malloc area is immediately below the monitor copy in DRAM */
+#ifdef CONFIG_ERA_LOONGSON
+	malloc_start = (CONFIG_SYS_TEXT_BASE - 0x100000) - CONFIG_SYS_MALLOC_LEN;
+	mem_malloc_init((ulong)map_sysmem(malloc_start, CONFIG_SYS_MALLOC_LEN),
+		CONFIG_SYS_MALLOC_LEN);
+#else
 	malloc_start = gd->relocaddr - TOTAL_MALLOC_LEN;
 	mem_malloc_init((ulong)map_sysmem(malloc_start, TOTAL_MALLOC_LEN),
 			TOTAL_MALLOC_LEN);
+#endif
 	return 0;
 }
 
@@ -982,7 +992,8 @@ void board_init_r(gd_t *new_gd, ulong dest_addr)
 	mmu_init_r(dest_addr);
 #endif
 
-#if !defined(CONFIG_X86) && !defined(CONFIG_ARM) && !defined(CONFIG_ARM64)
+#if !defined(CONFIG_X86) && !defined(CONFIG_ARM) && !defined(CONFIG_ARM64) && \
+	!defined(CONFIG_ERA_LOONGSON)
 	gd = new_gd;
 #endif
 

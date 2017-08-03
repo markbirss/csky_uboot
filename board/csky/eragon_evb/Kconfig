@@ -28,5 +28,20 @@ config SYS_SOC
 config SYS_CONFIG_NAME
 	default "kdgd"
 
+endif
+
+if TARGET_ERAGON_LS
+
+config SYS_BOARD
+	default "eragon_evb"
+
+config SYS_VENDOR
+	default "csky"
+
+config SYS_SOC
+	default "eragon_ls"
+
+config SYS_CONFIG_NAME
+	default "eragon_ls"
 
 endif

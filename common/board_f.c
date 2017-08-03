@@ -414,7 +414,11 @@ static int reserve_pram(void)
 /* Round memory pointer down to next 4 kB limit */
 static int reserve_round_4k(void)
 {
+#ifdef CONFIG_ERA_LOONGSON
+	gd->relocaddr = CONFIG_SYS_TEXT_BASE;
+#else
 	gd->relocaddr &= ~(4096 - 1);
+#endif
 	return 0;
 }
 
@@ -495,6 +499,11 @@ static int reserve_trace(void)
 
 static int reserve_uboot(void)
 {
+#ifdef CONFIG_ERA_LOONGSON
+	debug("Reserving %ldk for U-Boot at: %08lx\n", gd->mon_len >> 10,
+		gd->relocaddr);
+	gd->start_addr_sp = CONFIG_SYS_INIT_SP_ADDR;
+#else
 	/*
 	 * reserve memory for U-Boot code, data & bss
 	 * round down to next 4 kB limit
@@ -510,7 +519,7 @@ static int reserve_uboot(void)
 	      gd->relocaddr);
 
 	gd->start_addr_sp = gd->relocaddr;
-
+#endif
 	return 0;
 }
 
@@ -518,6 +527,10 @@ static int reserve_uboot(void)
 /* reserve memory for malloc() area */
 static int reserve_malloc(void)
 {
+#ifdef CONFIG_ERA_LOONGSON
+	gd->start_addr_sp -= sizeof(gd_t);
+	gd->new_gd = gd;
+#endif
 	gd->start_addr_sp = gd->start_addr_sp - TOTAL_MALLOC_LEN;
 	debug("Reserving %dk for malloc() at: %08lx\n",
 			TOTAL_MALLOC_LEN >> 10, gd->start_addr_sp);
@@ -548,10 +561,12 @@ static int setup_machine(void)
 
 static int reserve_global_data(void)
 {
+#ifndef CONFIG_ERA_LOONGSON
 	gd->start_addr_sp -= sizeof(gd_t);
 	gd->new_gd = (gd_t *)map_sysmem(gd->start_addr_sp, sizeof(gd_t));
 	debug("Reserving %zu Bytes for Global Data at: %08lx\n",
 			sizeof(gd_t), gd->start_addr_sp);
+#endif
 	return 0;
 }
 
@@ -1061,7 +1076,8 @@ void board_init_f(ulong boot_flags)
 		hang();
 
 #if !defined(CONFIG_ARM) && !defined(CONFIG_SANDBOX) && \
-		!defined(CONFIG_EFI_APP) && !defined(CONFIG_CSKY)
+		!defined(CONFIG_EFI_APP) && !defined(CONFIG_CSKY) &&\
+		!defined(CONFIG_ERA_LOONGSON)
 	/* NOTREACHED - jump_to_copy() does not return */
 	hang();
 #endif
