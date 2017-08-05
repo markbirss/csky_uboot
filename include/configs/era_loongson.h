@@ -150,7 +150,7 @@
  */
 #define PHYS_SRAM_1		0x1fc00000
 #define PHYS_SDRAM_1            0xb7a00000
-#define PHYS_SDRAM_1_SIZE	0x17e00000 /* 4M */
+#define PHYS_SDRAM_1_SIZE	0x400000 /* 4M */
 
 #define PHYS_FLASH_1		0xb7b00000 /* Flash Bank #0 */
 

@@ -206,6 +206,14 @@ core0:
 
 	move	a0, zero		# a0 <-- boot_flags = 0
 #ifdef CONFIG_ERA_LOONGSON
+	PTR_LA  t1, __bss_start
+	PTR_LA  t2, __bss_end
+
+__clear_bss:
+	PTR_S   zero, 0(t1)
+	blt     t1, t2, __clear_bss
+	PTR_ADDIU t1, PTRSIZE
+
 	jal	board_init_f
 	nop
 

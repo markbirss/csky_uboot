@@ -14,7 +14,7 @@ int board_early_init_f(void)
 }
 void dram_init_banksize(void)
 {
-	gd->bd->bi_dram[0].start = PHYS_SDRAM_1 + 0x17a00000;
+	gd->bd->bi_dram[0].start = PHYS_SDRAM_1 + 0x100000;
 	gd->bd->bi_dram[0].size = 0x80000;
 }
 
