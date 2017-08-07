@@ -213,12 +213,6 @@
 #define CONFIG_SYS_NAND_BASE		0x4E000000
 #endif
 
-/************************************************************
- * MAILBOX
- ************************************************************/
-#define CONFIG_MAILBOX_DEV_ID_SEND	0
-#define CONFIG_MAILBOX_DEV_ID_RECV	1
-
 /* additions for new relocation code, must be added to all boards */
 /* #define CONFIG_SYS_SDRAM_BASE	PHYS_SDRAM_1 */
 /* #define CONFIG_SYS_INIT_SP_ADDR	(CONFIG_SYS_SDRAM_BASE + 0x1000 - \

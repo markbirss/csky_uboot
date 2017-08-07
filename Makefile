@@ -246,8 +246,17 @@ ifeq ($(HOSTARCH),$(ARCH))
 CROSS_COMPILE ?=
 endif
 
-ARCH = csky
-CROSS_COMPILE = csky-abiv2-linux-
+ifeq ("$(origin arch)", "command line")
+  ARCH_INPUT = $(arch)
+endif
+
+ifeq ($(arch),loongson)
+  ARCH = mips
+  CROSS_COMPILE = mipsel-linux-
+else
+  ARCH = csky
+  CROSS_COMPILE = csky-abiv2-linux-
+endif
 
 KCONFIG_CONFIG	?= .config
 export KCONFIG_CONFIG
