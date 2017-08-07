@@ -136,6 +136,12 @@
 //version       :1.17
 //note          :
 //1.map lcdc axi port to vpr to optimize QoS to avoid underflow
+//
+//updater       :Wu Youfei
+//date          :2017/8/7
+//version       :1.18
+//note          :
+//1.modify SWRC2[28] config,not reset timer2
 #include <asm/arch/ddr.h>
 
 //FPGA mode
@@ -174,7 +180,7 @@ if(PUB_REG(PUB_PGSR0)==0x9000005f){return 0;}//if DDR is initialized,return
      //**************reset all related module************//
      CHIP_CTRL_REG(0x3c)=CHIP_CTRL_REG(0x3c)&0xffff;
      
-     CHIP_CTRL_REG(0x40)=CHIP_CTRL_REG(0x40)&0x1ffffff;
+     CHIP_CTRL_REG(0x40)=CHIP_CTRL_REG(0x40)&0x11ffffff;
      
      //***********de-reset presetn0(ddrc presetn******************)//
        CHIP_CTRL_REG(0x40)=CHIP_CTRL_REG(0x40)|0xa000000;
@@ -343,7 +349,7 @@ if(PUB_REG(PUB_PGSR0)==0x9000005f){return 0;}//if DDR is initialized,return
      //**************reset all related module************//
      CHIP_CTRL_REG(0x3c)=CHIP_CTRL_REG(0x3c)&0xffff;
      
-     CHIP_CTRL_REG(0x40)=CHIP_CTRL_REG(0x40)&0x1ffffff;
+     CHIP_CTRL_REG(0x40)=CHIP_CTRL_REG(0x40)&0x11ffffff;
      
      //***********de-reset presetn0(ddrc presetn******************)//
 
@@ -537,7 +543,7 @@ if(PUB_REG(PUB_PGSR0)==0x9000005f){return 0;}//if DDR is initialized,return
     //**************reset all related module************//
     CHIP_CTRL_REG(0x3c)=CHIP_CTRL_REG(0x3c)&0xffff;
     
-    CHIP_CTRL_REG(0x40)=CHIP_CTRL_REG(0x40)&0x1ffffff;
+    CHIP_CTRL_REG(0x40)=CHIP_CTRL_REG(0x40)&0x11ffffff;
     
     //***********de-reset presetn0(ddrc presetn******************)//
        CHIP_CTRL_REG(0x40)=CHIP_CTRL_REG(0x40)|0xa000000;
@@ -705,7 +711,7 @@ if(PUB_REG(PUB_PGSR0)==0x9000005f){return 0;}//if DDR is initialized,return
       //**************reset all related module************//
       CHIP_CTRL_REG(0x3c)=CHIP_CTRL_REG(0x3c)&0xffff;
       
-      CHIP_CTRL_REG(0x40)=CHIP_CTRL_REG(0x40)&0x1ffffff;
+      CHIP_CTRL_REG(0x40)=CHIP_CTRL_REG(0x40)&0x11ffffff;
       //***********de-reset presetn0(ddrc presetn******************)//
        CHIP_CTRL_REG(0x40)=CHIP_CTRL_REG(0x40)|0xa000000;
       //******************start configuration******************//
@@ -876,7 +882,7 @@ if((*((volatile int *)_FLAG_DDR_INIT))==0x0){
   //**************reset all related module************//
   CHIP_CTRL_REG(0x3c)=CHIP_CTRL_REG(0x3c)&0xffff;
   
-  CHIP_CTRL_REG(0x40)=CHIP_CTRL_REG(0x40)&0x1ffffff;
+  CHIP_CTRL_REG(0x40)=CHIP_CTRL_REG(0x40)&0x11ffffff;
 }
 else{
   //**************reset all related module except phy apb and phy rst************//
