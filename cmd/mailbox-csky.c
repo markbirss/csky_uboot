@@ -15,47 +15,69 @@
 #include <asm/mailbox-csky.h>
 
 static const char* str_cutting_line = "/*******************************/\n";
-static const char* str_exenv_prompt = "[exe]# ";
+static const char* str_exenv_prompt = "# ";
 
-static char *getline(void)
+/**
+ * getline_async - Read a user input line in servial times. Each time call this
+ *		   function, getc() and append line buffer. It will return 1
+ *		   until receive Enter/Return key.
+ * @line:	Input param, the string received from console.
+ * @cancel:	Output param, canceled this line input, new input again.
+ *
+ * Return: 0: If has not receive Enter/Return key.
+ *	   1: If receive an Enter/Return key.
+ */
+static int getline_async(char **line, int *cancel)
 {
-	static char buffer[100];
+	static char buffer[256];
+	static int buffer_pos = 0;
 	char c;
-	size_t i;
+	*line = buffer;
+	*cancel = 0;
 
-	i = 0;
-	while (1) {
-		buffer[i] = '\0';
+	/* If no data avalible in console, return */
+	if (tstc() == 0) {
+		return 0;
+	}
 
-		c = getc();
+	c = getc();
+	switch (c) {
+	case '\r':	/* Enter/Return key */
+	case '\n':
+		puts("\n");
+		buffer[buffer_pos++] = '\n';
+		buffer[buffer_pos++] = '\0';
+		buffer_pos = 0;
+		return 1;
 
-		switch (c) {
-		case '\r':	/* Enter/Return key */
-		case '\n':
-			puts("\n");
-			return buffer;
+	case 0x03:	/* ^C - break */
+		buffer_pos = 0;
+		*cancel = 1;
+		return 0;
 
-		case 0x03:	/* ^C - break */
-			return NULL;
-
-		case 0x5F:
-		case 0x08:	/* ^H  - backspace */
-		case 0x7F:	/* DEL - backspace */
-			if (i) {
-				puts("\b \b");
-				i--;
-			}
-			break;
-
-		default:
-			/* Ignore control characters */
-			if (c < 0x20)
-				break;
-			/* Queue up all other characters */
-			buffer[i++] = c;
-			printf("%c", c);
-			break;
+	case 0x5F:
+	case 0x08:	/* ^H  - backspace */
+	case 0x7F:	/* DEL - backspace */
+		if (buffer_pos > 0) {
+			puts("\b \b");
+			buffer_pos--;
 		}
+		return 0;
+
+	default:
+		/* Ignore control characters */
+		if (c < 0x20)
+			return 0;
+
+		/* Queue up all other characters, but reserve 2 bytes for
+		   '\n' and '\0'
+		 */
+		if (buffer_pos > sizeof(buffer) -2)
+			return 0;
+
+		buffer[buffer_pos++] = c;
+		printf("%c", c);
+		return 0;
 	}
 }
 
@@ -107,11 +129,13 @@ static int cmd_mailbox_csky_selftest(char *tx_data)
 		return ret;
 	}
 
-	ret = mailbox_csky_open(CSKY_MBOX_DEV_ID_RECV);
-	if (ret != 0) {
-		printf("Can't open mailbox-%d, ret=%d\n",
-			CSKY_MBOX_DEV_ID_RECV, ret);
-		goto out0;
+	if (CSKY_MBOX_DEV_ID_SEND != CSKY_MBOX_DEV_ID_RECV) {
+		ret = mailbox_csky_open(CSKY_MBOX_DEV_ID_RECV);
+		if (ret != 0) {
+			printf("Can't open mailbox-%d, ret=%d\n",
+				CSKY_MBOX_DEV_ID_RECV, ret);
+			goto out0;
+		}
 	}
 
 	while (sent_len < transfer_len || read_len < transfer_len) {
@@ -123,8 +147,7 @@ static int cmd_mailbox_csky_selftest(char *tx_data)
 						  transfer_len - sent_len);
 			if (sent_once > 0) {
 				sent_len += sent_once;
-			}
-			else if (sent_once < 0) {
+			} else if (sent_once < 0) {
 				printf("Send fail at offset=%u\n", sent_len);
 				ret = -EIO;
 				goto out1;
@@ -139,8 +162,7 @@ static int cmd_mailbox_csky_selftest(char *tx_data)
 						  sizeof(rx_data) - read_len);
 			if (read_once > 0) {
 				read_len += read_once;
-			}
-			else if (read_once < 0) {
+			} else if (read_once < 0) {
 				printf("Send fail at offset=%u\n", sent_len);
 				ret = -EIO;
 				goto out1;
@@ -157,8 +179,7 @@ static int cmd_mailbox_csky_selftest(char *tx_data)
 	if (transfer_len == sent_len && sent_len == read_len &&
 	    memcmp(tx_data, rx_data, transfer_len) == 0) {
 		ret = 0;
-	}
-	else {
+	} else {
 		ret = -1;
 	}
 	puts(str_cutting_line);
@@ -172,36 +193,98 @@ out0:
 	return ret;
 }
 
-static int cmd_mailbox_csky_exe(void)
+static int cmd_mailbox_csky_shell(void)
 {
 	char *line;
-	puts(str_cutting_line);
-	puts(" * Enter execute environment.\n");
-	puts(" * Input \"quit\"+<ENTER> to exit\n");
-	puts(str_cutting_line);
+	char rx_data[64];
+	int send_len, sent_len;
+	int sent_once, read_once;
+	int readline_done = 0;
+	int readline_canceled = 1;
+	int ret;
 
-	while (1) {
-		puts(str_exenv_prompt);
-		line = getline();
-		if (line == NULL) {
-			puts("\n");
-			continue;
-		}
-		if (strlen(line) == 0) {
-			continue;
-		}
-
-		if (strcmp(line, "quit") == 0) {
-			break;
-		}
-
-		printf("Input command is '%s'\n", line);
+	ret = mailbox_csky_init();
+	if (ret != 0) {
+		printf("mailbox init failed, ret=%d", ret);
+		return ret;
 	}
 
 	puts(str_cutting_line);
-	puts(" * Exit execute environment\n");
+	puts(" * Enter shell environment.\n");
+	puts(" * Input \"quit\"+<ENTER> to exit\n");
 	puts(str_cutting_line);
-	return 0;
+
+	ret = mailbox_csky_open(CSKY_MBOX_DEV_ID_SEND);
+	if (ret != 0) {
+		printf("Can't open mailbox-%d, ret=%d\n",
+			CSKY_MBOX_DEV_ID_SEND, ret);
+		return ret;
+	}
+
+	if (CSKY_MBOX_DEV_ID_SEND != CSKY_MBOX_DEV_ID_RECV) {
+		ret = mailbox_csky_open(CSKY_MBOX_DEV_ID_RECV);
+		if (ret != 0) {
+			printf("Can't open mailbox-%d, ret=%d.\n",
+				CSKY_MBOX_DEV_ID_RECV, ret);
+			goto out0;
+		}
+	}
+
+	while (1) {
+		udelay(10000);
+
+		if (readline_canceled)
+			puts(str_exenv_prompt);
+		do {
+			int read_once =
+				mailbox_csky_recv(CSKY_MBOX_DEV_ID_RECV,
+						  rx_data, sizeof(rx_data));
+			if (read_once > 0)
+				printf("%s", rx_data);
+		} while (read_once > 0);
+
+		readline_done = getline_async(&line, &readline_canceled);
+		if (readline_done == 0) {
+			if (readline_canceled)
+				puts("\n");
+			continue;
+		}
+
+		send_len = strlen(line);
+		if (send_len == 0) {
+			continue;
+		}
+
+		if (strcmp(line, "quit\n") == 0) {
+			break;
+		}
+
+		//printf("Input command is '%s', length=%d\n", line, send_len);
+		sent_len = 0;
+		do {
+			sent_once = mailbox_csky_send(CSKY_MBOX_DEV_ID_SEND,
+						      &(line[sent_len]),
+						      send_len - sent_len);
+			if (sent_once > 0) {
+				sent_len += sent_once;
+			} else if (sent_once < 0) {
+				printf("Send fail at offset=%u\n", sent_len);
+				ret = -EIO;
+				goto out1;
+			}
+		} while (sent_len < send_len);
+	}
+
+	puts(str_cutting_line);
+	puts(" * Exit shell environment\n");
+	puts(str_cutting_line);
+
+out1:
+	mailbox_csky_close(CSKY_MBOX_DEV_ID_RECV);
+out0:
+	if (CSKY_MBOX_DEV_ID_SEND != CSKY_MBOX_DEV_ID_RECV)
+		mailbox_csky_close(CSKY_MBOX_DEV_ID_SEND);
+	return ret;
 }
 
 static int
@@ -211,17 +294,13 @@ do_mailbox_csky(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	if (argc == 1 || strcmp(argv[1], "help") == 0) {
 		cmd_usage(cmdtp);
 		ret = 0;
-	}
-	else if (argc == 2 && strcmp(argv[1], "list") == 0) {
+	} else if (argc == 2 && strcmp(argv[1], "list") == 0) {
 		cmd_mailbox_csky_list_names();
-	}
-	else if (argc <= 3 && strcmp(argv[1], "test") == 0) {
+	} else if (argc <= 3 && strcmp(argv[1], "test") == 0) {
 		cmd_mailbox_csky_selftest((argc == 2) ? NULL : argv[2]);
-	}
-	else if (argc == 2 && strcmp(argv[1], "exe") == 0) {
-		cmd_mailbox_csky_exe();
-	}
-	else {
+	} else if (argc == 2 && strcmp(argv[1], "shell") == 0) {
+		cmd_mailbox_csky_shell();
+	} else {
 		ret = CMD_RET_USAGE;
 	}
 
@@ -230,8 +309,8 @@ do_mailbox_csky(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 #ifdef CONFIG_SYS_LONGHELP
 static char mailbox_csky_longhelp_text[] =
-	        "exe           - Enter executing environment\n"
-	"mailbox test [string] - Auto selftest by Send/Recv string \n"
+		"shell         - Enter Linux shell\n"
+	"mailbox test [string] - Auto selftest by Send/Recv string\n"
 	"mailbox list          - List all mailbox names\n";
 #else
 static char mailbox_csky_longhelp_text[] = "";

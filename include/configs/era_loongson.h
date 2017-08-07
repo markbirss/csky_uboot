@@ -124,7 +124,8 @@
 /*
  * Miscellaneous configurable options
  */
-/* #define CONFIG_SYS_LONGHELP	*/	/* undef to save memory */
+#define CONFIG_SYS_LONGHELP		/* undef to save memory */
+#define CONFIG_AUTO_COMPLETE		/* add autocompletion support */
 #define CONFIG_SYS_CBSIZE	256   /* This is Console Buffer size */
 /* Print Buffer Size */
 /* #define CONFIG_SYS_PBSIZE	(CONFIG_SYS_CBSIZE + \
@@ -194,6 +195,12 @@
 #define CONFIG_SYS_MAX_NAND_DEVICE	1
 #define CONFIG_SYS_NAND_BASE		0x4E000000
 #endif
+
+/************************************************************
+ * MAILBOX
+ ************************************************************/
+#define CONFIG_MAILBOX_DEV_ID_SEND	1
+#define CONFIG_MAILBOX_DEV_ID_RECV	1
 
 /* additions for new relocation code, must be added to all boards */
 

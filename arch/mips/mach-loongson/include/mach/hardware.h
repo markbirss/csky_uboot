@@ -8,8 +8,10 @@
 
 #ifdef CONFIG_SPL_BUILD
 #define TIMER_BASEADDR       (u32)(0x1fba2000)
+#define MAILBOX_BASEADDR     (u32)(0x1fbd4000)
 #else
-#define TIMER_BASEADDR       (u32)(0xbfba2000)
+#define TIMER_BASEADDR       (u32)(0xbfba2028)
+#define MAILBOX_BASEADDR     (u32)(0xbfbd4000)
 #endif /* CONFIG_SPL_BUILD */
 
 #define SYS_FREQ             CONFIG_SYS_CLK_FREQ
