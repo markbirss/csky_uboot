@@ -4,7 +4,7 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#include <asm/arch/spi.h>
+#include <asm/spi.h>
 #include "spi_internal.h"
 #include <asm/arch/hardware.h>
 

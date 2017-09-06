@@ -14,4 +14,8 @@ obj-y += mmc/emmc_callback.o
 endif
 obj-$(CONFIG_BOARD_CONSOLE_SUPPORT) += uart/uart.o
 obj-$(CONFIG_BOARD_PRINTF_SUPPORT) += mini_printf.o
+ifdef CONFIG_BOARD_SPIFLASH_SUPPORT
+obj-y += spi/spi.o
+obj-y += spiflash/spiflash.o
+endif
 endif

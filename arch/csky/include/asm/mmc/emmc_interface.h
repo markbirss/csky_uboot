@@ -223,7 +223,6 @@ u32 emmc_clear_bits(controller_reg_e reg, u32 val);
 u32 emmc_set_register(controller_reg_e reg, u32 val);
 u32 emmc_read_register(controller_reg_e reg);
 void *emmc_get_fifo_address(void);
-void plat_loop(u32 value);
 
 #endif /* __ASM_ARCH_EMMC_INTERFACE_H */
 

@@ -48,5 +48,9 @@
 #endif /* CONFIG_SPL_BUILD */
 
 #define CONSOLE_UART_BASE    UART2_BASEADDR
+#ifdef CONFIG_IS_ASIC
+#define SYS_FREQ             99000000
+#else
 #define SYS_FREQ             60000000
+#endif
 #endif /* __ASM_ARCH_HARDWARE_H__ */

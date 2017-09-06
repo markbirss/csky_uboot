@@ -4,71 +4,71 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#ifndef __SPI_H__
-#define __SPI_H__
+#ifndef __ASM_SPI_H__
+#define __ASM_SPI_H__
 
-#include "datatype.h"
+#include <asm/datatype.h>
 #include <asm/types.h>
 #include <asm/arch/hardware.h>
 
-#define SPI              SPI0
+#define CK_SPI		CK_SPI0
 typedef enum{
-    SPI0 = SPI0_BASEADDR,
-    SPI1 = SPI1_BASEADDR,
+    CK_SPI0 = SPI0_BASEADDR,
+    CK_SPI1 = SPI1_BASEADDR,
 }enum_spi_device_t;
 
 typedef enum{
-    SPI_TXRX = 0,
-    SPI_TX = 1,
-    SPI_RX = 2,
-    SPI_EERX=3
+    CK_SPI_TXRX = 0,
+    CK_SPI_TX = 1,
+    CK_SPI_RX = 2,
+    CK_SPI_EERX=3
 }enum_spi_mode_t;
 
 typedef enum{
-    SPI_CLOCK_POLARITY_LOW = 0,
-    SPI_CLOCK_POLARITY_HIGH = 1
+    CK_SPI_CLOCK_POLARITY_LOW = 0,
+    CK_SPI_CLOCK_POLARITY_HIGH = 1
 }enum_spi_polarity_t;
 
 typedef enum{
-    SPI_CLOCK_PHASE_MIDDLE = 0,
-    SPI_CLOCK_PHASE_START = 1
+    CK_SPI_CLOCK_PHASE_MIDDLE = 0,
+    CK_SPI_CLOCK_PHASE_START = 1
 }enum_spi_phase_t;
 
 typedef enum{
-    SPI_DataSize_4 = 3,
-    SPI_DataSize_5 = 4,
-    SPI_DataSize_6 = 5,
-    SPI_DataSize_7 = 6,
-    SPI_DataSize_8 = 7,
-    SPI_DataSize_9 =  8,
-    SPI_DataSize_10 = 9,
-    SPI_DataSize_11 = 10,
-    SPI_DataSize_12 = 11,
-    SPI_DataSize_13 = 12,
-    SPI_DataSize_14 = 13,
-    SPI_DataSize_15 = 14,
-    SPI_DataSize_16 = 15
+    CK_SPI_DataSize_4 = 3,
+    CK_SPI_DataSize_5 = 4,
+    CK_SPI_DataSize_6 = 5,
+    CK_SPI_DataSize_7 = 6,
+    CK_SPI_DataSize_8 = 7,
+    CK_SPI_DataSize_9 =  8,
+    CK_SPI_DataSize_10 = 9,
+    CK_SPI_DataSize_11 = 10,
+    CK_SPI_DataSize_12 = 11,
+    CK_SPI_DataSize_13 = 12,
+    CK_SPI_DataSize_14 = 13,
+    CK_SPI_DataSize_15 = 14,
+    CK_SPI_DataSize_16 = 15
 }enum_spi_datawidth_t;
 
 
 typedef enum{
-    SPI_CS0 = 1,
-    SPI_CS1 = 2
+    CK_SPI_CS0 = 1,
+    CK_SPI_CS1 = 2
 }enum_spi_slave_t;
 
 
 typedef enum{
-    SPI_TxComplete = 0,
-    SPI_RxComplete = 1,
-    SPI_Rx_Overflow = 2,
-    SPI_DMATransfer_Complete = 3,
-    SPI_DMATransfer_Error = 4
+    CK_SPI_TxComplete = 0,
+    CK_SPI_RxComplete = 1,
+    CK_SPI_Rx_Overflow = 2,
+    CK_SPI_DMATransfer_Complete = 3,
+    CK_SPI_DMATransfer_Error = 4
 }enum_spi_error_t;
 
 
 typedef enum{
-    SPI_DMA_RX,
-    SPI_DMA_TX
+    CK_SPI_DMA_RX,
+    CK_SPI_DMA_TX
 }enum_spi_direction_t;
 
 /* definations of functions */
@@ -266,11 +266,5 @@ u8 spi_transfer_query(
     u8  *prx_buffer,
     u32 rx_length
     );
-#endif
-
-
-
-
-
-
+#endif /* __ASM_SPI_H__ */
 

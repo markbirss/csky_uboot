@@ -7,8 +7,8 @@
 #ifndef __SPI_INTERNAL_H__
 #define __SPI_INTERNAL_H__
 
-#include <asm/arch/datatype.h>
-#include <asm/arch/spi.h>
+#include <asm/datatype.h>
+#include <asm/spi.h>
 
 /* some register bits macro  */
 #define CK_SPI_ENABLE           0x01
@@ -63,4 +63,4 @@ typedef struct {
     volatile u8		WR;
 }ckstruct_spi_reg_t, *pckstruct_spi_reg_t;
 
-#endif
+#endif /* __SPI_INTERNAL_H__ */

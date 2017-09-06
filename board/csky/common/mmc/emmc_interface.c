@@ -40,17 +40,6 @@ u32 emmc_clear_bits(controller_reg_e reg, u32 val)
     return *reg_addr;
 }
 
-void plat_loop(u32 value)
-{
-    u32 counter;
-    int i;
-    volatile int j;
-
-    for (counter = 0; counter < (value * 5); counter++)
-        for (i = 0; i < 100; i++) {
-            j = i;
-        }
-}
 /*
  * Set the value of the specified register.
  * @param[in] reg	The particular register for which values are to be set.

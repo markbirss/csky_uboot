@@ -12,8 +12,8 @@
 
 #define MMC_DEBUG 0
 #define PDEBUG(fmt, ...)
-#define MMC_FOD_DIVIDER_VALUE  0xC
-#define ONE_BIT_BUS_FREQ 0x8
+#define MMC_FOD_DIVIDER_VALUE  ((HSP_DEFAULT_FREQ / 400000) >> 1)         /* 400KHz */
+#define ONE_BIT_BUS_FREQ ((HSP_DEFAULT_FREQ / 3000000) >> 1)         /* Switching to high-speed mode 3MHz */
 
 /* Retry counts */
 #define CMD1_RETRY_COUNT   10   /*changed from 50 Just to be cautious--Manju */

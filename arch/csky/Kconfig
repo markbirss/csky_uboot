@@ -15,10 +15,24 @@ config SYS_CSKY_ARCH
 	default 1 if CPU_CK807_810
 
 choice
+	prompt "ASIC select"
+	optional
+
+config IS_ASIC
+	bool "support ASIC"
+
+endchoice
+
+choice
 	prompt "Target select"
 	optional
 
 config TARGET_ERAGON
+	bool "Support eragon"
+	select CPU_CK807_810
+	select SUPPORT_SPL
+
+config TARGET_ERAGON_ASIC
 	bool "Support eragon"
 	select CPU_CK807_810
 	select SUPPORT_SPL

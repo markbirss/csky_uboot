@@ -12,7 +12,7 @@
 
 #define	DWMMC_MAX_CH_NUM		4
 
-#define	DWMMC_MAX_FREQ			CONFIG_SYS_CLK_FREQ
+#define	DWMMC_MAX_FREQ			HSP_DEFAULT_FREQ
 #define	DWMMC_MIN_FREQ			400000
 
 /* Source clock is configured to 100MHz by ATF bl1*/

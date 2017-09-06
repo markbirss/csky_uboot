@@ -3,10 +3,10 @@
  *
  * SPDX-License-Identifier:	GPL-2.0+
  */
-
+#include <common.h>
 #include <asm/datatype.h>
-#include <asm/arch/spi.h>
-#include <asm/arch/spiflash.h>
+#include <asm/spi.h>
+#include <asm/spiflash.h>
 #include <asm/arch/hardware.h>
 
 #define THIS_MODULE MODULE_DEV_SPIFLASH

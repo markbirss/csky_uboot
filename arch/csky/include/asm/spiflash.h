@@ -4,10 +4,10 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#ifndef __SPIFLASH_H__
-#define __SPIFLASH_H__
+#ifndef __ASM_SPIFLASH_H__
+#define __ASM_SPIFLASH_H__
 
-#include "datatype.h"
+#include <asm/datatype.h>
 #include <asm/arch/hardware.h>
 
 typedef enum ERASE_TYPE_e{
@@ -96,5 +96,5 @@ s32 spiflash_write(u8 id, u32 offset, const u8 *buf, u32 length, u32 *retlen);
  * return: SUCCESS or FAILURE.
  */
 //int spi_norflash_program(u32 dst_addr, u8 *src_buf, u8 len);
-#endif
+#endif /* __ASM_SPIFLASH_H__ */
 

@@ -6,21 +6,33 @@
 #define __KDGD_H
 
 /*
+ * Select ASIC
+ * LSP : Timer UART
+ * HSP : SPI0 EMMC
+ */
+#define CPU_DEFAULT_FREQ  60000000
+#define LSP_DEFAULT_FREQ  60000000
+#define HSP_DEFAULT_FREQ  60000000
+#define DDR_DEFAULT_FREQ  60000000
+#define SRAM_DEFAULT_FREQ 60000000
+
+/*
  * For the first version
  */
-#define CONFIG_SYS_LONGHELP
+#define UBOOT_INTERNAL_VERSION "0.5"
+#define CONFIG_ERAGON_ORIGINAL 1
 #define CONFIG_CK810 1
-#define CONFIG_SYS_CLK_FREQ	60000000
+#define CONFIG_SYS_CLK_FREQ CPU_DEFAULT_FREQ
 #define CONFIG_BOARD_MMC_SUPPORT
 #define CONFIG_BOARD_CONSOLE_SUPPORT
+#define CONFIG_BOARD_SPIFLASH_SUPPORT
 #define CONFIG_BOARD_PRINTF_SUPPORT
 #define CONFIG_SYS_BOOTM_LEN 0x1000000
-#define SYSTEM_CLOCK 60     /* It means SYSTEM_CLOCK (M) */
+#define LSP_CLOCK (LSP_DEFAULT_FREQ / 1000000)     /* It means SYSTEM_CLOCK (M) for timer */
 #define CONFIG_NR_DRAM_BANKS 1
 #define CONFIG_BOARD_EARLY_INIT_R
 #define CONFIG_SYS_HZ 1000
 #define CONFIG_IDENT_STRING "ERAGON 0.4"
-#define CONFIG_AUTO_COMPLETE	/* add autocompletion support */
 #define DEBUG
 /* #define CONFIG_SYS_GENERIC_GLOBAL_DATA */
 #define CONFIG_DDR_LOAD_ADDR (uint8_t *)(0x17a00000)
@@ -55,7 +67,7 @@
 #define CONFIG_SYS_BAUDRATE_TABLE {115200}
 #define CONFIG_SYS_NS16550
 #define CONFIG_SYS_NS16550_COM2 0xbfba4000
-#define CONFIG_SYS_NS16550_CLK CONFIG_SYS_CLK_FREQ
+#define CONFIG_SYS_NS16550_CLK LSP_DEFAULT_FREQ
 #define CONFIG_CONS_INDEX 2
 #define CONFIG_SYS_NS16550_REG_SIZE 1
 
@@ -253,6 +265,6 @@
 		"mmc read ${linux_load_addr_phys} ${linux_start_sector} ${linux_size_sectors} ; " \
 		"bootm ${linux_load_addr_virt} "
 
-#define CONFIG_SPL_LDSCRIPT "arch/csky/cpu/ck807_810/u-boot-spl.lds"
+#define CONFIG_SPL_LDSCRIPT "board/csky/eragon_evb/eragon_original/u-boot-spl.lds"
 
 #endif /* __KDGD_H */

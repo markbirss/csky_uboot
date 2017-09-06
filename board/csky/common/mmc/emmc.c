@@ -12,6 +12,22 @@ emmc_status_info_t emmc_status_info;
 card_info_t card_info;
 extern current_task_status_t current_task;
 
+static void emmc_delay(uint32_t value)
+{
+	uint32_t counter;
+	int i;
+	volatile int j;
+
+	/* some delay for emmc depends on bsp clock */
+	value = (CPU_DEFAULT_FREQ + 59000000 ) / 60000000 * value;
+
+	for (counter = 0; counter < (value * 5); counter++)
+		for (i = 0; i < 100; i++) {
+			j = i;
+		}
+}
+
+
 u32 emmc_send_clock_only_cmd(void)
 {
     return emmc_execute_command(CLK_ONLY_CMD | CMD_WAIT_PRV_DAT_BIT, 0);
@@ -57,7 +73,7 @@ u32 emmc_set_clk_freq(u32 divider)
     u32 retval;
 
     if (divider > MAX_DIVIDER_VALUE) {
-        return 0xffffffff;
+        divider = 0xff;
     }
 
     /* To make sure we dont disturb enable/disable settings of the cards*/
@@ -101,7 +117,7 @@ u32 emmc_poll_cmd_register(void)
         }
 
         num_of_retries++;
-        plat_loop(1);
+        emmc_delay(1);
     }
 
     return 0;
@@ -352,9 +368,6 @@ u32 emmc_send_serial_command(u32 card_num, u32 cmd_index, u32 cmd_arg,
     emmc_preproc_callback preproc_fn = NULL;
     u32 arg_register = cmd_arg;
 
-    /* First time make the previous divider a maximum value.*/
-    static u32 previous_divider = 0xff;
-
     /* whether post_callback is from table or custom_callback? */
 
     post_callback = emmc_get_post_callback(cmd_index);
@@ -373,12 +386,6 @@ u32 emmc_send_serial_command(u32 card_num, u32 cmd_index, u32 cmd_arg,
     preproc_fn(card_num, cmd_index, &cmd_register, &arg_register);
 
     /*execute command: this function populates the cmd_register and arg_register*/
-
-    /* Set the frequency for the card and enable the clocks for appropriate cards */
-    if (previous_divider != MMC_FOD_DIVIDER_VALUE) {
-        previous_divider = MMC_FOD_DIVIDER_VALUE;
-        emmc_set_clk_freq(MMC_FOD_DIVIDER_VALUE);
-    }
 
     return emmc_cmd_to_host(card_num, cmd_register, arg_register, resp_buffer, data_buffer, post_callback, flags);
 }
@@ -545,7 +552,7 @@ u32 emmc_set_mmc_voltage_range(u32 slot)
         }
 
         --count;
-        plat_loop(10);
+        emmc_delay(10);
     }
 
     if (0 == count) {
@@ -600,19 +607,11 @@ u32 emmc_get_cid(u32 slot)
         }
 
         count--;
-        plat_loop(100);
+        emmc_delay(100);
     }
 
     if (0 == count) {
         return ERRHARDWARE;
-    }
-
-    else {
-        mini_printf("%x,%x,%x,%x\n",
-            card_info.the_cid[0],
-            card_info.the_cid[1],
-            card_info.the_cid[2],
-            card_info.the_cid[3]);
     }
 
     /* Print out some  informational message about the card
@@ -697,7 +696,7 @@ u32 emmc_process_MMC_csd(u32 slot)
     if ((retval = emmc_send_serial_command(slot, CMD9, 0x00010000, card_info.the_csd, NULL, 0))) {
         return retval;
     }
-mini_printf("%x,%x,%x,%x\n",card_info.the_csd[0],card_info.the_csd[1],card_info.the_csd[2],card_info.the_csd[3]);
+
     /* The CSD is in the bag */
 
     read_block_size  = 1 << (CSD_READ_BL_LEN((card_info.the_csd)));
@@ -757,7 +756,7 @@ u32 emmc_is_card_ready_for_data(u32 slot)
             break;
         }
 
-        plat_loop(1);
+        emmc_delay(1);
     }
 
     if (READY_FOR_DATA_RETRIES == count) {
@@ -1052,8 +1051,6 @@ u32 emmc_reset_mmc_card(u32 slot)
 {
     u32 buffer_reg;
     u32 retval = 0;
-    /*value to configure the clock divider for data transfer*/
-    u32 clock_freq_to_set = ONE_BIT_BUS_FREQ;
 
     /* Check if the card is connected */
     buffer_reg = emmc_read_register(CDETECT);
@@ -1066,6 +1063,8 @@ u32 emmc_reset_mmc_card(u32 slot)
     emmc_set_bits(CTRL, ENABLE_OD_PULLUP);
     card_info.divider_val = MMC_FOD_DIVIDER_VALUE;
 
+    emmc_set_clk_freq(card_info.divider_val);
+
     /* Reset the card. Since we really dont know as to from where the call has been made */
     if ((retval = emmc_send_serial_command(slot, CMD0, 0, NULL, NULL, 0))) {
         goto HOUSEKEEP;
@@ -1073,7 +1072,7 @@ u32 emmc_reset_mmc_card(u32 slot)
 
     /*After reset we know that card state is IDEL */
     card_info.card_state = CARD_STATE_IDLE;
-    plat_loop(10);
+    emmc_delay(10);
 
     /*Card state is IDLE. Set the mmc voltage range on the card */
     if ((retval = emmc_set_mmc_voltage_range(slot))) {
@@ -1091,10 +1090,11 @@ u32 emmc_reset_mmc_card(u32 slot)
     }
 
     /* set the divider value for data transfer. Now pull down the OD_PULLUP */
-    card_info.divider_val = clock_freq_to_set;
+    card_info.divider_val = ONE_BIT_BUS_FREQ;
     emmc_clear_bits(CTRL, ENABLE_OD_PULLUP);
-    plat_loop(10);
+    emmc_delay(10);
 
+    emmc_set_clk_freq(card_info.divider_val);
     /*Card is in CARD_STATE_STBY. So we get the CSD Register and store it */
     if ((retval = emmc_process_MMC_csd(slot))) {
         /* Switch off the card */
@@ -1260,11 +1260,11 @@ u32 emmc_host_init(card_info_t *emmc_card_info)
        This can be achieved by writing 0x00000001 to CTRL register */
     buffer_reg = 0x00000001;
     emmc_clear_bits(CTRL, buffer_reg);
-    plat_loop(10);
+    emmc_delay(10);
     emmc_set_bits(CTRL, buffer_reg);
 
     emmc_set_bits(CTRL, FIFO_RESET);
-    plat_loop(10);
+    emmc_delay(10);
 
     /* Now make CTYPE to default i.e, all the cards connected will work in 1 bit mode initially*/
     buffer_reg = 0x0;
@@ -1281,9 +1281,9 @@ u32 emmc_host_init(card_info_t *emmc_card_info)
     */
     buffer_reg = (1 << num_of_cards) - 1;
     emmc_clear_bits(PWREN, buffer_reg);
-    plat_loop(100);			/*some SDIO cards need more time to power up so changed from 10 to 1000*/
+    emmc_delay(100);			/*some SDIO cards need more time to power up so changed from 10 to 1000*/
     emmc_set_register(PWREN, buffer_reg);
-    plat_loop(100);
+    emmc_delay(100);
 
     /* disable interrupt */
 

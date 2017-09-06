@@ -11,9 +11,9 @@
 DECLARE_GLOBAL_DATA_PTR;
 
 #define SYS_TIMER		((PCKPStruct_TIMER)TIMER_BASEADDR)
-#define TIMER_CLOCK		(SYSTEM_CLOCK * 1000 * 1000)
-#define COUNT_TO_USEC(x)	((x) / SYSTEM_CLOCK)
-#define USEC_TO_COUNT(x)	((x) * SYSTEM_CLOCK)
+#define TIMER_CLOCK		(LSP_CLOCK * 1000 * 1000)
+#define COUNT_TO_USEC(x)	((x) / LSP_CLOCK)
+#define USEC_TO_COUNT(x)	((x) * LSP_CLOCK)
 #define TICKS_PER_HZ		(TIMER_CLOCK / CONFIG_SYS_HZ)
 #define TICKS_TO_HZ(x)		((x) / TICKS_PER_HZ)
 #define TIMER_LOAD_VAL		0xffffffff
