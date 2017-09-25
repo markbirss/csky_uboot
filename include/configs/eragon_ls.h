@@ -19,6 +19,7 @@
 /*
  * For the first version
  */
+#define CONFIG_CK807 1
 #define UBOOT_INTERNAL_VERSION "0.5"
 #define CONFIG_UBOOT_SIZE 0x28000
 #define CONFIG_SPL_SIZE   0x3000

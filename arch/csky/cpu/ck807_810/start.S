@@ -57,9 +57,12 @@ _start:
     mtcr    r4, cr17
 
     mfcr    r4, cr31
+#ifdef CONFIG_CK807
     bseti   r4, 4
+#endif
 #ifdef CONFIG_CK810
     bseti   r4, 2
+    bseti   r4, 8
 #endif
     mtcr    r4, cr31
 
