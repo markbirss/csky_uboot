@@ -8,6 +8,7 @@
 #include <asm-offsets.h>
 #include <linux/linkage.h>
 #include <asm/arch/mmu.h>
+#include <asm/arch/hardware.h>
 .export hw_vsr_autovec
 .export csky_vsr_table      /* Vector table base address. */
 .globl  _start
@@ -65,6 +66,62 @@ _start:
     bseti   r4, 8
 #endif
     mtcr    r4, cr31
+
+#ifdef CONFIG_ERAGON
+#ifdef CONFIG_IS_ASIC
+    /* cpucclk = pmuclk = 24MHz */
+    lrw     r2, MPU_BASEADDR
+    movi    r3, 0x306
+    st.w    r3, (r2, 0x00)
+
+    /* Power down PLL */
+    lrw     r2, MPU_BASEADDR
+    movi    r3, 0x43
+    st.w    r3, (r2, 0x04)
+
+    lrw     r2, MPU_BASEADDR
+    movi    r3, 0x001e
+    st.w    r3, (r2, 0x00)
+
+    /* Update PLL */
+    lrw     r2, MPU_BASEADDR
+    lrw     r3, 0x00000000
+    st.w    r3, (r2, 0x08)
+
+    lrw     r2, MPU_BASEADDR
+    movi    r3, 0x316
+    st.w    r3, (r2, 0x00)
+
+    /* Power on PLL */
+    lrw     r2, MPU_BASEADDR
+    movi    r3, 0x40
+    st.w    r3, (r2, 0x04)
+
+    lrw     r2, MPU_BASEADDR
+    movi    r3, 0x31e
+    st.w    r3, (r2, 0x00)
+
+WAIT:
+    lrw     r2, MPU_BASEADDR
+    ld.w    r3, (r2, 0x38)
+    btsti   r3, 8
+    bf      WAIT
+
+    /* cpucclk = cpupll = 800MHz */
+    lrw     r2, MPU_BASEADDR
+    movi    r3, 0x006
+    st.w    r3, (r2, 0x00)
+
+
+    lrw     r2, CHIP_CTRL_BASEADDR
+    lrw     r3, 0x11000
+    st.w    r3, (r2, 0x00)
+
+    lrw     r2, CHIP_CTRL_BASEADDR
+    lrw     r3, 0x0
+    st.w    r3, (r2, 0x04)
+#endif /* CONFIG_IS_ASIC */
+#endif /* CONFIG_ERAGON */
 
     jbsr    _main
 

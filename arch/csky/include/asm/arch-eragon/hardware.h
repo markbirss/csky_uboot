@@ -6,7 +6,6 @@
 
 #ifndef __ASM_ARCH_HARDWARE_H__
 #define __ASM_ARCH_HARDWARE_H__
-#include <asm/types.h>
 
 #ifdef CONFIG_SPL_BUILD
 #define INTC_BASEADDR        (u32)(0x1fba3000)
@@ -48,9 +47,6 @@
 #endif /* CONFIG_SPL_BUILD */
 
 #define CONSOLE_UART_BASE    UART2_BASEADDR
-#ifdef CONFIG_IS_ASIC
-#define SYS_FREQ             99000000
-#else
-#define SYS_FREQ             60000000
-#endif
+#define CHIP_CTRL_BASEADDR   0x1fbd0000
+#define MPU_BASEADDR         0x1fbd0800
 #endif /* __ASM_ARCH_HARDWARE_H__ */

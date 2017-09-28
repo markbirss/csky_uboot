@@ -16,7 +16,7 @@
 #define	DWMMC_MIN_FREQ			400000
 
 /* Source clock is configured to 100MHz by ATF bl1*/
-#define MMC0_DEFAULT_FREQ		60000000
+#define MMC0_DEFAULT_FREQ		HSP_DEFAULT_FREQ
 
 static int eragon_dwmci_core_init(struct dwmci_host *host, int index)
 {

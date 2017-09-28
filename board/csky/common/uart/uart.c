@@ -27,7 +27,7 @@ s32 uart_open( u32 uart_addrbase)
     }
 
     /*baudrate=(seriak clock freq)/(16*divisor).*/
-    divisor = ((SYS_FREQ / 115200) >> 4);
+    divisor = ((LSP_DEFAULT_FREQ / 115200) >> 4);
     info->uart_LCR |= LCR_SET_DLAB;
     /* DLL and DLH is lower 8-bits and higher 8-bits of divisor.*/
     info->uart_DLL = divisor & 0xff;

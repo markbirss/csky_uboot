@@ -10,7 +10,11 @@ obj-y += gpio/gpio.o
 ifdef CONFIG_SPL_BUILD
 
 ifdef CONFIG_ERAGON_ORIGINAL
+ifdef CONFIG_IS_ASIC
+obj-y += ddr/ddr_asic.o
+else
 obj-y += ddr/ddr_original.o
+endif #CONFIG_IS_ASIC
 obj-y += eragon_original/spl.o
 endif #CONFIG_ERAGON_ORIGINAL
 
