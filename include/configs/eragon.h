@@ -14,7 +14,7 @@
 #ifdef CONFIG_IS_ASIC
 #define CPU_DEFAULT_FREQ  800000000
 #define LSP_DEFAULT_FREQ  118800000
-#define HSP_DEFAULT_FREQ  237600000
+#define HSP_DEFAULT_FREQ  198000000
 #else
 #define CPU_DEFAULT_FREQ  60000000
 #define LSP_DEFAULT_FREQ  60000000
@@ -32,7 +32,7 @@
 #define CONFIG_BOARD_CONSOLE_SUPPORT
 #define CONFIG_BOARD_SPIFLASH_SUPPORT
 #define CONFIG_BOARD_PRINTF_SUPPORT
-#define CONFIG_SYS_BOOTM_LEN 0x1000000
+#define CONFIG_SYS_BOOTM_LEN 0x2000000
 #define LSP_CLOCK  (LSP_DEFAULT_FREQ / 1000000)    /* It means LSP_CLOCK (M) for timer */
 #define CONFIG_NR_DRAM_BANKS 1
 #define CONFIG_BOARD_EARLY_INIT_R
@@ -239,6 +239,12 @@
 #define CONFIG_SYS_INIT_SP_ADDR     (CONFIG_SYS_TEXT_BASE  + 0x80000 - 0x8)
 #define CONFIG_BOARD_EARLY_INIT_F
 
+#ifdef CONFIG_IS_ASIC
+#define CONFIG_DTB_NAME "tftpboot ${dtb_load_addr_virt} eragon_evb.dtb ; "
+#else
+#define CONFIG_DTB_NAME "tftpboot ${dtb_load_addr_virt} eragon.dtb ; "
+#endif
+
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"dtb_start_sector=0x1000\0"   /* dtb start sector */ \
 	"dtb_size_sectors=0x1000\0"   /* dtb size in sectors */ \
@@ -249,7 +255,7 @@
 	"linux_load_addr_virt=0x90000000\0"  \
 	"linux_load_addr_phys=0x10000000\0" \
 	"update_dtb=" \
-		"tftpboot ${dtb_load_addr_virt} eragon.dtb ; " \
+		CONFIG_DTB_NAME \
 		"setexpr fw_sz ${filesize} / 0x200 ; " \
 		"setexpr fw_sz ${fw_sz} + 1 ; " \
 		"mmc write ${dtb_load_addr_phys} ${dtb_start_sector} ${fw_sz} ; " \
@@ -263,7 +269,7 @@
 		"mmc write ${linux_load_addr_phys} ${linux_start_sector} ${fw_sz} ; " \
 		"setenv linux_size_sectors ${fw_sz} ; " \
 		"saveenv ; " \
-		"\0" \
+		"\0"
 
 #define CONFIG_BOOTCOMMAND \
 		"mmc read ${dtb_load_addr_phys} ${dtb_start_sector} ${dtb_size_sectors} ; " \
