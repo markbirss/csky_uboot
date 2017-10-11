@@ -122,7 +122,7 @@
 /* #define CONFIG_USB_OHCI_S3C24XX */
 /* #define CONFIG_USB_KEYBOARD */
 /* #define CONFIG_USB_STORAGE */
-/* #define CONFIG_DOS_PARTITION */
+#define CONFIG_DOS_PARTITION
 
 /************************************************************
  * RTC
@@ -206,6 +206,7 @@
 /* #define CONFIG_SYS_MAX_FLASH_SECT	(19) */
 
 #define CONFIG_ENV_ADDR			(CONFIG_SYS_FLASH_BASE + 0x070000)
+#define CONFIG_ENV_OFFSET 0x4000
 /* #define CONFIG_ENV_IS_IN_FLASH */
 #define CONFIG_ENV_SIZE			0x2000
 /* allow to overwrite serial and ethaddr */
@@ -246,10 +247,10 @@
 #endif
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
-	"dtb_start_sector=0x1000\0"   /* dtb start sector */ \
-	"dtb_size_sectors=0x1000\0"   /* dtb size in sectors */ \
-	"linux_start_sector=0x2000\0" /* linux start sector */  \
-	"linux_size_sectors=0x5000\0" /* linux size in sectors */ \
+	"dtb_start_sector=0x1000\0"   /* dtb start sector -> 2MB */ \
+	"dtb_size_sectors=0x1000\0"   /* dtb size in sectors -> 2MB */ \
+	"linux_start_sector=0x2000\0" /* linux start sector -> 4MB */  \
+	"linux_size_sectors=0xA000\0" /* linux size in sectors -> 20MB */ \
 	"dtb_load_addr_virt=0x8f000000\0" \
 	"dtb_load_addr_phys=0x0f000000\0"  \
 	"linux_load_addr_virt=0x90000000\0"  \
