@@ -38,7 +38,7 @@
 #define CONFIG_BOARD_EARLY_INIT_R
 #define CONFIG_SYS_HZ 1000
 #define CONFIG_IDENT_STRING "ERAGON 0.5"
-#define DEBUG
+/* #define DEBUG */
 /* #define CONFIG_SYS_GENERIC_GLOBAL_DATA */
 #define CONFIG_DDR_LOAD_ADDR (uint8_t *)(0x17a00000)
 #define CONFIG_JUMP_DDR (uint32_t)(0x17a00000)
@@ -82,7 +82,7 @@
 /* #define CONFIG_SPL_FRAMEWORK */
 #define CONFIG_SPL_LIBCOMMON_SUPPORT
 #define CONFIG_SPL_LIBGENERIC_SUPPORT
-#define CONFIG_UBOOT_SIZE 0x23000
+#define CONFIG_UBOOT_SIZE 0x28000
 #define CONFIG_SPL_STACK  (CONFIG_SYS_SRAM_BASE + 0x4000 - 0x8)
 /* #define CONFIG_SPL_SERIAL_SUPPORT */
 /* #define CONFIG_SYS_ONENAND_BASE 0xE7100000 */
@@ -159,7 +159,8 @@
 /*
  * Miscellaneous configurable options
  */
-/* #define CONFIG_SYS_LONGHELP	*/	/* undef to save memory */
+#define CONFIG_SYS_LONGHELP	/* undef to save memory */
+#define CONFIG_AUTO_COMPLETE	/* add autocompletion support */
 #define CONFIG_SYS_CBSIZE	256   /* This is Console Buffer size */
 /* Print Buffer Size */
 /* #define CONFIG_SYS_PBSIZE	(CONFIG_SYS_CBSIZE + \
@@ -206,7 +207,7 @@
 /* #define CONFIG_SYS_MAX_FLASH_SECT	(19) */
 
 #define CONFIG_ENV_ADDR			(CONFIG_SYS_FLASH_BASE + 0x070000)
-#define CONFIG_ENV_OFFSET 0x4000
+#define CONFIG_ENV_OFFSET 0x10000
 /* #define CONFIG_ENV_IS_IN_FLASH */
 #define CONFIG_ENV_SIZE			0x2000
 /* allow to overwrite serial and ethaddr */
