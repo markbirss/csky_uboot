@@ -214,4 +214,8 @@
 #define CONFIG_SYS_INIT_SP_ADDR     (CONFIG_SYS_TEXT_BASE  -0x8)
 #define CONFIG_BOARD_EARLY_INIT_F
 
+#define CONFIG_BOOTCOMMAND \
+	"mailbox shell"
+
+
 #endif /* __ERA_LOONGSON_H */

@@ -32,7 +32,7 @@
 #define CONFIG_BOARD_SPIFLASH_SUPPORT
 #define CONFIG_BOARD_CONSOLE_SUPPORT
 #define CONFIG_BOARD_PRINTF_SUPPORT
-#define CONFIG_SYS_BOOTM_LEN 0x1000000
+#define CONFIG_SYS_BOOTM_LEN 0x2000000
 #define LSP_CLOCK (LSP_DEFAULT_FREQ / 1000000)     /* It means SYSTEM_CLOCK (M) for timer */
 #define CONFIG_NR_DRAM_BANKS 1
 #define CONFIG_BOARD_EARLY_INIT_R
@@ -253,7 +253,7 @@
 	"linux_load_addr_virt=0x90000000\0"  \
 	"linux_load_addr_phys=0x10000000\0" \
 	"update_dtb=" \
-		"tftpboot ${dtb_load_addr_virt} eragon.dtb ; " \
+		"tftpboot ${dtb_load_addr_virt} eragon_ls.dtb ; " \
 		"setexpr fw_sz ${filesize} / 0x200 ; " \
 		"setexpr fw_sz ${fw_sz} + 1 ; " \
 		"mmc write ${dtb_load_addr_phys} ${dtb_start_sector} ${fw_sz} ; " \

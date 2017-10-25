@@ -14,6 +14,7 @@
 #endif
 #include <asm/mailbox-csky.h>
 
+static int mailbox_ready;
 static const char* str_cutting_line = "/*******************************/\n";
 static const char* str_exenv_prompt = "# ";
 
@@ -201,6 +202,8 @@ static int cmd_mailbox_csky_shell(void)
 	int sent_once, read_once;
 	int readline_done = 0;
 	int readline_canceled = 1;
+	int last_time = 0;
+	int present_time;
 	int ret;
 
 	ret = mailbox_csky_init();
@@ -213,6 +216,9 @@ static int cmd_mailbox_csky_shell(void)
 	puts(" * Enter shell environment.\n");
 	puts(" * Input \"quit\"+<ENTER> to exit\n");
 	puts(str_cutting_line);
+	if (!mailbox_ready) {
+		puts("Starting Linux...");
+	}
 
 	ret = mailbox_csky_open(CSKY_MBOX_DEV_ID_SEND);
 	if (ret != 0) {
@@ -233,14 +239,32 @@ static int cmd_mailbox_csky_shell(void)
 	while (1) {
 		udelay(10000);
 
-		if (readline_canceled)
+		if (readline_canceled && mailbox_ready) {
 			puts(str_exenv_prompt);
+		} else if (!mailbox_ready){
+			if (!last_time) {
+				last_time = timer_get_us();
+				puts(".");
+			} else {
+				present_time = timer_get_us();
+				if ((present_time - last_time) >= 1000000) {
+					puts(".");
+					last_time = present_time;
+				}
+			}
+		}
+
 		do {
 			int read_once =
 				mailbox_csky_recv(CSKY_MBOX_DEV_ID_RECV,
 						  rx_data, sizeof(rx_data));
 			if (read_once > 0)
 				printf("%s", rx_data);
+			if (!mailbox_ready) {
+				if (!strncmp(rx_data, "Welcome", 7)) {
+					mailbox_ready = 1;
+				}
+			}
 		} while (read_once > 0);
 
 		readline_done = getline_async(&line, &readline_canceled);
@@ -263,8 +287,8 @@ static int cmd_mailbox_csky_shell(void)
 		sent_len = 0;
 		do {
 			sent_once = mailbox_csky_send(CSKY_MBOX_DEV_ID_SEND,
-						      &(line[sent_len]),
-						      send_len - sent_len);
+						     &(line[sent_len]),
+						     send_len - sent_len);
 			if (sent_once > 0) {
 				sent_len += sent_once;
 			} else if (sent_once < 0) {
