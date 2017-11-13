@@ -15,9 +15,9 @@ DECLARE_GLOBAL_DATA_PTR;
 int do_reset(cmd_tbl_t * cmdtp, int flag, int argc, char * const argv[])
 {
 	u32 temp;
-	temp = readl(CHIP_CTRL_BASEADDR+0xa0000000+SOFTWARE_RESET_CONTROL);
+	temp = readl(CHIP_CTRL_BASEADDR + 0xa0000000 + SOFTWARE_RESET_CONTROL);
 	temp = temp & 0x1;
-	writel(temp, CHIP_CTRL_BASEADDR+0xa0000000+SOFTWARE_RESET_CONTROL);
+	writel(temp, CHIP_CTRL_BASEADDR + 0xa0000000 + SOFTWARE_RESET_CONTROL);
 	return 0;
 }
 

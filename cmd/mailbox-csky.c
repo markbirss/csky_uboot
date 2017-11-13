@@ -15,6 +15,13 @@
 #include <asm/mailbox-csky.h>
 
 static int mailbox_ready;
+enum remove_echo {
+	INITAL_STATE,
+	COMMAND_GET,
+	COMMAND_READY,
+	COMMAND_SEND
+};
+static enum remove_echo send_echo;
 static const char* str_cutting_line = "/*******************************/\n";
 static const char* str_exenv_prompt = "# ";
 
@@ -258,20 +265,32 @@ static int cmd_mailbox_csky_shell(void)
 			int read_once =
 				mailbox_csky_recv(CSKY_MBOX_DEV_ID_RECV,
 						  rx_data, sizeof(rx_data));
-			if (read_once > 0)
+			if (read_once > 0) {
 				printf("%s", rx_data);
+				if (send_echo == COMMAND_READY && strncmp(rx_data, "#", 1) == 0) {
+					send_echo = COMMAND_SEND;
+				}
+			}
 			if (!mailbox_ready) {
 				if (!strncmp(rx_data, "Welcome", 7)) {
 					mailbox_ready = 1;
+					send_echo = COMMAND_GET;
 				}
 			}
 		} while (read_once > 0);
 
-		readline_done = getline_async(&line, &readline_canceled);
-		if (readline_done == 0) {
-			if (readline_canceled)
-				puts("\n");
-			continue;
+		if (send_echo == COMMAND_SEND) {
+			strcpy(line, "stty -echo\n");
+			send_echo = INITAL_STATE;
+		} else {
+			readline_done = getline_async(&line, &readline_canceled);
+			if (readline_done == 0) {
+				if (readline_canceled) {
+					puts("\n");
+				}
+				if(send_echo != COMMAND_SEND)
+					continue;
+			}
 		}
 
 		send_len = strlen(line);
@@ -281,6 +300,12 @@ static int cmd_mailbox_csky_shell(void)
 
 		if (strcmp(line, "quit\n") == 0) {
 			break;
+		}
+
+		if (strcmp(line, "root\n") == 0) {
+			if (send_echo == COMMAND_GET) {
+				send_echo = COMMAND_READY;
+			}
 		}
 
 		//printf("Input command is '%s', length=%d\n", line, send_len);
