@@ -30,7 +30,7 @@ config SYS_CONFIG_NAME
 
 endif
 
-if TARGET_ERAGON_LS
+if TARGET_ERAGON2
 
 config SYS_BOARD
 	default "eragon_evb"
@@ -39,9 +39,9 @@ config SYS_VENDOR
 	default "csky"
 
 config SYS_SOC
-	default "eragon_ls"
+	default "eragon2"
 
 config SYS_CONFIG_NAME
-	default "eragon_ls"
+	default "eragon2"
 
 endif

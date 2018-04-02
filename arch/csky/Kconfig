@@ -42,8 +42,8 @@ config TARGET_KDGD
 	select CPU_CK807_810
 	select SUPPORT_SPL
 
-config TARGET_ERAGON_LS
-	bool "Support eragon_ls"
+config TARGET_ERAGON2
+	bool "Support eragon2"
 	select CPU_CK807_810
 	select SUPPORT_SPL
 

@@ -2,8 +2,8 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#ifndef __ERAGON_LS_H
-#define __ERAGON_LS_H
+#ifndef __ERAGON2_H
+#define __ERAGON2_H
 
 /*
  * Select ASIC
@@ -25,7 +25,7 @@
 #define CONFIG_SPL_SIZE   0x3000
 #define CONFIG_LOONGSON_SRAM_BASE	0x1fc00000
 #define CONFIG_LOONGSON_DDR_BASE	0x17c00000
-#define CONFIG_ERAGON_LS	1
+#define CONFIG_ERAGON2	1
 #define CONFIG_SYS_LONGHELP
 #define CONFIG_SYS_CLK_FREQ CPU_DEFAULT_FREQ
 #define CONFIG_BOARD_MMC_SUPPORT
@@ -253,7 +253,7 @@
 	"linux_load_addr_virt=0x90000000\0"  \
 	"linux_load_addr_phys=0x10000000\0" \
 	"update_dtb=" \
-		"tftpboot ${dtb_load_addr_virt} eragon_ls.dtb ; " \
+		"tftpboot ${dtb_load_addr_virt} eragon2.dtb ; " \
 		"setexpr fw_sz ${filesize} / 0x200 ; " \
 		"setexpr fw_sz ${fw_sz} + 1 ; " \
 		"mmc write ${dtb_load_addr_phys} ${dtb_start_sector} ${fw_sz} ; " \
@@ -274,6 +274,6 @@
 		"mmc read ${linux_load_addr_phys} ${linux_start_sector} ${linux_size_sectors} ; " \
 		"bootm ${linux_load_addr_virt} "
 
-#define CONFIG_SPL_LDSCRIPT "board/csky/eragon_evb/eragon_ls/u-boot-spl.lds"
+#define CONFIG_SPL_LDSCRIPT "board/csky/eragon_evb/eragon2/u-boot-spl.lds"
 
-#endif /* __ERAGON_LS_H */
+#endif /* __ERAGON2_H */

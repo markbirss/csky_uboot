@@ -18,16 +18,16 @@ endif #CONFIG_IS_ASIC
 obj-y += eragon_original/spl.o
 endif #CONFIG_ERAGON_ORIGINAL
 
-ifdef CONFIG_ERAGON_LS
-obj-y += eragon_ls/spl.o
+ifdef CONFIG_ERAGON2
+obj-y += eragon2/spl.o
 obj-y += ddr/ddr_ls.o
-endif #CONFIG_ERAGON_LS
+endif #CONFIG_ERAGON2
 
 obj-y += om/om.o
 
 else #CONFIG_SPL_BUILD
 
-ifdef CONFIG_ERAGON_LS
+ifdef CONFIG_ERAGON2
 obj-y += mailbox/mailbox-csky.o
 endif
 
