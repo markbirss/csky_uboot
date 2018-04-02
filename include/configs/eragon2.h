@@ -10,11 +10,19 @@
  * LSP : Timer UART
  * HSP : SPI0 EMMC
  */
+#ifdef CONFIG_IS_ASIC
+#define CPU_DEFAULT_FREQ  300000000
+#define LSP_DEFAULT_FREQ  99000000
+#define HSP_DEFAULT_FREQ  198000000
+#define DDR_DEFAULT_FREQ  150000000
+#define SRAM_DEFAULT_FREQ 198000000
+#else
 #define CPU_DEFAULT_FREQ  60000000
 #define LSP_DEFAULT_FREQ  60000000
 #define HSP_DEFAULT_FREQ  60000000
 #define DDR_DEFAULT_FREQ  60000000
 #define SRAM_DEFAULT_FREQ 60000000
+#endif
 
 /*
  * For the first version
@@ -96,12 +104,9 @@
  */
 #define CONFIG_ERAGON_SERIAL
 
-#define CONFIG_ERAGON       /* This is a CSKY ERAGON SoC */
-#define CONFIG_ERAGON_EVB   /* on a CSKY ERAGON Evalute Board */
-
 /* #define CONFIG_SYS_TEXT_BASE	0x1fd00000 */
 /* #define CONFIG_SYS_TEXT_BASE	0x0000     */
-#define CONFIG_SYS_TEXT_BASE	0x179d7000
+#define CONFIG_SYS_TEXT_BASE	0x175dc000
 #define CONFIG_SPL_TEXT_BASE    0x1fc10000
 
 /* #define CONFIG_SYS_TIMER_RATE CONFIG_SYS_CLK_FREQ */
@@ -183,7 +188,7 @@
  */
 #define PHYS_SRAM_1		0x1fc10000
 #define PHYS_SDRAM_1            0x0
-#define PHYS_SDRAM_1_SIZE	0x17a00000 /* 378M */
+#define PHYS_SDRAM_1_SIZE	0x17600000  /* 374M */
 
 #define PHYS_FLASH_1		0x00000000 /* Flash Bank #0 */
 
@@ -203,7 +208,8 @@
 /* #define CONFIG_SYS_FLASH_BANKS_LIST     { CONFIG_SYS_FLASH_BASE } */
 /* #define CONFIG_SYS_MAX_FLASH_SECT	(19) */
 
-#define CONFIG_ENV_ADDR			(CONFIG_SYS_FLASH_BASE + 0x070000)
+#define CONFIG_ENV_ADDR     (CONFIG_SYS_FLASH_BASE + 0x070000)
+#define CONFIG_ENV_OFFSET   0x10000
 /* #define CONFIG_ENV_IS_IN_FLASH */
 #define CONFIG_ENV_SIZE			0x2000
 /* allow to overwrite serial and ethaddr */
@@ -243,17 +249,23 @@
 #define CONFIG_SYS_INIT_SP_ADDR     (CONFIG_SYS_TEXT_BASE  + 0x80000 - 0x8)
 #define CONFIG_BOARD_EARLY_INIT_F
 
+#ifdef CONFIG_IS_ASIC
+#define CONFIG_DTB_NAME "tftpboot ${dtb_load_addr_virt} eragon2_evb.dtb ; "
+#else
+#define CONFIG_DTB_NAME "tftpboot ${dtb_load_addr_virt} eragon2.dtb ; "
+#endif
+
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"dtb_start_sector=0x1000\0"   /* dtb start sector */ \
 	"dtb_size_sectors=0x1000\0"   /* dtb size in sectors */ \
 	"linux_start_sector=0x2000\0" /* linux start sector */  \
-	"linux_size_sectors=0x5000\0" /* linux size in sectors */ \
+	"linux_size_sectors=0xA000\0" /* linux size in sectors */ \
 	"dtb_load_addr_virt=0x8f000000\0" \
 	"dtb_load_addr_phys=0x0f000000\0"  \
 	"linux_load_addr_virt=0x90000000\0"  \
 	"linux_load_addr_phys=0x10000000\0" \
 	"update_dtb=" \
-		"tftpboot ${dtb_load_addr_virt} eragon2.dtb ; " \
+		CONFIG_DTB_NAME \
 		"setexpr fw_sz ${filesize} / 0x200 ; " \
 		"setexpr fw_sz ${fw_sz} + 1 ; " \
 		"mmc write ${dtb_load_addr_phys} ${dtb_start_sector} ${fw_sz} ; " \

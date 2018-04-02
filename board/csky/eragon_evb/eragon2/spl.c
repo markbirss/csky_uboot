@@ -38,8 +38,8 @@ void board_init_r(gd_t *gd, ulong dest_addr)
 	/* Because of the relocation of uboot, the address of uboot in DDR will change.
 	   So we prepare the uboot at the address which is calculated by uboot itself.
 	   Different DDR address and size will create different uboot address. */
-	u8	*ddr_base = (u8 *)0x179d7000;
-	u32	dram_baseaddr = 0x179d7000;
+	u8	*ddr_base = (u8 *)CONFIG_SYS_TEXT_BASE;
+	u32	dram_baseaddr = CONFIG_SYS_TEXT_BASE;
 	void	(*fp)(void);
 	u32	retlen;
 	u32	ret;
@@ -81,6 +81,11 @@ void board_init_r(gd_t *gd, ulong dest_addr)
 			emmc_emmc_read(0, (READ_ADDR_LOONGSON_UBOOT + (i * 512))/0x200,\
 			512, (u8 *)(CONFIG_LOONGSON_DDR_BASE + (i * 512)));
 		}
+
+		/* wake up the clock */
+		i = readl(CHIP_CTRLPMU + 0x10);
+		i |= (1 << 7);
+		writel(i, CHIP_CTRLPMU + 0x10);
 
 		i = readl(CHIP_CTRLPMU + 0x38);
 		i |= (1 << 9);

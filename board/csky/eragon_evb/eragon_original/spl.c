@@ -37,8 +37,8 @@ void board_init_r(gd_t *gd, ulong dest_addr)
 	/* Because of the relocation of uboot, the address of uboot in DDR will change.
 	   So we prepare the uboot at the address which is calculated by uboot itself.
 	   Different DDR address and size will create different uboot address. */
-	u8	*ddr_base = (u8 *)0x17a00000;
-	u32	dram_baseaddr = 0x17a00000;
+	u8	*ddr_base = (u8 *)CONFIG_SYS_TEXT_BASE;
+	u32	dram_baseaddr = CONFIG_SYS_TEXT_BASE;
 	void	(*fp)(void);
 	u32	retlen;
 	u32	ret;

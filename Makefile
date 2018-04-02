@@ -252,7 +252,7 @@ endif
 
 ifeq ($(arch),loongson)
   ARCH = mips
-  CROSS_COMPILE = mipsel-linux-
+  CROSS_COMPILE = mipsel-redhat-linux-
 else
   ARCH = csky
   CROSS_COMPILE = csky-abiv2-linux-

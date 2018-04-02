@@ -48,9 +48,11 @@ SECTIONS
 		__bss_end = .;
 	} > .bss_mem
 
+#if 0
 	.rel.dyn (NOLOAD) : {
 		*(.rel.dyn)
 	}
+#endif
 
 	.dynsym : {
 		*(.dynsym)

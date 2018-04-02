@@ -11,20 +11,23 @@ ifdef CONFIG_SPL_BUILD
 
 ifdef CONFIG_ERAGON_ORIGINAL
 ifdef CONFIG_IS_ASIC
-obj-y += ddr/ddr_asic.o
+obj-y += eragon_original/ddr_asic.o
 else
-obj-y += ddr/ddr_original.o
+obj-y += eragon_original/ddr.o
 endif #CONFIG_IS_ASIC
 obj-y += eragon_original/spl.o
 endif #CONFIG_ERAGON_ORIGINAL
 
 ifdef CONFIG_ERAGON2
 obj-y += eragon2/spl.o
-obj-y += ddr/ddr_ls.o
+ifdef CONFIG_IS_ASIC
+obj-y += eragon2/ddr_asic.o
+else
+obj-y += eragon2/ddr.o
+endif #CONFIG_IS_ASIC
 endif #CONFIG_ERAGON2
 
 obj-y += om/om.o
-
 else #CONFIG_SPL_BUILD
 
 ifdef CONFIG_ERAGON2

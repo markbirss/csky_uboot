@@ -41,7 +41,6 @@ static int init_dwmmc(void)
 	return ret;
 }
 
-struct mmc eragon_mmc;
 int board_mmc_init(bd_t *bis)
 {
 	int ret;

@@ -6,14 +6,24 @@
 #define __ERA_LOONGSON_H
 
 /*
+ * For ASIC
+ */
+#define CONFIG_IS_ASIC 1
+
+#ifdef CONFIG_IS_ASIC
+#define CONFIG_SYS_CLK_FREQ 99000000
+#define SYSTEM_CLOCK 99     /* It means SYSTEM_CLOCK (M) */
+#else
+#define CONFIG_SYS_CLK_FREQ 60000000
+#define SYSTEM_CLOCK 60     /* It means SYSTEM_CLOCK (M) */
+#endif
+/*
  * For the first version
  */
 #define CONFIG_ERA_LOONGSON
 #define CONFIG_SKIP_LOWLEVEL_INIT
 #undef __GCC_HAVE_BUILTIN_MIPS_CACHE
-#define CONFIG_SYS_CLK_FREQ	60000000
 #define CONFIG_SYS_BOOTM_LEN 0x1000000
-#define SYSTEM_CLOCK 60     /* It means SYSTEM_CLOCK (M) */
 #define CONFIG_NR_DRAM_BANKS 1
 #define CONFIG_BOARD_EARLY_INIT_R
 #define CONFIG_SYS_HZ 1000

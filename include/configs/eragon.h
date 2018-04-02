@@ -99,7 +99,6 @@
 #define CONFIG_ERAGON_SERIAL
 
 #define CONFIG_ERAGON       /* This is a CSKY ERAGON SoC */
-#define CONFIG_ERAGON_EVB   /* on a CSKY ERAGON Evalute Board */
 
 /* #define CONFIG_SYS_TEXT_BASE	0x1fd00000 */
 /* #define CONFIG_SYS_TEXT_BASE	0x0000     */

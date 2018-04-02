@@ -32,6 +32,7 @@ static struct IRQ_Handler ckirq_handlers[CONFIG_SYS_NUM_IRQS] = { {0} };
 
 int interrupt_init (void)
 {
+#if 0
 	/* initialize PR0-PR31, big endian */
 	icrp->PR[0] = 0x00010203;
 	icrp->PR[1] = 0x04050607;
@@ -45,7 +46,7 @@ int interrupt_init (void)
 	icrp->ICR |= ICR_AVE;
 	mask_irq(31);		/* first mask all the interrupt */
 	enable_interrupts();
-
+#endif
 	return 0;
 }
 
