@@ -1,0 +1,16 @@
+if TARGET_ANOLE
+
+config SYS_BOARD
+	default "anole_evb"
+
+config SYS_VENDOR
+	default "csky"
+
+config SYS_SOC
+	default "anole"
+
+config SYS_CONFIG_NAME
+	default "anole"
+
+endif
+

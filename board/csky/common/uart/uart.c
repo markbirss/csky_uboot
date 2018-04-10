@@ -20,10 +20,14 @@ s32 uart_open( u32 uart_addrbase)
 
     if (uart_addrbase == UART0_BASEADDR) {
         gpio_set_reuse(GPIOC, 0x3, GPIO_BEHARDWARE);
+#ifdef UART2_BASEADDR
     } else if (uart_addrbase == UART2_BASEADDR) {
         gpio_set_reuse(GPIOB, 0x3, GPIO_BEHARDWARE);
+#endif
+#ifdef UART3_BASEADDR
     } else if (uart_addrbase == UART3_BASEADDR) {
         gpio_set_reuse(GPIOB, 0x30, GPIO_BEHARDWARE);
+#endif
     }
 
     /*baudrate=(seriak clock freq)/(16*divisor).*/

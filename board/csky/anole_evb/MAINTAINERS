@@ -1,0 +1,6 @@
+ERAGON BOARD
+M:
+S:	Maintained
+F:	board/csky/anole_evb/
+F:	include/configs/anole.h
+F:	configs/anole_defconfig

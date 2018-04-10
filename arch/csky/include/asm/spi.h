@@ -14,7 +14,9 @@
 #define CK_SPI		CK_SPI0
 typedef enum{
     CK_SPI0 = SPI0_BASEADDR,
+#ifdef SPI1_BASEADDR
     CK_SPI1 = SPI1_BASEADDR,
+#endif
 }enum_spi_device_t;
 
 typedef enum{

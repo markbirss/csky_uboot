@@ -5,14 +5,19 @@ config SYS_ARCH
 	default "csky"
 
 config CPU_CK807_810
-        bool
+	bool
+
+config CPU_CK860
+	bool
 
 config SYS_CPU
-        default "ck807_810" if CPU_CK807_810
+	default "ck807_810" if CPU_CK807_810
+	default "ck860" if CPU_CK860
 
 config SYS_CSKY_ARCH
 	int
 	default 1 if CPU_CK807_810
+	default 2 if CPU_CK860
 
 choice
 	prompt "ASIC select"
@@ -47,8 +52,14 @@ config TARGET_ERAGON2
 	select CPU_CK807_810
 	select SUPPORT_SPL
 
+config TARGET_ANOLE
+	bool "Support anole"
+	select CPU_CK860
+	select SUPPORT_SPL
+
 endchoice
 
 source "board/csky/eragon_evb/Kconfig"
+source "board/csky/anole_evb/Kconfig"
 
 endmenu
