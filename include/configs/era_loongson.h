@@ -160,10 +160,10 @@
  * Physical Memory Map
  */
 #define PHYS_SRAM_1		0x1fc00000
-#define PHYS_SDRAM_1            0xb7a00000
+#define PHYS_SDRAM_1            0xb7c00000
 #define PHYS_SDRAM_1_SIZE	0x400000 /* 4M */
 
-#define PHYS_FLASH_1		0xb7b00000 /* Flash Bank #0 */
+#define PHYS_FLASH_1		0xb7d00000 /* Flash Bank #0 */
 
 #define CONFIG_SYS_FLASH_BASE	PHYS_FLASH_1
 
@@ -191,7 +191,7 @@
  * Size of malloc() pool
  * BZIP2 / LZO / LZMA need a lot of RAM
  */
-#define CONFIG_SYS_MALLOC_LEN	(1 * 1024 * 1024)
+#define CONFIG_SYS_MALLOC_LEN	(512 * 1024)
 
 /* #define CONFIG_SYS_MONITOR_LEN	(448 * 1024) */
 #define CONFIG_SYS_MONITOR_BASE	CONFIG_SYS_TEXT_BASE
