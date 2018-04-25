@@ -28,10 +28,5 @@ endif #CONFIG_IS_ASIC
 endif #CONFIG_ERAGON2
 
 obj-y += om/om.o
-else #CONFIG_SPL_BUILD
-
-ifdef CONFIG_ERAGON2
-obj-y += mailbox/mailbox-csky.o
-endif
 
 endif #CONFIG_SPL_BUILD

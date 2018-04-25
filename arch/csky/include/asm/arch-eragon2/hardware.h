@@ -52,5 +52,6 @@
 
 #define CONSOLE_UART_BASE    UART2_BASEADDR
 #define CHIP_CTRL_BASEADDR      0x1fbd0000
+#define MPU_BASEADDR            0x1fbd0800
 #define SOFTWARE_RESET_CONTROL  0x38
 #endif /* __ASM_ARCH_HARDWARE_H__ */

@@ -67,7 +67,7 @@ _start:
 #endif
     mtcr    r4, cr31
 
-#ifdef CONFIG_ERAGON
+#ifdef CONFIG_FRQ_UP
 #ifdef CONFIG_IS_ASIC
     /* cpucclk = pmuclk = 24MHz */
     lrw     r2, MPU_BASEADDR
@@ -121,7 +121,7 @@ WAIT:
     lrw     r3, 0x0
     st.w    r3, (r2, 0x04)
 #endif /* CONFIG_IS_ASIC */
-#endif /* CONFIG_ERAGON */
+#endif /* CONFIG_FRQ_UP */
 
     jbsr    _main
 

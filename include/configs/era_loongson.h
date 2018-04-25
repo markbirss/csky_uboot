@@ -11,8 +11,8 @@
 #define CONFIG_IS_ASIC 1
 
 #ifdef CONFIG_IS_ASIC
-#define CONFIG_SYS_CLK_FREQ 99000000
-#define SYSTEM_CLOCK 99     /* It means SYSTEM_CLOCK (M) */
+#define CONFIG_SYS_CLK_FREQ 118800000
+#define SYSTEM_CLOCK 118     /* It means SYSTEM_CLOCK (M) */
 #else
 #define CONFIG_SYS_CLK_FREQ 60000000
 #define SYSTEM_CLOCK 60     /* It means SYSTEM_CLOCK (M) */
