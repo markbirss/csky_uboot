@@ -46,9 +46,9 @@
 #define CONFIG_NR_DRAM_BANKS 1
 #define CONFIG_BOARD_EARLY_INIT_R
 #define CONFIG_SYS_HZ 1000
-#define CONFIG_IDENT_STRING "ERAGON 0.5"
+#define CONFIG_IDENT_STRING "ERAGON2 V0.1"
 #define CONFIG_AUTO_COMPLETE	/* add autocompletion support */
-#define DEBUG
+/* #define DEBUG */
 /* #define CONFIG_SYS_GENERIC_GLOBAL_DATA */
 
 #define ERAGON_MMC0_BASE (uint32_t)(0xbfb13000)
@@ -107,7 +107,7 @@
 
 /* #define CONFIG_SYS_TEXT_BASE	0x1fd00000 */
 /* #define CONFIG_SYS_TEXT_BASE	0x0000     */
-#define CONFIG_SYS_TEXT_BASE	0x175dc000
+#define CONFIG_SYS_TEXT_BASE	0x175dd000
 #define CONFIG_SPL_TEXT_BASE    0x1fc10000
 
 /* #define CONFIG_SYS_TIMER_RATE CONFIG_SYS_CLK_FREQ */

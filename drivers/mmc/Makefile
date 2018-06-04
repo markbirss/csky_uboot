@@ -5,6 +5,8 @@
 # SPDX-License-Identifier:	GPL-2.0+
 #
 
+KBUILD_CFLAGS += -O0
+
 ifdef CONFIG_DM_MMC
 obj-$(CONFIG_GENERIC_MMC) += mmc-uclass.o
 endif

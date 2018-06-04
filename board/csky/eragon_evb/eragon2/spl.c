@@ -56,6 +56,24 @@ void board_init_r(gd_t *gd, ulong dest_addr)
 		for (i = 0; i < (CONFIG_UBOOT_SIZE + 255)/256; i++) {
 			spiflash_read(0, READ_ADDR + (i * 256), ddr_base + (i * 256) , 256, &retlen);
 		}
+		for (i = 0; i < (CONFIG_SPL_SIZE + 255)/256; i++) {
+			spiflash_read(0, READ_ADDR_LOONGSON_SPL + (i * 256), \
+				(u8 *)(CONFIG_LOONGSON_SRAM_BASE + (i * 256)) , 256, &retlen);
+		}
+		for (i = 0; i < (CONFIG_UBOOT_SIZE + 255)/256; i++) {
+			spiflash_read(0, READ_ADDR_LOONGSON_UBOOT + (i * 256), \
+				(u8 *)(CONFIG_LOONGSON_DDR_BASE + (i * 256)) , 256, &retlen);
+		}
+
+		/* wake up the clock */
+		i = readl(CHIP_CTRLPMU + 0x10);
+		i |= (1 << 7);
+		writel(i, CHIP_CTRLPMU + 0x10);
+
+		i = readl(CHIP_CTRLPMU + 0x38);
+		i |= (1 << 9);
+		writel(i, CHIP_CTRLPMU + 0x38);
+		mini_printf("Loongson wake up.\n");
 		fp = (void (*)(void ))(*((uint32_t *)(dram_baseaddr)));
 		(*fp)();
 		break;

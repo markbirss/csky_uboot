@@ -5,8 +5,6 @@
 #
 
 cpuflags-$(CONFIG_CK860)	:= -mcpu=ck860
-cpuflags-$(CONFIG_CK807)	:= -mcpu=ck807
-cpuflags-$(CONFIG_CK810)	:= -mcpu=ck810
 
 PLATFORM_CPPFLAGS += $(cpuflags-y)
 
