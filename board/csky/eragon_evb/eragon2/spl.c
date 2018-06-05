@@ -20,9 +20,6 @@
 
 extern s32 uart_open( u32 uart_addrbase);
 extern void sdram_init(void);
-#define READ_ADDR 0x3000
-#define READ_ADDR_LOONGSON_SPL 0x40000 /* address at 256K */
-#define READ_ADDR_LOONGSON_UBOOT 0x43000 /* 256K + 12K */
 void board_init_f(ulong dummy)
 {
 	/* Clear global data */
@@ -54,15 +51,16 @@ void board_init_r(gd_t *gd, ulong dest_addr)
 	/* The mode of spi flash */
 		mini_printf("This is spiflash mode.\n");
 		for (i = 0; i < (CONFIG_UBOOT_SIZE + 255)/256; i++) {
-			spiflash_read(0, READ_ADDR + (i * 256), ddr_base + (i * 256) , 256, &retlen);
+			spiflash_read(0, CONFIG_FLASH_UBOOT_READ_ADDR + (i * 256), ddr_base + (i * 256) , 256, &retlen);
 		}
+#ifdef CONFIG_BOOT_SLAVE_CPU
 		for (i = 0; i < (CONFIG_SPL_SIZE + 255)/256; i++) {
-			spiflash_read(0, READ_ADDR_LOONGSON_SPL + (i * 256), \
-				(u8 *)(CONFIG_LOONGSON_SRAM_BASE + (i * 256)) , 256, &retlen);
+			spiflash_read(0, CONFIG_FLASH_SLAVE_SPL_READ_ADDR + (i * 256), \
+				(u8 *)(CONFIG_SLAVE_SRAM_BASE + (i * 256)) , 256, &retlen);
 		}
 		for (i = 0; i < (CONFIG_UBOOT_SIZE + 255)/256; i++) {
-			spiflash_read(0, READ_ADDR_LOONGSON_UBOOT + (i * 256), \
-				(u8 *)(CONFIG_LOONGSON_DDR_BASE + (i * 256)) , 256, &retlen);
+			spiflash_read(0, CONFIG_FLASH_SLAVE_UBOOT_READ_ADDR + (i * 256), \
+				(u8 *)(CONFIG_SLAVE_DDR_BASE + (i * 256)) , 256, &retlen);
 		}
 
 		/* wake up the clock */
@@ -73,7 +71,8 @@ void board_init_r(gd_t *gd, ulong dest_addr)
 		i = readl(CHIP_CTRLPMU + 0x38);
 		i |= (1 << 9);
 		writel(i, CHIP_CTRLPMU + 0x38);
-		mini_printf("Loongson wake up.\n");
+		mini_printf("Slave wake up.\n");
+#endif
 		fp = (void (*)(void ))(*((uint32_t *)(dram_baseaddr)));
 		(*fp)();
 		break;
@@ -87,17 +86,17 @@ void board_init_r(gd_t *gd, ulong dest_addr)
 		}
 		mini_printf("eMMC init ready.\n");
 		for (i = 0; i < (CONFIG_UBOOT_SIZE + 511) / 512; i++) {
-			emmc_emmc_read(0, (READ_ADDR + (i * 512))/0x200, 512, (u8 *)(dram_baseaddr + (i * 512)));
+			emmc_emmc_read(0, (CONFIG_FLASH_UBOOT_READ_ADDR + (i * 512))/0x200, 512, (u8 *)(dram_baseaddr + (i * 512)));
 		}
-
+#ifdef CONFIG_BOOT_SLAVE_CPU
 		for (i = 0; i < (CONFIG_SPL_SIZE + 511) / 512; i++) {
-			emmc_emmc_read(0, (READ_ADDR_LOONGSON_SPL + (i * 512))/0x200,\
-			512, (u8 *)(CONFIG_LOONGSON_SRAM_BASE + (i * 512)));
+			emmc_emmc_read(0, (CONFIG_FLASH_SLAVE_SPL_READ_ADDR + (i * 512))/0x200,\
+			512, (u8 *)(CONFIG_SLAVE_SRAM_BASE + (i * 512)));
 		}
 
 		for (i = 0; i < (CONFIG_UBOOT_SIZE + 511) / 512; i++) {
-			emmc_emmc_read(0, (READ_ADDR_LOONGSON_UBOOT + (i * 512))/0x200,\
-			512, (u8 *)(CONFIG_LOONGSON_DDR_BASE + (i * 512)));
+			emmc_emmc_read(0, (CONFIG_FLASH_SLAVE_UBOOT_READ_ADDR + (i * 512))/0x200,\
+			512, (u8 *)(CONFIG_SLAVE_DDR_BASE + (i * 512)));
 		}
 
 		/* wake up the clock */
@@ -108,8 +107,8 @@ void board_init_r(gd_t *gd, ulong dest_addr)
 		i = readl(CHIP_CTRLPMU + 0x38);
 		i |= (1 << 9);
 		writel(i, CHIP_CTRLPMU + 0x38);
-		mini_printf("Loongson wake up.\n");
-
+		mini_printf("Slave cpu wake up.\n");
+#endif
 		fp = (void (*)(void ))(*((u32 *)(dram_baseaddr)));
 		(*fp)();
 		break;
