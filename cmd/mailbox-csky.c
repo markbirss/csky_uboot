@@ -63,7 +63,6 @@ static int getline_async(char **line, int *cancel)
 		*cancel = 1;
 		return 0;
 
-	case 0x5F:
 	case 0x08:	/* ^H  - backspace */
 	case 0x7F:	/* DEL - backspace */
 		if (buffer_pos > 0) {
