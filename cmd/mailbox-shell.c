@@ -12,7 +12,7 @@
 #ifdef CONFIG_SYS_COREBOOT
 #include <asm/arch/sysinfo.h>
 #endif
-#include <asm/mailbox-csky.h>
+#include <asm/mailbox-shell.h>
 
 static int mailbox_ready;
 enum remove_echo {
@@ -88,13 +88,13 @@ static int getline_async(char **line, int *cancel)
 	}
 }
 
-static int cmd_mailbox_csky_list_names(void)
+static int cmd_mailbox_shell_list_names(void)
 {
 	char **names;
 	uint count;
 	int ret;
 
-	ret = mailbox_csky_get_names(&names, &count);
+	ret = mailbox_shell_get_names(&names, &count);
 	if (ret != 0) {
 		printf("Get mailbox names failed, ret=%d", ret);
 		return ret;
@@ -109,7 +109,7 @@ static int cmd_mailbox_csky_list_names(void)
 	return 0;
 }
 
-static int cmd_mailbox_csky_selftest(char *tx_data)
+static int cmd_mailbox_shell_selftest(char *tx_data)
 {
 	int ret;
 	char rx_data[1024];
@@ -117,7 +117,7 @@ static int cmd_mailbox_csky_selftest(char *tx_data)
 	uint sent_len = 0, read_len = 0;/* Has sent/read length */
 
 	memset(rx_data, 0, sizeof(rx_data));
-	ret = mailbox_csky_init();
+	ret = mailbox_shell_init();
 	if (ret != 0) {
 		printf("mailbox init failed, ret=%d", ret);
 		return ret;
@@ -129,27 +129,27 @@ static int cmd_mailbox_csky_selftest(char *tx_data)
 
 	transfer_len = strlen(tx_data) + 1;	/* "+ 1" for last '\0' */
 
-	ret = mailbox_csky_open(CSKY_MBOX_DEV_ID_SEND);
+	ret = mailbox_shell_open(SHELL_MBOX_DEV_ID_SEND);
 	if (ret != 0) {
 		printf("Can't open mailbox-%d, ret=%d\n",
-			CSKY_MBOX_DEV_ID_SEND, ret);
+			SHELL_MBOX_DEV_ID_SEND, ret);
 		return ret;
 	}
 
-	if (CSKY_MBOX_DEV_ID_SEND != CSKY_MBOX_DEV_ID_RECV) {
-		ret = mailbox_csky_open(CSKY_MBOX_DEV_ID_RECV);
+	if (SHELL_MBOX_DEV_ID_SEND != SHELL_MBOX_DEV_ID_RECV) {
+		ret = mailbox_shell_open(SHELL_MBOX_DEV_ID_RECV);
 		if (ret != 0) {
 			printf("Can't open mailbox-%d, ret=%d\n",
-				CSKY_MBOX_DEV_ID_RECV, ret);
+				SHELL_MBOX_DEV_ID_RECV, ret);
 			goto out0;
 		}
 	}
 
 	while (sent_len < transfer_len || read_len < transfer_len) {
-		/* Send data via CSKY_MBOX_DEV_ID_SEND */
+		/* Send data via SHELL_MBOX_DEV_ID_SEND */
 		if (sent_len < transfer_len) {
 			int sent_once =
-				mailbox_csky_send(CSKY_MBOX_DEV_ID_SEND,
+				mailbox_shell_send(SHELL_MBOX_DEV_ID_SEND,
 						  &(tx_data[sent_len]),
 						  transfer_len - sent_len);
 			if (sent_once > 0) {
@@ -161,10 +161,10 @@ static int cmd_mailbox_csky_selftest(char *tx_data)
 			}
 		}
 
-		/* Recv data via CSKY_MBOX_DEV_ID_RECV */
+		/* Recv data via SHELL_MBOX_DEV_ID_RECV */
 		if (read_len < transfer_len) {
 			int read_once =
-				mailbox_csky_recv(CSKY_MBOX_DEV_ID_RECV,
+				mailbox_shell_recv(SHELL_MBOX_DEV_ID_RECV,
 						  &(rx_data[read_len]),
 						  sizeof(rx_data) - read_len);
 			if (read_once > 0) {
@@ -194,13 +194,13 @@ static int cmd_mailbox_csky_selftest(char *tx_data)
 	puts(str_cutting_line);
 
 out1:
-	mailbox_csky_close(CSKY_MBOX_DEV_ID_RECV);
+	mailbox_shell_close(SHELL_MBOX_DEV_ID_RECV);
 out0:
-	mailbox_csky_close(CSKY_MBOX_DEV_ID_SEND);
+	mailbox_shell_close(SHELL_MBOX_DEV_ID_SEND);
 	return ret;
 }
 
-static int cmd_mailbox_csky_shell(void)
+static int cmd_mailbox_shell_shell(void)
 {
 	char *line;
 	char rx_data[64];
@@ -212,7 +212,7 @@ static int cmd_mailbox_csky_shell(void)
 	int present_time;
 	int ret;
 
-	ret = mailbox_csky_init();
+	ret = mailbox_shell_init();
 	if (ret != 0) {
 		printf("mailbox init failed, ret=%d", ret);
 		return ret;
@@ -226,18 +226,18 @@ static int cmd_mailbox_csky_shell(void)
 		puts("Starting Linux...");
 	}
 
-	ret = mailbox_csky_open(CSKY_MBOX_DEV_ID_SEND);
+	ret = mailbox_shell_open(SHELL_MBOX_DEV_ID_SEND);
 	if (ret != 0) {
 		printf("Can't open mailbox-%d, ret=%d\n",
-			CSKY_MBOX_DEV_ID_SEND, ret);
+			SHELL_MBOX_DEV_ID_SEND, ret);
 		return ret;
 	}
 
-	if (CSKY_MBOX_DEV_ID_SEND != CSKY_MBOX_DEV_ID_RECV) {
-		ret = mailbox_csky_open(CSKY_MBOX_DEV_ID_RECV);
+	if (SHELL_MBOX_DEV_ID_SEND != SHELL_MBOX_DEV_ID_RECV) {
+		ret = mailbox_shell_open(SHELL_MBOX_DEV_ID_RECV);
 		if (ret != 0) {
 			printf("Can't open mailbox-%d, ret=%d.\n",
-				CSKY_MBOX_DEV_ID_RECV, ret);
+				SHELL_MBOX_DEV_ID_RECV, ret);
 			goto out0;
 		}
 	}
@@ -262,7 +262,7 @@ static int cmd_mailbox_csky_shell(void)
 
 		do {
 			int read_once =
-				mailbox_csky_recv(CSKY_MBOX_DEV_ID_RECV,
+				mailbox_shell_recv(SHELL_MBOX_DEV_ID_RECV,
 						  rx_data, sizeof(rx_data));
 			if (read_once > 0) {
 				printf("%s", rx_data);
@@ -310,7 +310,7 @@ static int cmd_mailbox_csky_shell(void)
 		//printf("Input command is '%s', length=%d\n", line, send_len);
 		sent_len = 0;
 		do {
-			sent_once = mailbox_csky_send(CSKY_MBOX_DEV_ID_SEND,
+			sent_once = mailbox_shell_send(SHELL_MBOX_DEV_ID_SEND,
 						     &(line[sent_len]),
 						     send_len - sent_len);
 			if (sent_once > 0) {
@@ -328,26 +328,26 @@ static int cmd_mailbox_csky_shell(void)
 	puts(str_cutting_line);
 
 out1:
-	mailbox_csky_close(CSKY_MBOX_DEV_ID_RECV);
+	mailbox_shell_close(SHELL_MBOX_DEV_ID_RECV);
 out0:
-	if (CSKY_MBOX_DEV_ID_SEND != CSKY_MBOX_DEV_ID_RECV)
-		mailbox_csky_close(CSKY_MBOX_DEV_ID_SEND);
+	if (SHELL_MBOX_DEV_ID_SEND != SHELL_MBOX_DEV_ID_RECV)
+		mailbox_shell_close(SHELL_MBOX_DEV_ID_SEND);
 	return ret;
 }
 
 static int
-do_mailbox_csky(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+do_mailbox_shell(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 {
 	int ret = 0;
 	if (argc == 1 || strcmp(argv[1], "help") == 0) {
 		cmd_usage(cmdtp);
 		ret = 0;
 	} else if (argc == 2 && strcmp(argv[1], "list") == 0) {
-		cmd_mailbox_csky_list_names();
+		cmd_mailbox_shell_list_names();
 	} else if (argc <= 3 && strcmp(argv[1], "test") == 0) {
-		cmd_mailbox_csky_selftest((argc == 2) ? NULL : argv[2]);
+		cmd_mailbox_shell_selftest((argc == 2) ? NULL : argv[2]);
 	} else if (argc == 2 && strcmp(argv[1], "shell") == 0) {
-		cmd_mailbox_csky_shell();
+		cmd_mailbox_shell_shell();
 	} else {
 		ret = CMD_RET_USAGE;
 	}
@@ -356,16 +356,16 @@ do_mailbox_csky(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 }
 
 #ifdef CONFIG_SYS_LONGHELP
-static char mailbox_csky_longhelp_text[] =
+static char mailbox_shell_longhelp_text[] =
 		"shell         - Enter Linux shell\n"
 	"mailbox test [string] - Auto selftest by Send/Recv string\n"
 	"mailbox list          - List all mailbox names\n";
 #else
-static char mailbox_csky_longhelp_text[] = "";
+static char mailbox_shell_longhelp_text[] = "";
 #endif
 
 U_BOOT_CMD(
-	mailbox,	3,	0,	do_mailbox_csky,
+	mailbox,	3,	0,	do_mailbox_shell,
 	"Do mailbox self loop test or send command and recv response back",
-	mailbox_csky_longhelp_text
+	mailbox_shell_longhelp_text
 );

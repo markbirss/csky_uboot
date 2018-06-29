@@ -29,6 +29,15 @@ config IS_ASIC
 endchoice
 
 choice
+	prompt "slave cpu select"
+	optional
+
+config BOOT_SLAVE_CPU
+	bool "boot the slave cpu"
+
+endchoice
+
+choice
 	prompt "Target select"
 	optional
 

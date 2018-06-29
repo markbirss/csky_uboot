@@ -160,7 +160,7 @@ endif # !CONFIG_SPL_BUILD
 
 obj-$(CONFIG_CMD_BLOB) += blob.o
 ifndef CONFIG_SPL_BUILD
-obj-$(CONFIG_CMD_MAILBOX_CSKY) += mailbox-csky.o
+obj-$(CONFIG_CMD_MAILBOX_SHELL) += mailbox-shell.o
 endif
 
 # core command
