@@ -250,7 +250,11 @@
 #define CONFIG_BOARD_EARLY_INIT_F
 
 #ifdef CONFIG_IS_ASIC
+#ifdef CONFIG_BOOT_SLAVE_CPU
+#define CONFIG_DTB_NAME "tftpboot ${dtb_load_addr_virt} eragon2_scpu_evb.dtb ; "
+#else
 #define CONFIG_DTB_NAME "tftpboot ${dtb_load_addr_virt} eragon2_evb.dtb ; "
+#endif
 #else
 #define CONFIG_DTB_NAME "tftpboot ${dtb_load_addr_virt} eragon2.dtb ; "
 #endif
