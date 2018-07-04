@@ -18,37 +18,10 @@
         .balign 4
 hw_vsr_default_exception:
         subi    sp, 124             /* Preserve the entire state. */
-        stw     r0, (sp, 0)
-        stw     r1, (sp, 4)
-        stw     r2, (sp, 8)
-        stw     r3, (sp, 12)
-        stw     r4, (sp, 16)
-        stw     r5, (sp, 20)
-        stw     r6, (sp, 24)
-        stw     r7, (sp, 28)
-        stw     r8, (sp, 32)
-        stw     r9, (sp, 36)
-        stw     r10, (sp, 40)
-        stw     r11, (sp, 44)
-        stw     r12, (sp, 48)
-        stw     r13, (sp, 52)
-        stw     r15, (sp, 56)
-        stw     r16, (sp, 60)
-        stw     r17, (sp, 64)
-        stw     r18, (sp, 68)
-        stw     r19, (sp, 72)
-        stw     r20, (sp, 76)
-        stw     r21, (sp, 80)
-        stw     r22, (sp, 84)
-        stw     r23, (sp, 88)
-        stw     r24, (sp, 92)
-        stw     r25, (sp, 96)
-        stw     r26, (sp, 100)
-        stw     r27, (sp, 104)
-        stw     r28, (sp, 108)
-        stw     r29, (sp, 112)
-        stw     r30, (sp, 116)
-        stw     r31, (sp, 120)
+        stm     r0-r13, (sp)
+        addi    sp, 56
+        stm     r15-r31, (sp)
+        subi    sp, 56
 
         subi    sp, 8
         mfcr    r2, epsr
@@ -83,37 +56,10 @@ hw_vsr_default_exception:
         .balign 4
 hw_vsr_autovec:
         subi    sp, 124             /* Preserve the entire state. */
-        stw     r0, (sp, 0)
-        stw     r1, (sp, 4)
-        stw     r2, (sp, 8)
-        stw     r3, (sp, 12)
-        stw     r4, (sp, 16)
-        stw     r5, (sp, 20)
-        stw     r6, (sp, 24)
-        stw     r7, (sp, 28)
-        stw     r8, (sp, 32)
-        stw     r9, (sp, 36)
-        stw     r10, (sp, 40)
-        stw     r11, (sp, 44)
-        stw     r12, (sp, 48)
-        stw     r13, (sp, 52)
-        stw     r15, (sp, 56)
-        stw     r16, (sp, 60)
-        stw     r17, (sp, 64)
-        stw     r18, (sp, 68)
-        stw     r19, (sp, 72)
-        stw     r20, (sp, 76)
-        stw     r21, (sp, 80)
-        stw     r22, (sp, 84)
-        stw     r23, (sp, 88)
-        stw     r24, (sp, 92)
-        stw     r25, (sp, 96)
-        stw     r26, (sp, 100)
-        stw     r27, (sp, 104)
-        stw     r28, (sp, 108)
-        stw     r29, (sp, 112)
-        stw     r30, (sp, 116)
-        stw     r31, (sp, 120)
+        stm     r0-r13, (sp)
+        addi    sp, 56
+        stm     r15-r31, (sp)
+        subi    sp, 56
 
         subi    sp, 8
         mfcr    r2, epsr
