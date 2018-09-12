@@ -28,5 +28,15 @@ endif #CONFIG_IS_ASIC
 endif #CONFIG_ERAGON2
 
 obj-y += om/om.o
-
 endif #CONFIG_SPL_BUILD
+
+ifdef CONFIG_FREQ_CHANGE
+ifdef CONFIG_IS_ASIC
+obj-y += clock/clock.o
+obj-y += clock/clock_internal.o
+obj-y += clock/cpu_init.o
+ifndef CONFIG_SPL_BUILD
+obj-$(CONFIG_CMD_CLOCK) += clock/cmd_cpu_frequency.o
+endif
+endif
+endif

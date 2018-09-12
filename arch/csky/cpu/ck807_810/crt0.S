@@ -33,15 +33,21 @@ _main:
 
 
 #ifndef CONFIG_SPL_BUILD
+    mfcr    a3, cr17
+    bseti   a3, 0      /* Include I cache */
+    bseti   a3, 1      /* Include D cache */
+    bseti   a3, 4      /* Invalid cache */
+    mtcr    a3, cr17
+
     /* Setup the initial page tables */
     create_page_table  __text_start
 
     /* enable MMU */
     csky_mmu_enable
 
-    /* open prefetch */
     mfcr    a3, cr31
-    bseti   a3, 4
+    bseti   a3, 3      /* Open AMR */
+    bseti   a3, 4      /* Open prefetch */
     mtcr    a3, cr31
 #endif
 

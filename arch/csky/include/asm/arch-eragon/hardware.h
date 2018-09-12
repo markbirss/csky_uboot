@@ -24,6 +24,8 @@
 #define UART2_BASEADDR       (u32)(0x1fba4000)
 #define UART3_BASEADDR       (u32)(0x1fba5000)
 #define UART4_BASEADDR       (u32)(0x1fba6000)
+#define CHIP_CTRL_BASEADDR   (u32)(0x1fbd0000)
+#define MPU_BASEADDR         (u32)(0x1fbd0800)
 
 #else
 
@@ -43,11 +45,11 @@
 #define UART2_BASEADDR       (u32)(0xbfba4000)
 #define UART3_BASEADDR       (u32)(0xbfba5000)
 #define UART4_BASEADDR       (u32)(0xbfba6000)
+#define CHIP_CTRL_BASEADDR   (u32)(0xbfbd0000)
+#define MPU_BASEADDR         (u32)(0xbfbd0800)
 
 #endif /* CONFIG_SPL_BUILD */
 
 #define CONSOLE_UART_BASE	UART2_BASEADDR
-#define CHIP_CTRL_BASEADDR	0x1fbd0000
 #define SOFTWARE_RESET_CONTROL	0x38
-#define MPU_BASEADDR		0x1fbd0800
 #endif /* __ASM_ARCH_HARDWARE_H__ */

@@ -24,8 +24,9 @@
 /*
  * For the first version
  */
+#define CONFIG_CMD_CLOCK 1
 #define CONFIG_CK807 1
-#define CONFIG_FRQ_UP 1
+#define CONFIG_FREQ_CHANGE 1
 #define UBOOT_INTERNAL_VERSION "0.5"
 #define CONFIG_ERAGON_ORIGINAL 1
 #define CONFIG_SYS_CLK_FREQ CPU_DEFAULT_FREQ

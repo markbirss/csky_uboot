@@ -26,6 +26,8 @@
 #define UART4_BASEADDR       (u32)(0x1fba6000)
 #define MAILBOX_BASEADDR     (u32)(0x1fbd4000)
 #define CHIP_CTRLPMU         (u32)(0x1fbd0000)
+#define MPU_BASEADDR         (u32)(0x1fbd0800)
+#define CHIP_CTRL_BASEADDR   (u32)(0x1fbd0000)
 
 #else
 
@@ -47,11 +49,11 @@
 #define UART4_BASEADDR       (u32)(0xbfba6000)
 #define MAILBOX_BASEADDR     (u32)(0xbfbd4000)
 #define CHIP_CTRLPMU         (u32)(0xbfbd0000)
+#define MPU_BASEADDR         (u32)(0xbfbd0800)
+#define CHIP_CTRL_BASEADDR   (u32)(0xbfbd0000)
 
 #endif /* CONFIG_SPL_BUILD */
 
 #define CONSOLE_UART_BASE    UART2_BASEADDR
-#define CHIP_CTRL_BASEADDR      0x1fbd0000
-#define MPU_BASEADDR            0x1fbd0800
 #define SOFTWARE_RESET_CONTROL  0x38
 #endif /* __ASM_ARCH_HARDWARE_H__ */

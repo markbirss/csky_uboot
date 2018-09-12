@@ -17,11 +17,20 @@
 #include <asm/mmc/emmc.h>
 #include <asm/arch/om.h>
 #include <asm/spiflash.h>
+#ifdef CONFIG_FREQ_CHANGE
+#include <asm/clock.h>
+#endif
 
 extern s32 uart_open( u32 uart_addrbase);
 extern void sdram_init(void);
 void board_init_f(ulong dummy)
 {
+#ifdef CONFIG_IS_ASIC
+#ifdef CONFIG_FREQ_CHANGE
+	/* Change freq */
+	arch_cpu_init();
+#endif
+#endif
 	/* Clear global data */
 	uart_open(CONSOLE_UART_BASE);
 	sdram_init();
@@ -43,6 +52,16 @@ void board_init_r(gd_t *gd, ulong dest_addr)
 
 	mini_printf("The U-Boot-spl start.\n");
 	mini_printf("U-Boot version is 2016.07, internal version is %s\n", UBOOT_INTERNAL_VERSION);
+#ifdef CONFIG_FREQ_CHANGE
+#ifdef CONFIG_IS_ASIC
+	uint32_t freq;
+	if (clock_get_cpu_speed(&freq) != 0) {
+		mini_printf("Get CPU speed failed\n");
+	} else {
+		mini_printf("Get CPU speed=%d\n", freq);
+	}
+#endif
+#endif
 	gpio_set_reuse(GPIOD, 0xff, GPIO_BEHARDWARE);
 	om_judge = get_boot_select();
 
