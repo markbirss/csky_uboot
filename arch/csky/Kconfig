@@ -66,9 +66,15 @@ config TARGET_ANOLE
 	select CPU_CK860
 	select SUPPORT_SPL
 
+config TARGET_BYHL
+	bool "Support byhl"
+	select CPU_CK860
+	select SUPPORT_SPL
+
 endchoice
 
 source "board/csky/eragon_evb/Kconfig"
 source "board/csky/anole_evb/Kconfig"
+source "board/csky/byhl_evb/Kconfig"
 
 endmenu

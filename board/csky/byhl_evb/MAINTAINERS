@@ -1,0 +1,6 @@
+ERAGON BOARD
+M:
+S:	Maintained
+F:	board/csky/byhl_evb/
+F:	include/configs/byhl.h
+F:	configs/byhl_defconfig

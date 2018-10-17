@@ -1,0 +1,16 @@
+if TARGET_BYHL
+
+config SYS_BOARD
+	default "byhl_evb"
+
+config SYS_VENDOR
+	default "csky"
+
+config SYS_SOC
+	default "byhl"
+
+config SYS_CONFIG_NAME
+	default "byhl"
+
+endif
+

@@ -36,7 +36,6 @@ _start:
     /* Init psr value */
     mfcr    r3, psr
     bseti   r3, 8
-    bseti   r3, 5
     bseti   r3, 31
     mtcr    r3, psr
 
